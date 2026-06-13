@@ -41,7 +41,7 @@
     .section-title { text-align: center; font-size: 2rem; font-weight: 700; color: #1a3c2b; margin-bottom: 15px; }
     .section-title i { color: #1e4a3b; }
     .section-subtitle { text-align: center; color: #6b8a7a; margin-bottom: 50px; font-size: 1.1rem; }
-    .zonas-wrapper { display: flex; gap: 40px; max-width: 1200px; margin: 0 auto; align-items: center; } /* Cambiado de flex-start a center */
+    .zonas-wrapper { display: flex; gap: 40px; max-width: 1200px; margin: 0 auto; align-items: center; }
     .zonas-intro { flex: 1 1 35%; }
     .zonas-intro h2 { font-size: 2rem; font-weight: 700; color: #1a3c2b; margin-bottom: 20px; text-align: left; }
     .zonas-intro h2 i { color: #1e4a3b; margin-right: 8px; }
@@ -66,7 +66,7 @@
     .btn-secundario:hover { background: #1e4a3b; color: white; transform: translateY(-3px); }
 
     .testimonios-section { padding: 80px 20px; background: #eef5e8; }
-    .testimonios-wrapper { display: flex; gap: 40px; max-width: 1200px; margin: 0 auto; align-items: center; } /* Cambiado de flex-start a center */
+    .testimonios-wrapper { display: flex; gap: 40px; max-width: 1200px; margin: 0 auto; align-items: center; }
     .testimonios-intro { flex: 1 1 35%; }
     .testimonios-intro h2 { font-size: 2rem; font-weight: 700; color: #1a3c2b; margin-bottom: 15px; text-align: left; }
     .testimonios-intro .section-subtitle { text-align: left; margin-bottom: 30px; font-size: 0.95rem; }
@@ -79,7 +79,7 @@
     .testimonio-rol { font-size: 0.8rem; color: #8ba89a; }
 
     .blog-section { padding: 80px 20px; background: #f4f8f0; }
-    .blog-wrapper { display: flex; gap: 40px; max-width: 1200px; margin: 0 auto; align-items: center; } /* Cambiado de flex-start a center */
+    .blog-wrapper { display: flex; gap: 40px; max-width: 1200px; margin: 0 auto; align-items: center; }
     .blog-intro { flex: 1 1 35%; }
     .blog-intro h2 { font-size: 2rem; font-weight: 700; color: #1a3c2b; margin-bottom: 15px; text-align: left; }
     .blog-intro .section-subtitle { text-align: left; margin-bottom: 30px; font-size: 0.95rem; }
@@ -94,6 +94,8 @@
     .blog-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: #6b8a7a; }
     .blog-meta .author { font-weight: 500; }
     .likes i { color: #f4c542; margin-right: 4px; }
+    .blog-link { display: inline-block; margin-top: 10px; color: #1e4a3b; font-weight: 600; font-size: 0.9rem; text-decoration: none; }
+    .blog-link:hover { color: #f4c542; }
 
     .site-footer { background: #0e2c22; color: #cfe6db; padding: 60px 20px 20px; font-size: 0.9rem; }
     .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-bottom: 40px; }
@@ -172,7 +174,6 @@
     </div>
   </section>
 
-  <!-- Zonas de práctica de campo -->
   <section class="zonas-section">
     <div class="zonas-wrapper">
       <div class="zonas-intro">
@@ -193,7 +194,6 @@
     </div>
   </section>
 
-  <!-- Quiénes somos -->
   <section class="quienes-somos-section" id="quienes-somos">
     <div class="quienes-somos-container">
       <div class="quienes-somos-img"><img src="img/departamento.jpg" alt="Departamento de Geografía" onerror="this.style.display='none'"></div>
@@ -205,7 +205,6 @@
     </div>
   </section>
 
-  <!-- Testimonios -->
   <section class="testimonios-section">
     <div class="testimonios-wrapper">
       <div class="testimonios-intro">
@@ -220,7 +219,7 @@
     </div>
   </section>
 
-  <!-- Blog -->
+  <!-- Últimos artículos del blog (sincronizado) -->
   <section class="blog-section">
     <div class="blog-wrapper">
       <div class="blog-intro">
@@ -364,7 +363,16 @@
         const fecha = p.date ? new Date(p.date).toLocaleDateString() : '';
         const author = p.author || 'Anónimo';
         const likes = Math.floor(Math.random() * 150) + 10;
-        return `<div class="blog-post">${mediaHTML}<div class="blog-content"><h3>${title}</h3><p>${desc}</p><div class="blog-meta"><span class="author">${fecha} · ${author}</span><span class="likes"><i class="fas fa-heart"></i> ${likes}</span></div></div></div>`;
+        const postId = p.date;
+        return `<div class="blog-post">
+          ${mediaHTML}
+          <div class="blog-content">
+            <h3>${title}</h3>
+            <p>${desc}</p>
+            <div class="blog-meta"><span class="author">${fecha} · ${author}</span><span class="likes"><i class="fas fa-heart"></i> ${likes}</span></div>
+            <a href="conociendo-pinar.html#tab-blog&post=${encodeURIComponent(postId)}" class="blog-link">Leer más <i class="fas fa-arrow-right"></i></a>
+          </div>
+        </div>`;
       }).join('');
     }
     renderBlog();

@@ -9,6 +9,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <style>
+    /* ========== ESTILOS COMPLETOS (idénticos a los anteriores) ========== */
     * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     body { font-family: 'Inter', sans-serif; background: #eef5e8; color: #1e3a2f; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 16px; }
@@ -22,7 +23,6 @@
     .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
     .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; font-weight: 700; font-size: 1.3rem; }
     .logo i { color: #f4c542; font-size: 1.6rem; }
-
     .header-right { display: flex; align-items: center; gap: 12px; }
     .main-nav { display: flex; align-items: center; gap: 6px; }
     .nav-link { color: #e0f0e4; text-decoration: none; padding: 10px 18px; border-radius: 30px; font-weight: 500; font-size: 0.95rem; transition: all 0.3s; white-space: nowrap; }
@@ -51,6 +51,7 @@
     .place-info { padding: 16px; }
     .place-info h3 { color: #1a4c3b; margin-bottom: 8px; }
 
+    /* Mapa, etc. igual que antes */
     .mapa-card { background: white; border-radius: 24px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.06); width: 100%; max-width: 320px; cursor: pointer; position: relative; transition: transform 0.2s; }
     .mapa-card:hover { transform: translateY(-2px); }
     .mapa-card:hover .mapa-overlay-hover { opacity: 1; }
@@ -79,10 +80,12 @@
     .btn-crear { background: #f4c542; color: #1e3a2f; border: none; padding: 10px 20px; border-radius: 40px; font-weight: bold; cursor: pointer; }
     .btn-crear:hover { background: #e0b53a; }
 
-    .media-upload-area { border: 2px dashed #cbd5c0; border-radius: 20px; padding: 20px; text-align: center; margin: 10px 0; cursor: pointer; transition: 0.3s; background: #fefdf6; }
-    .media-upload-area:hover { border-color: #1e4a3b; background: #f0f7ed; }
-    .media-upload-area i { font-size: 2rem; color: #1e4a3b; }
+    .upload-label { display: block; border: 2px dashed #cbd5c0; border-radius: 20px; padding: 20px; text-align: center; margin: 10px 0; cursor: pointer; transition: 0.3s; background: #fefdf6; }
+    .upload-label:hover, .upload-label:active { border-color: #1e4a3b; background: #f0f7ed; }
+    .upload-label i { font-size: 2rem; color: #1e4a3b; }
+    .hidden-file-input { position: absolute; width: 0.1px; height: 0.1px; opacity: 0; overflow: hidden; }
 
+    /* Resto de estilos (preview, video, gallery, lightbox, blog, footer) igual que antes */
     .preview-container { display: flex; gap: 10px; flex-wrap: wrap; margin: 10px 0; }
     .preview-item { position: relative; width: 100px; height: 100px; border-radius: 12px; overflow: hidden; }
     .preview-item img, .preview-item video { width: 100%; height: 100%; object-fit: cover; }
@@ -121,6 +124,8 @@
     .fallback-media { width: 100%; height: 200px; background: #e0e8da; display: flex; align-items: center; justify-content: center; color: #8ba89a; font-size: 0.9rem; }
     .ver-mas-btn { background: none; border: none; color: #1e4a3b; font-weight: 700; cursor: pointer; font-size: 1.2rem; letter-spacing: 2px; transition: color 0.2s; padding: 0 5px; }
     .ver-mas-btn:hover { color: #f4c542; }
+    .highlight-post { animation: highlightAnim 3s ease; box-shadow: 0 0 0 4px #f4c542; }
+    @keyframes highlightAnim { 0% { box-shadow: 0 0 0 4px #f4c542; } 100% { box-shadow: 0 0 0 0px transparent; } }
 
     .site-footer { background: #0e2c22; color: #cfe6db; padding: 60px 20px 20px; font-size: 0.9rem; margin-top: 2rem; }
     .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 30px; margin-bottom: 40px; }
@@ -210,18 +215,18 @@
         <div id="mapaExplora"></div>
         <div class="mapa-overlay-hover"><span><i class="fas fa-expand"></i> <span data-i18n="map-expand">Clic para ampliar</span></span></div>
         <div class="mapa-leyenda">
-          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('valle')"><span class="leyenda-dot" style="background:#2e7d32;"></span> Valle</span>
-          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('cueva')"><span class="leyenda-dot" style="background:#e67e22;"></span> Cueva</span>
-          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('mural')"><span class="leyenda-dot" style="background:#c0392b;"></span> Mural</span>
-          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('mirador')"><span class="leyenda-dot" style="background:#1565c0;"></span> Mirador</span>
+          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('valle')"><span class="leyenda-dot" style="background:#2e7d32;"></span> <span data-i18n="leyenda-valle">Valle</span></span>
+          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('cueva')"><span class="leyenda-dot" style="background:#e67e22;"></span> <span data-i18n="leyenda-cueva">Cueva</span></span>
+          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('mural')"><span class="leyenda-dot" style="background:#c0392b;"></span> <span data-i18n="leyenda-mural">Mural</span></span>
+          <span class="leyenda-item" onclick="event.stopPropagation(); centrarMapa('mirador')"><span class="leyenda-dot" style="background:#1565c0;"></span> <span data-i18n="leyenda-mirador">Mirador</span></span>
         </div>
       </div>
     </div>
 
     <div class="tab-content" id="tab-galeria">
       <h2 style="margin:20px 0;">📸 <span data-i18n="gallery-title">Galería de la Comunidad</span></h2>
-      <button class="btn-crear" onclick="document.getElementById('galleryUpload').click()"><i class="fas fa-cloud-upload-alt"></i> <span data-i18n="upload-photo">Subir Foto</span></button>
-      <input type="file" id="galleryUpload" accept="image/*,video/*" multiple style="display:none">
+      <label for="galleryUpload" class="btn-crear" style="display:inline-flex; align-items:center; gap:8px;"><i class="fas fa-cloud-upload-alt"></i> <span data-i18n="upload-photo">Subir Foto</span></label>
+      <input type="file" id="galleryUpload" class="hidden-file-input" accept="image/*,video/*" capture="environment" multiple>
       <div class="gallery-grid" id="galleryContainer"></div>
     </div>
 
@@ -234,14 +239,15 @@
     </div>
   </main>
 
+  <!-- Modales (Blog, Mapa, Lightbox) exactamente igual que antes -->
   <div id="blogModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:1000; justify-content:center; align-items:center; padding:16px;">
     <div style="background:white; max-width:500px; width:100%; border-radius:24px; padding:20px; max-height:90vh; overflow-y:auto;">
       <h3>📝 <span data-i18n="new-post-title">Nueva Publicación</span></h3>
-      <input type="text" id="postTitle" placeholder="Título" style="width:100%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #ccc;">
-      <textarea id="postDesc" placeholder="Descripción" style="width:100%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #ccc; min-height:80px;"></textarea>
-      <div class="media-upload-area" onclick="document.getElementById('mediaFileInput').click()"><i class="fas fa-cloud-upload-alt"></i><p data-i18n="upload-text">Click para subir imagen/video o pega URL abajo</p></div>
-      <input type="file" id="mediaFileInput" accept="image/*,video/*" style="display:none">
-      <input type="text" id="mediaUrlInput" placeholder="O pega URL de YouTube/Imagen/Video" style="width:100%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #ccc;">
+      <input type="text" id="postTitle" placeholder="Título" data-i18n-placeholder="post-title-placeholder" style="width:100%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #ccc;">
+      <textarea id="postDesc" placeholder="Descripción" data-i18n-placeholder="post-desc-placeholder" style="width:100%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #ccc; min-height:80px;"></textarea>
+      <label for="mediaFileInput" class="upload-label"><i class="fas fa-cloud-upload-alt"></i><p data-i18n="upload-text">Click para subir imagen/video o pega URL abajo</p></label>
+      <input type="file" id="mediaFileInput" class="hidden-file-input" accept="image/*,video/*" capture="environment">
+      <input type="text" id="mediaUrlInput" placeholder="O pega URL de YouTube/Imagen/Video" data-i18n-placeholder="media-url-placeholder" style="width:100%; padding:12px; margin:8px 0; border-radius:20px; border:1px solid #ccc;">
       <div class="preview-container" id="mediaPreview"></div>
       <div style="display:flex; gap:10px; justify-content:flex-end; margin-top:15px;">
         <button onclick="closeBlogForm()" style="padding:10px 20px; border-radius:20px; border:1px solid #ccc; background:white;"><span data-i18n="cancel">Cancelar</span></button>
@@ -254,10 +260,10 @@
     <div class="mapa-modal-header"><h3><i class="fas fa-map-marked-alt" style="color:#f4c542;"></i> <span data-i18n="map-modal-title">Mapa Interactivo de Viñales</span></h3><button onclick="cerrarMapaGrande()">&times;</button></div>
     <div id="mapaGrande"></div>
     <div class="mapa-modal-leyenda">
-      <span class="leyenda-item-modal" onclick="centrarMapaGrande('valle')"><span class="leyenda-dot" style="background:#2e7d32;"></span> Valle de Viñales</span>
-      <span class="leyenda-item-modal" onclick="centrarMapaGrande('cueva')"><span class="leyenda-dot" style="background:#e67e22;"></span> Cueva del Indio</span>
-      <span class="leyenda-item-modal" onclick="centrarMapaGrande('mural')"><span class="leyenda-dot" style="background:#c0392b;"></span> Mural de la Prehistoria</span>
-      <span class="leyenda-item-modal" onclick="centrarMapaGrande('mirador')"><span class="leyenda-dot" style="background:#1565c0;"></span> Mirador Los Jazmines</span>
+      <span class="leyenda-item-modal" onclick="centrarMapaGrande('valle')"><span class="leyenda-dot" style="background:#2e7d32;"></span> <span data-i18n="leyenda-modal-valle">Valle de Viñales</span></span>
+      <span class="leyenda-item-modal" onclick="centrarMapaGrande('cueva')"><span class="leyenda-dot" style="background:#e67e22;"></span> <span data-i18n="leyenda-modal-cueva">Cueva del Indio</span></span>
+      <span class="leyenda-item-modal" onclick="centrarMapaGrande('mural')"><span class="leyenda-dot" style="background:#c0392b;"></span> <span data-i18n="leyenda-modal-mural">Mural de la Prehistoria</span></span>
+      <span class="leyenda-item-modal" onclick="centrarMapaGrande('mirador')"><span class="leyenda-dot" style="background:#1565c0;"></span> <span data-i18n="leyenda-modal-mirador">Mirador Los Jazmines</span></span>
     </div>
   </div>
 
@@ -284,7 +290,7 @@
       <div class="footer-column">
         <h3 data-i18n="footer-newsletter">Newsletter</h3>
         <form class="newsletter-form" onsubmit="event.preventDefault(); alert('¡Gracias por suscribirte!');">
-          <input type="email" placeholder="Tu correo electrónico" required>
+          <input type="email" placeholder="Tu correo electrónico" data-i18n-placeholder="newsletter-placeholder" required>
           <button type="submit" data-i18n="footer-send">Enviar</button>
         </form>
         <div class="footer-contact">
@@ -298,6 +304,7 @@
 
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script>
+    // --- Hamburguesa ---
     const menuToggle = document.getElementById('menuToggle');
     const mainNav = document.getElementById('mainNav');
     menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
@@ -305,6 +312,28 @@
     document.addEventListener('click', (e) => { if (!mainNav.contains(e.target) && e.target !== menuToggle && !menuToggle.contains(e.target)) mainNav.classList.remove('show'); });
     window.addEventListener('resize', () => { if (window.innerWidth > 860) mainNav.classList.remove('show'); });
 
+    // --- Pestañas (versión robusta) ---
+    const tabs = document.querySelectorAll('.tab-btn');
+    const contents = document.querySelectorAll('.tab-content');
+
+    function switchTab(tabId) {
+      tabs.forEach(t => t.classList.remove('active'));
+      contents.forEach(c => c.classList.remove('active'));
+      const activeBtn = document.querySelector(`.tab-btn[data-tab="${tabId}"]`);
+      if (activeBtn) activeBtn.classList.add('active');
+      const activeContent = document.getElementById(`tab-${tabId}`);
+      if (activeContent) activeContent.classList.add('active');
+      if (tabId === 'explora') setTimeout(inicializarMapa, 300);
+      if (tabId === 'blog') verificarPost();
+    }
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', function() {
+        switchTab(this.dataset.tab);
+      });
+    });
+
+    // --- Traducciones (las mismas que antes) ---
     const translations = {
       es: {
         "site-name": "Conociendo Pinar",
@@ -313,14 +342,25 @@
         "tab-home": "Inicio", "tab-explore": "Explora", "tab-gallery": "Galería", "tab-blog": "Blog",
         "featured-places": "Lugares Destacados", "all-places": "Todos los Lugares",
         "map-title": "Viñales - Mapa", "map-expand": "Clic para ampliar",
+        "leyenda-valle": "Valle", "leyenda-cueva": "Cueva", "leyenda-mural": "Mural", "leyenda-mirador": "Mirador",
+        "leyenda-modal-valle": "Valle de Viñales", "leyenda-modal-cueva": "Cueva del Indio", "leyenda-modal-mural": "Mural de la Prehistoria", "leyenda-modal-mirador": "Mirador Los Jazmines",
         "gallery-title": "Galería de la Comunidad", "upload-photo": "Subir Foto",
+        "gallery-empty": "No hay fotos aún. ¡Sube la primera!",
         "blog-title": "Noticias", "new-post": "+ Nueva", "new-post-title": "Nueva Publicación",
+        "post-title-placeholder": "Título", "post-desc-placeholder": "Descripción",
         "upload-text": "Click para subir imagen/video o pega URL abajo",
+        "media-url-placeholder": "O pega URL de YouTube/Imagen/Video",
         "cancel": "Cancelar", "publish": "Publicar",
         "map-modal-title": "Mapa Interactivo de Viñales",
+        "blog-empty": "No hay publicaciones aún",
+        "newsletter-placeholder": "Tu correo electrónico",
         "footer-links": "Enlaces rápidos", "footer-blog": "Blog", "footer-support": "Soporte",
         "footer-social": "Redes sociales", "footer-newsletter": "Newsletter", "footer-send": "Enviar",
-        "footer-rights": "Defendamos el paisaje pinareño • © 2026", "footer-privacy": "Privacidad", "footer-terms": "Términos"
+        "footer-rights": "Defendamos el paisaje pinareño • © 2026", "footer-privacy": "Privacidad", "footer-terms": "Términos",
+        "valle-nombre": "Valle de Viñales", "valle-desc": "Patrimonio de la Humanidad con mogotes impresionantes y campos de tabaco",
+        "cueva-nombre": "Cueva del Indio", "cueva-desc": "Río subterráneo con formaciones milenarias y paseo en bote",
+        "mural-nombre": "Mural de la Prehistoria", "mural-desc": "Gigantesco mural pintado sobre un mogote, con figuras de la evolución",
+        "fotos": "fotos"
       },
       en: {
         "site-name": "Discovering Pinar",
@@ -329,19 +369,36 @@
         "tab-home": "Home", "tab-explore": "Explore", "tab-gallery": "Gallery", "tab-blog": "Blog",
         "featured-places": "Featured Places", "all-places": "All Places",
         "map-title": "Viñales - Map", "map-expand": "Click to expand",
+        "leyenda-valle": "Valley", "leyenda-cueva": "Cave", "leyenda-mural": "Mural", "leyenda-mirador": "Lookout",
+        "leyenda-modal-valle": "Viñales Valley", "leyenda-modal-cueva": "Indian Cave", "leyenda-modal-mural": "Mural of Prehistory", "leyenda-modal-mirador": "Los Jazmines Lookout",
         "gallery-title": "Community Gallery", "upload-photo": "Upload Photo",
+        "gallery-empty": "No photos yet. Upload the first one!",
         "blog-title": "News", "new-post": "+ New", "new-post-title": "New Post",
+        "post-title-placeholder": "Title", "post-desc-placeholder": "Description",
         "upload-text": "Click to upload image/video or paste URL below",
+        "media-url-placeholder": "Or paste YouTube/Image/Video URL",
         "cancel": "Cancel", "publish": "Publish",
         "map-modal-title": "Interactive Map of Viñales",
+        "blog-empty": "No posts yet",
+        "newsletter-placeholder": "Your email address",
         "footer-links": "Quick links", "footer-blog": "Blog", "footer-support": "Support",
         "footer-social": "Social media", "footer-newsletter": "Newsletter", "footer-send": "Send",
-        "footer-rights": "Defending the Pinar landscape • © 2026", "footer-privacy": "Privacy", "footer-terms": "Terms"
+        "footer-rights": "Defending the Pinar landscape • © 2026", "footer-privacy": "Privacy", "footer-terms": "Terms",
+        "valle-nombre": "Viñales Valley", "valle-desc": "World Heritage Site with impressive mogotes and tobacco fields",
+        "cueva-nombre": "Indian Cave", "cueva-desc": "Underground river with ancient formations and boat ride",
+        "mural-nombre": "Mural of Prehistory", "mural-desc": "Giant mural painted on a mogote, with evolution figures",
+        "fotos": "photos"
       }
     };
 
+    let currentLanguage = localStorage.getItem('preferred-language') || 'es';
     const langSelect = document.getElementById('languageSelect');
+    langSelect.value = currentLanguage;
+
+    function t(key) { return translations[currentLanguage][key] || key; }
+
     function changeLanguage(lang) {
+      currentLanguage = lang;
       localStorage.setItem('preferred-language', lang);
       document.documentElement.lang = lang;
       langSelect.value = lang;
@@ -351,20 +408,37 @@
           el.textContent = translations[lang][key];
         }
       });
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.getAttribute('data-i18n-placeholder');
+        if (translations[lang] && translations[lang][key]) {
+          el.placeholder = translations[lang][key];
+        }
+      });
+      renderLugares();
+      renderBlog();
+      renderGallery();
+      if (mapaExplora) {
+        marcadoresExplora.forEach((m, i) => {
+          if (i === 0) m.setPopupContent(`<b>${t('leyenda-modal-valle')}</b><br>${t('valle-desc')}`);
+          else if (i === 1) m.setPopupContent(`<b>${t('leyenda-modal-cueva')}</b><br>${t('cueva-desc')}`);
+          else if (i === 2) m.setPopupContent(`<b>${t('leyenda-modal-mural')}</b><br>${t('mural-desc')}`);
+          else if (i === 3) m.setPopupContent(`<b>${t('leyenda-modal-mirador')}</b><br>${t('mural-desc')}`);
+        });
+      }
     }
-    const savedLang = localStorage.getItem('preferred-language') || 'es';
-    changeLanguage(savedLang);
+
     langSelect.addEventListener('change', function() { changeLanguage(this.value); });
 
+    // --- Datos de lugares ---
     const lugares = [
-      { nombre: "Valle de Viñales", desc: "Patrimonio de la Humanidad con mogotes impresionantes y campos de tabaco", img: "img/valle-principal.jpg", galeria: ["img/valle-1.jpg", "img/valle-2.jpg", "img/valle-3.jpg"] },
-      { nombre: "Cueva del Indio", desc: "Río subterráneo con formaciones milenarias y paseo en bote", img: "img/cueva-principal.jpg", galeria: ["img/cueva-1.jpg", "img/cueva-2.jpg"] },
-      { nombre: "Mural de la Prehistoria", desc: "Gigantesco mural pintado sobre un mogote, con figuras de la evolución", img: "img/mural-principal.jpg", galeria: ["img/mural-1.jpg"] }
+      { nombreKey: "valle-nombre", descKey: "valle-desc", img: "img/valle-principal.jpg", galeria: ["img/valle-1.jpg", "img/valle-2.jpg", "img/valle-3.jpg"] },
+      { nombreKey: "cueva-nombre", descKey: "cueva-desc", img: "img/cueva-principal.jpg", galeria: ["img/cueva-1.jpg", "img/cueva-2.jpg"] },
+      { nombreKey: "mural-nombre", descKey: "mural-desc", img: "img/mural-principal.jpg", galeria: ["img/mural-1.jpg"] }
     ];
     const imagenesInicio = [
-      { img: "img/Marti.jpg", nombre: "Valle de Viñales", desc: "Patrimonio de la Humanidad con mogotes impresionantes y campos de tabaco" },
-      { img: "img/Cueva P.jpg", nombre: "Cueva del Indio", desc: "Río subterráneo con formaciones milenarias y paseo en bote" },
-      { img: "img/mural P.jpg", nombre: "Mural de la Prehistoria", desc: "Gigantesco mural pintado sobre un mogote, con figuras de la evolución" }
+      { img: "img/Marti.jpg", nombreKey: "valle-nombre", descKey: "valle-desc" },
+      { img: "img/Cueva P.jpg", nombreKey: "cueva-nombre", descKey: "cueva-desc" },
+      { img: "img/mural P.jpg", nombreKey: "mural-nombre", descKey: "mural-desc" }
     ];
     let blogPosts = JSON.parse(localStorage.getItem("pinar_blog") || "[]");
     let galleryImages = JSON.parse(localStorage.getItem("pinar_gallery") || "[]");
@@ -372,24 +446,26 @@
     let currentLightboxImages = [], currentLightboxIndex = 0;
 
     const puntosMapa = {
-      valle: { lat: 22.6156, lng: -83.7155, zoom: 15, nombre: "Valle de Viñales" },
-      cueva: { lat: 22.5860, lng: -83.7420, zoom: 16, nombre: "Cueva del Indio" },
-      mural: { lat: 22.6290, lng: -83.6910, zoom: 16, nombre: "Mural de la Prehistoria" },
-      mirador: { lat: 22.6180, lng: -83.7070, zoom: 16, nombre: "Mirador Los Jazmines" }
+      valle: { lat: 22.6156, lng: -83.7155, zoom: 15, nombreKey: "leyenda-modal-valle" },
+      cueva: { lat: 22.5860, lng: -83.7420, zoom: 16, nombreKey: "leyenda-modal-cueva" },
+      mural: { lat: 22.6290, lng: -83.6910, zoom: 16, nombreKey: "leyenda-modal-mural" },
+      mirador: { lat: 22.6180, lng: -83.7070, zoom: 16, nombreKey: "leyenda-modal-mirador" }
     };
     let mapaExplora, marcadoresExplora = [], mapaGrande, marcadoresGrande = [];
 
+    // --- Funciones del mapa (no se tocan) ---
     function inicializarMapa() {
       if (mapaExplora) { mapaExplora.invalidateSize(); return; }
       mapaExplora = L.map('mapaExplora', { zoomControl: true, scrollWheelZoom: false, doubleClickZoom: true, dragging: true }).setView([22.6156, -83.7155], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; OpenStreetMap', maxZoom: 19 }).addTo(mapaExplora);
       const iconVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
-      marcadoresExplora.push(L.marker([22.6156, -83.7155], { icon: iconVerde }).bindPopup('<b>🌄 Valle de Viñales</b><br>Patrimonio de la Humanidad').addTo(mapaExplora));
-      marcadoresExplora.push(L.marker([22.5860, -83.7420]).bindPopup('<b>🕳️ Cueva del Indio</b><br>Río subterráneo').addTo(mapaExplora));
-      marcadoresExplora.push(L.marker([22.6290, -83.6910]).bindPopup('<b>🎨 Mural de la Prehistoria</b><br>Pintura sobre mogote').addTo(mapaExplora));
-      marcadoresExplora.push(L.marker([22.6180, -83.7070]).bindPopup('<b>📸 Mirador Los Jazmines</b><br>Vista panorámica').addTo(mapaExplora));
+      marcadoresExplora.push(L.marker([22.6156, -83.7155], { icon: iconVerde }).bindPopup(`<b>${t('leyenda-modal-valle')}</b><br>${t('valle-desc')}`).addTo(mapaExplora));
+      marcadoresExplora.push(L.marker([22.5860, -83.7420]).bindPopup(`<b>${t('leyenda-modal-cueva')}</b><br>${t('cueva-desc')}`).addTo(mapaExplora));
+      marcadoresExplora.push(L.marker([22.6290, -83.6910]).bindPopup(`<b>${t('leyenda-modal-mural')}</b><br>${t('mural-desc')}`).addTo(mapaExplora));
+      marcadoresExplora.push(L.marker([22.6180, -83.7070]).bindPopup(`<b>${t('leyenda-modal-mirador')}</b><br>${t('mural-desc')}`).addTo(mapaExplora));
       L.circle([22.6156, -83.7155], { color: '#2e7d32', fillColor: '#4caf50', fillOpacity: 0.1, radius: 3000 }).addTo(mapaExplora);
     }
+
     function centrarMapa(punto) {
       if (!mapaExplora) return;
       const p = puntosMapa[punto];
@@ -397,19 +473,22 @@
       marcadoresExplora.forEach(m => m.closePopup());
       setTimeout(() => marcadoresExplora.forEach(m => { const c = m.getLatLng(); if (Math.abs(c.lat - p.lat) < 0.01 && Math.abs(c.lng - p.lng) < 0.01) m.openPopup(); }), 1600);
     }
+
     function abrirMapaGrande() { document.getElementById('mapaModal').classList.add('active'); setTimeout(inicializarMapaGrande, 300); }
     function cerrarMapaGrande() { document.getElementById('mapaModal').classList.remove('active'); }
+
     function inicializarMapaGrande() {
       if (mapaGrande) { mapaGrande.invalidateSize(); return; }
       mapaGrande = L.map('mapaGrande', { zoomControl: true, scrollWheelZoom: true, doubleClickZoom: true, dragging: true }).setView([22.6156, -83.7155], 13);
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>', maxZoom: 19 }).addTo(mapaGrande);
       const iconVerde = L.icon({ iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png', shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png', iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41] });
-      marcadoresGrande.push(L.marker([22.6156, -83.7155], { icon: iconVerde }).bindPopup('<b>🌄 Valle de Viñales</b><br>Patrimonio de la Humanidad<br><small>22.6156, -83.7155</small>').addTo(mapaGrande));
-      marcadoresGrande.push(L.marker([22.5860, -83.7420]).bindPopup('<b>🕳️ Cueva del Indio</b><br>Río subterráneo y paseo en bote<br><small>22.5860, -83.7420</small>').addTo(mapaGrande));
-      marcadoresGrande.push(L.marker([22.6290, -83.6910]).bindPopup('<b>🎨 Mural de la Prehistoria</b><br>Pintura gigante sobre mogote<br><small>22.6290, -83.6910</small>').addTo(mapaGrande));
-      marcadoresGrande.push(L.marker([22.6180, -83.7070]).bindPopup('<b>📸 Mirador Los Jazmines</b><br>Vista panorámica del valle<br><small>22.6180, -83.7070</small>').addTo(mapaGrande));
-      L.circle([22.6156, -83.7155], { color: '#2e7d32', fillColor: '#4caf50', fillOpacity: 0.1, radius: 3000 }).addTo(mapaGrande).bindPopup('Área del Valle de Viñales');
+      marcadoresGrande.push(L.marker([22.6156, -83.7155], { icon: iconVerde }).bindPopup(`<b>${t('leyenda-modal-valle')}</b><br>${t('valle-desc')}<br><small>22.6156, -83.7155</small>`).addTo(mapaGrande));
+      marcadoresGrande.push(L.marker([22.5860, -83.7420]).bindPopup(`<b>${t('leyenda-modal-cueva')}</b><br>${t('cueva-desc')}<br><small>22.5860, -83.7420</small>`).addTo(mapaGrande));
+      marcadoresGrande.push(L.marker([22.6290, -83.6910]).bindPopup(`<b>${t('leyenda-modal-mural')}</b><br>${t('mural-desc')}<br><small>22.6290, -83.6910</small>`).addTo(mapaGrande));
+      marcadoresGrande.push(L.marker([22.6180, -83.7070]).bindPopup(`<b>${t('leyenda-modal-mirador')}</b><br>${t('mural-desc')}<br><small>22.6180, -83.7070</small>`).addTo(mapaGrande));
+      L.circle([22.6156, -83.7155], { color: '#2e7d32', fillColor: '#4caf50', fillOpacity: 0.1, radius: 3000 }).addTo(mapaGrande).bindPopup(t('valle-nombre'));
     }
+
     function centrarMapaGrande(punto) {
       if (!mapaGrande) return;
       const p = puntosMapa[punto];
@@ -419,11 +498,27 @@
     }
     document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && document.getElementById('mapaModal').classList.contains('active')) cerrarMapaGrande(); });
 
+    // --- Renderizado de contenido ---
     function renderLugares() {
-      document.getElementById('destacadosContainer').innerHTML = imagenesInicio.map(l => `<div class="place-card"><img src="${l.img}" alt="${l.nombre}"><div class="place-info"><h3>${l.nombre}</h3><p>${l.desc}</p></div></div>`).join('');
-      document.getElementById('todosLugaresContainer').innerHTML = lugares.map((l, i) => `<div class="place-card clickable" onclick="mostrarGaleria(${i})"><img src="${l.img}" alt="${l.nombre}"><div class="place-info"><h3>${l.nombre}</h3><p>${l.desc}</p>${l.galeria.length ? `<span style="color:#f4c542;">📸 ${l.galeria.length} fotos</span>` : ''}</div></div>`).join('');
+      const destacados = document.getElementById('destacadosContainer');
+      if (destacados) {
+        destacados.innerHTML = imagenesInicio.map(l => {
+          const nombre = t(l.nombreKey);
+          const desc = t(l.descKey);
+          return `<div class="place-card"><img src="${l.img}" alt="${nombre}"><div class="place-info"><h3>${nombre}</h3><p>${desc}</p></div></div>`;
+        }).join('');
+      }
+      const todos = document.getElementById('todosLugaresContainer');
+      if (todos) {
+        todos.innerHTML = lugares.map((l, i) => {
+          const nombre = t(l.nombreKey);
+          const desc = t(l.descKey);
+          return `<div class="place-card clickable" onclick="mostrarGaleria(${i})"><img src="${l.img}" alt="${nombre}"><div class="place-info"><h3>${nombre}</h3><p>${desc}</p>${l.galeria.length ? `<span style="color:#f4c542;">📸 ${l.galeria.length} ${t('fotos')}</span>` : ''}</div></div>`;
+        }).join('');
+      }
     }
-    function mostrarGaleria(index) { const lugar = lugares[index]; if (!lugar.galeria.length) return; abrirLightboxConImagenes(lugar.galeria, 0, lugar.nombre); }
+
+    function mostrarGaleria(index) { const lugar = lugares[index]; if (!lugar.galeria.length) return; abrirLightboxConImagenes(lugar.galeria, 0, t(lugar.nombreKey)); }
     function abrirLightboxConImagenes(images, startIndex, title) { currentLightboxImages = images; currentLightboxIndex = startIndex; mostrarImagenActual(); document.getElementById('lightbox').classList.add('active'); }
     function mostrarImagenActual() {
       document.getElementById('lightboxImg').src = currentLightboxImages[currentLightboxIndex];
@@ -438,14 +533,16 @@
 
     function renderBlog() {
       const container = document.getElementById('blogContainer');
-      if (!blogPosts.length) { container.innerHTML = '<p>No hay publicaciones aún</p>'; return; }
+      if (!container) return;
+      if (!blogPosts.length) { container.innerHTML = `<p>${t('blog-empty')}</p>`; return; }
       const LIMITE = 80;
       container.innerHTML = blogPosts.map((p, index) => {
         const texto = p.desc || '';
         const esLargo = texto.length > LIMITE;
         const textoCorto = esLargo ? texto.substring(0, LIMITE) + '...' : texto;
         const textoAttr = texto.replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\n/g, ' ');
-        return `<div class="blog-post">
+        const postId = p.date;
+        return `<div class="blog-post" id="post-${postId}">
             <button class="delete-post" onclick="eliminarPost(${index})" title="Eliminar publicación"><i class="fas fa-trash"></i></button>
             ${p.mediaType === 'youtube' ? `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${p.mediaUrl}" frameborder="0" allowfullscreen></iframe></div>` : p.mediaType === 'video' ? `<video controls src="${p.mediaUrl}" style="width:100%; height:200px; object-fit:cover;" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"><div class="fallback-media" style="display:none;"><i class="fas fa-video-slash"></i> Video no disponible</div></video>` : `<img src="${p.mediaUrl}" alt="${p.title}" style="width:100%; height:200px; object-fit:cover;" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400';">`}
             <div class="blog-content">
@@ -461,7 +558,10 @@
     function eliminarPost(index) { if (confirm('¿Eliminar esta publicación?')) { blogPosts.splice(index, 1); localStorage.setItem("pinar_blog", JSON.stringify(blogPosts)); renderBlog(); } }
 
     function renderGallery() {
-      document.getElementById('galleryContainer').innerHTML = galleryImages.length ? galleryImages.map((img, i) => `<div class="gallery-item" onclick="abrirLightboxConImagenes(galleryImages, ${i}, 'Galería de la Comunidad')"><img src="${img}" alt="Foto comunidad" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=150';"><button class="remove-media" onclick="event.stopPropagation(); galleryImages.splice(${i},1); localStorage.setItem('pinar_gallery', JSON.stringify(galleryImages)); renderGallery();" title="Eliminar foto"><i class="fas fa-times"></i></button></div>`).join('') : '<p style="grid-column:1/-1; text-align:center; color:#888;">No hay fotos aún. ¡Sube la primera!</p>';
+      const container = document.getElementById('galleryContainer');
+      if (!container) return;
+      if (!galleryImages.length) { container.innerHTML = `<p style="grid-column:1/-1; text-align:center; color:#888;">${t('gallery-empty')}</p>`; return; }
+      container.innerHTML = galleryImages.map((img, i) => `<div class="gallery-item" onclick="abrirLightboxConImagenes(galleryImages, ${i}, '${t('gallery-title')}')"><img src="${img}" alt="Foto comunidad" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=150';"><button class="remove-media" onclick="event.stopPropagation(); galleryImages.splice(${i},1); localStorage.setItem('pinar_gallery', JSON.stringify(galleryImages)); renderGallery();" title="Eliminar foto"><i class="fas fa-times"></i></button></div>`).join('');
     }
 
     document.getElementById('mediaFileInput').addEventListener('change', function(e) { const file = e.target.files[0]; if (file) { currentMediaFile = file; const reader = new FileReader(); reader.onload = function(ev) { document.getElementById('mediaPreview').innerHTML = file.type.startsWith('video') ? `<video src="${ev.target.result}" controls style="width:100px; height:100px;"></video>` : `<img src="${ev.target.result}" style="width:100px; height:100px; border-radius:12px;">`; }; reader.readAsDataURL(file); } });
@@ -480,9 +580,40 @@
     }
     function savePost(title, desc, url, type) { blogPosts.unshift({ title, desc, mediaUrl: url, mediaType: type, date: new Date().toISOString() }); localStorage.setItem("pinar_blog", JSON.stringify(blogPosts)); renderBlog(); closeBlogForm(); }
 
-    document.querySelectorAll('.tab-btn').forEach(btn => { btn.addEventListener('click', () => { document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active')); document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active')); btn.classList.add('active'); document.getElementById(`tab-${btn.dataset.tab}`).classList.add('active'); if (btn.dataset.tab === 'explora') setTimeout(inicializarMapa, 300); }); });
-    window.addEventListener('load', function() { if (window.location.hash === '#tab-blog') { const blogLink = document.getElementById('header-blog-link'); if (blogLink) blogLink.style.display = 'none'; } if (document.getElementById('tab-explora').classList.contains('active')) setTimeout(inicializarMapa, 500); });
-    renderLugares(); renderBlog(); renderGallery();
+    // --- Verificar post desde el hash (index) ---
+    function verificarPost() {
+      const hash = window.location.hash;
+      const params = hash.includes('&') ? hash.substring(hash.indexOf('&') + 1) : '';
+      if (params.startsWith('post=')) {
+        const postId = decodeURIComponent(params.split('=')[1]);
+        setTimeout(() => {
+          const el = document.getElementById(`post-${postId}`);
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            el.classList.add('highlight-post');
+            setTimeout(() => el.classList.remove('highlight-post'), 3000);
+            const verMasBtn = el.querySelector('.ver-mas-btn');
+            if (verMasBtn) toggleTexto(verMasBtn);
+          }
+        }, 500);
+      }
+    }
+
+    // --- Carga inicial ---
+    function init() {
+      changeLanguage(currentLanguage);
+      // Si el hash contiene &post=, activar blog directamente
+      if (window.location.hash.includes('&post=')) {
+        switchTab('blog');
+      }
+      // Ocultar enlace blog del header si se accede desde el index
+      if (window.location.hash === '#tab-blog') {
+        const blogLink = document.getElementById('header-blog-link');
+        if (blogLink) blogLink.style.display = 'none';
+      }
+    }
+
+    window.addEventListener('load', init);
   </script>
 </body>
 </html>
