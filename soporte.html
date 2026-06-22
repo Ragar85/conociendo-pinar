@@ -1,0 +1,414 @@
+<script>
+  (function() {
+    const SUPABASE_URL = 'https://mixfzeuzhooujqzaexpp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peGZ6ZXV6aG9vdWpxemFleHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODk2NjYsImV4cCI6MjA5NzM2NTY2Nn0.re-BvpmaB3vMXIBwbOY_88PE0q9Hw1L9xsyL6JurvaI';
+    let supabaseClient = null;
+
+    function iniciarApp() {
+      if (typeof window.supabase === 'undefined') { cargarSDKDinamicamente(); return; }
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      ejecutarApp();
+    }
+
+    function cargarSDKDinamicamente() {
+      if (document.querySelector('script[src*="supabase"]')) {
+        const checkInterval = setInterval(() => {
+          if (typeof window.supabase !== 'undefined') { clearInterval(checkInterval); iniciarApp(); }
+        }, 500);
+        setTimeout(() => {
+          clearInterval(checkInterval);
+          if (typeof window.supabase === 'undefined') mostrarErrorCarga();
+        }, 10000);
+        return;
+      }
+      const script = document.createElement('script');
+      script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+      script.onload = iniciarApp;
+      script.onerror = mostrarErrorCarga;
+      document.head.appendChild(script);
+    }
+
+    function mostrarErrorCarga() {
+      alert('❌ No se pudo cargar Supabase. Verifica tu conexión a Internet o usa una VPN.');
+      document.body.innerHTML = '<h1 style="text-align:center; margin-top:50px;">Error de conexión</h1><p style="text-align:center;">No se pudo cargar la biblioteca de Supabase. Revisa tu red o usa una VPN.</p>';
+    }
+
+    function ejecutarApp() {
+      // ======== VARIABLES GLOBALES ========
+      let currentUser = null;
+      let isLoginMode = true;
+      let currentLanguage = localStorage.getItem('preferred-language') || 'es';
+
+      // ======== AUTENTICACIÓN ========
+      async function registrarUsuario(email, password) {
+        try {
+          const { data, error } = await supabaseClient.auth.signUp({ email, password });
+          if (error) { alert('❌ Error al registrar: ' + error.message); return null; }
+          if (data.user) {
+            alert('✅ ¡Registro exitoso! ' + (data.user.confirmation_sent_at ? 'Revisa tu correo.' : 'Ya puedes iniciar sesión.'));
+            return data.user;
+          }
+          return null;
+        } catch (error) { alert('❌ Error: ' + error.message); return null; }
+      }
+
+      async function iniciarSesion(email, password) {
+        try {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+          if (error) { alert('❌ Error al iniciar sesión: ' + error.message); return null; }
+          alert('✅ ¡Bienvenido!');
+          return data.user;
+        } catch (error) { alert('❌ Error: ' + error.message); return null; }
+      }
+
+      async function cerrarSesion() {
+        const { error } = await supabaseClient.auth.signOut();
+        if (error) alert('❌ Error al cerrar sesión: ' + error.message);
+        else {
+          alert('👋 Sesión cerrada');
+          currentUser = null;
+          actualizarUIUsuario(null);
+        }
+      }
+
+      function abrirModalAuth() {
+        document.getElementById('authModal').classList.add('active');
+        isLoginMode = true;
+        document.getElementById('authModalTitle').textContent = 'Iniciar Sesión';
+        document.getElementById('authSubmitBtn').textContent = 'Iniciar Sesión';
+        document.getElementById('authToggleLink').textContent = '¿No tienes cuenta? Regístrate';
+      }
+
+      function cerrarModalAuth() {
+        document.getElementById('authModal').classList.remove('active');
+      }
+
+      // ======== AVATAR ========
+      function generarAvatar(email) {
+        const avatarContainer = document.getElementById('avatarContainer');
+        const loginBtn = document.getElementById('loginBtn');
+        const avatarImg = document.getElementById('avatarImg');
+        const avatarText = document.getElementById('avatarText');
+        const userEmailDisplay = document.getElementById('userEmailDisplay');
+
+        if (!email) {
+          loginBtn.style.display = 'inline-block';
+          avatarContainer.style.display = 'none';
+          return;
+        }
+
+        loginBtn.style.display = 'none';
+        avatarContainer.style.display = 'inline-block';
+        userEmailDisplay.textContent = email;
+
+        const hash = md5(email.trim().toLowerCase());
+        const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?d=404&s=100`;
+
+        const img = new Image();
+        img.onload = function() {
+          avatarImg.src = gravatarUrl;
+          avatarImg.style.display = 'block';
+          avatarText.style.display = 'none';
+        };
+        img.onerror = function() {
+          avatarImg.style.display = 'none';
+          avatarText.style.display = 'flex';
+          const parts = email.split('@')[0].split('.');
+          const initials = parts.map(p => p[0]).join('').toUpperCase().slice(0, 2);
+          avatarText.textContent = initials || 'U';
+        };
+        img.src = gravatarUrl;
+      }
+
+      function md5(string) {
+        let hash = 0;
+        for (let i = 0; i < string.length; i++) {
+          const char = string.charCodeAt(i);
+          hash = ((hash << 5) - hash) + char;
+          hash = hash & hash;
+        }
+        return 'xxxxxxxxxxxxxxxx'.replace(/[x]/g, function(c) {
+          const r = (hash + Math.random() * 16) % 16 | 0;
+          return r.toString(16);
+        });
+      }
+
+      function actualizarUIUsuario(user) {
+        if (user) {
+          currentUser = user;
+          generarAvatar(user.email);
+        } else {
+          currentUser = null;
+          const loginBtn = document.getElementById('loginBtn');
+          const avatarContainer = document.getElementById('avatarContainer');
+          loginBtn.style.display = 'inline-block';
+          avatarContainer.style.display = 'none';
+        }
+      }
+
+      // ======== EVENT LISTENERS ========
+      function asignarEventos() {
+        document.getElementById('loginBtn').addEventListener('click', abrirModalAuth);
+        document.getElementById('authCloseBtn').addEventListener('click', cerrarModalAuth);
+        document.getElementById('authToggleLink').addEventListener('click', function(e) {
+          e.preventDefault();
+          isLoginMode = !isLoginMode;
+          document.getElementById('authModalTitle').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse';
+          document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse';
+          document.getElementById('authToggleLink').textContent = isLoginMode ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión';
+        });
+        document.getElementById('authSubmitBtn').addEventListener('click', async function() {
+          const email = document.getElementById('authEmail').value.trim();
+          const password = document.getElementById('authPassword').value.trim();
+          if (!email || !password) { alert('Completa todos los campos'); return; }
+          const user = isLoginMode ? await iniciarSesion(email, password) : await registrarUsuario(email, password);
+          if (user) {
+            currentUser = user;
+            actualizarUIUsuario(user);
+            cerrarModalAuth();
+          }
+        });
+
+        // Avatar dropdown
+        const avatarBtn = document.getElementById('avatarBtn');
+        const dropdown = document.getElementById('dropdownMenu');
+        avatarBtn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          dropdown.classList.toggle('show');
+        });
+        document.addEventListener('click', function() {
+          dropdown.classList.remove('show');
+        });
+        document.getElementById('logoutBtn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          cerrarSesion();
+          dropdown.classList.remove('show');
+        });
+        document.getElementById('profileBtn').addEventListener('click', function(e) {
+          e.stopPropagation();
+          alert('🔧 Función de perfil en desarrollo.');
+          dropdown.classList.remove('show');
+        });
+      }
+
+      // ======== MONITOREO ========
+      supabaseClient.auth.onAuthStateChange((event, session) => {
+        if (session) { currentUser = session.user; actualizarUIUsuario(session.user); }
+        else { currentUser = null; actualizarUIUsuario(null); }
+      });
+      (async function checkSession() {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session) { currentUser = session.user; actualizarUIUsuario(session.user); }
+      })();
+
+      // ======== TRADUCCIONES (completas) ========
+      const translations = {
+        es: {
+          "site-name": "Conociendo Pinar",
+          "nav-home": "Inicio", "nav-about": "Quiénes somos", "nav-blog": "Blog", "nav-support": "Soporte",
+          "support-title": "Centro de Soporte",
+          "support-subtitle": "Encuentra respuestas a las preguntas más frecuentes sobre nuestra guía interactiva de ecoturismo.",
+          "search-placeholder": "🔍 Buscar en preguntas frecuentes...",
+          "cat-general": "Uso general de la guía",
+          "q1": "¿Cómo navego por la guía interactiva?",
+          "a1": "La guía se organiza en cuatro pestañas principales: <strong>Inicio</strong> (lugares destacados), <strong>Explora</strong> (todos los lugares con mapa interactivo), <strong>Galería</strong> (fotos de la comunidad) y <strong>Blog</strong> (noticias y artículos). Solo debes hacer clic en cada pestaña para acceder a su contenido.",
+          "q2": "¿Puedo usar la guía sin conexión a internet?",
+          "a2": "La guía funciona con imágenes locales almacenadas en la carpeta <code>img/</code>. Si has descargado el proyecto completo, las fotos de los lugares se cargarán sin conexión. Sin embargo, el mapa interactivo (OpenStreetMap) y las imágenes externas del blog requieren conexión a internet.",
+          "q3": "¿La página está optimizada para móviles?",
+          "a3": "¡Sí! El diseño es completamente responsive. En pantallas menores a 860px, el menú se convierte en un menú hamburguesa para facilitar la navegación táctil. Todas las secciones se adaptan al tamaño de tu dispositivo.",
+          "cat-blog": "Blog y publicaciones",
+          "q4": "¿Cómo creo una nueva publicación en el blog?",
+          "a4": "Ve a la pestaña <strong>Blog</strong> y haz clic en el botón <strong>\"+ Nueva\"</strong>. Completa el título, la descripción y sube una imagen o pega la URL de un video de YouTube. Tus publicaciones se guardan automáticamente en el navegador.",
+          "q5": "¿Por qué no veo mis publicaciones antiguas?",
+          "a5": "Las publicaciones se almacenan en el <code>localStorage</code> de tu navegador. Si cambias de navegador, limpias la caché o usas el modo incógnito, no podrás verlas. Te recomendamos usar siempre el mismo navegador para mantener tus datos.",
+          "q6": "¿Cómo elimino una publicación?",
+          "a6": "Cada tarjeta del blog tiene un botón rojo con un icono de papelera en la esquina superior derecha. Haz clic en él y confirma la eliminación. La publicación se borrará definitivamente.",
+          "q7": "¿Puedo subir videos directamente?",
+          "a7": "Puedes subir archivos de video desde tu dispositivo o pegar enlaces de YouTube. Si el archivo de video no se reproduce, aparecerá un mensaje de \"Video no disponible\". Para mejor compatibilidad, recomendamos usar enlaces de YouTube.",
+          "cat-map": "Mapa interactivo",
+          "q8": "¿Cómo uso el mapa interactivo?",
+          "a8": "En la pestaña <strong>Explora</strong>, debajo de las tarjetas de lugares, encontrarás un bloque con el título \"Viñales - Mapa\". Haz clic sobre él para abrirlo en pantalla completa. Puedes arrastrar, hacer zoom y tocar los marcadores para ver información de cada punto.",
+          "q9": "¿Qué significan los puntos en el mapa?",
+          "a9": "Cada marcador representa un punto de interés geográfico: 🌄 Valle de Viñales, 🕳️ Cueva del Indio, 🎨 Mural de la Prehistoria y 📸 Mirador Los Jazmines. Al hacer clic en ellos verás una breve descripción y sus coordenadas.",
+          "q10": "¿Puedo navegar con la leyenda?",
+          "a10": "¡Sí! Debajo del mapa hay botones con nombres como \"Valle\", \"Cueva\", \"Mural\" y \"Mirador\". Al hacer clic en cualquiera de ellos, el mapa volará automáticamente hacia ese punto y abrirá su ventana de información.",
+          "cat-gallery": "Galería de fotos",
+          "q11": "¿Cómo subo fotos a la galería?",
+          "a11": "En la pestaña <strong>Galería</strong>, haz clic en el botón <strong>\"Subir Foto\"</strong>. Selecciona una o varias imágenes desde tu dispositivo. Las fotos se guardarán automáticamente y aparecerán en el grid de la galería.",
+          "q12": "¿Cómo elimino una foto de la galería?",
+          "a12": "En la galería, cada foto tiene un botón con una \"X\" en la esquina superior derecha. Haz clic en él para eliminar la foto. La eliminación es permanente.",
+          "q13": "¿Puedo ver las fotos en grande?",
+          "a13": "Sí, solo haz clic en cualquier foto de la galería y se abrirá un visor a pantalla completa. Si hay varias fotos, podrás navegar entre ellas con las flechas laterales o usando las teclas de dirección de tu teclado.",
+          "cat-tech": "Soporte técnico",
+          "q14": "¿Por qué no se cargan algunas imágenes?",
+          "a14": "Las imágenes locales deben estar en la carpeta <code>img/</code> con los nombres exactos que espera el código (por ejemplo: <code>hero.jpg</code>, <code>valle-principal.jpg</code>, <code>mural-1.jpg</code>, etc.). Si alguna imagen externa no carga, el sistema mostrará una imagen de respaldo para evitar espacios vacíos.",
+          "q15": "¿Qué navegadores son compatibles?",
+          "a15": "La guía funciona en todos los navegadores modernos: Chrome, Firefox, Edge y Safari. Se recomienda mantener el navegador actualizado a la última versión para una mejor experiencia.",
+          "q16": "¿Cómo informo de un error o problema?",
+          "a16": "Puedes contactarnos directamente a través del correo electrónico <a href=\"mailto:rg5514478@gmail.com\">rg5514478@gmail.com</a> describiendo el problema que encontraste. Intentaremos responderte lo antes posible.",
+          "contact-title": "¿No encontraste lo que buscabas?",
+          "contact-text": "Si tu duda no aparece en esta lista, escríbenos y te ayudaremos personalmente.",
+          "contact-btn": "Enviar un correo",
+          "footer-rights": "Defendamos el paisaje pinareño • © 2026",
+          "footer-privacy": "Privacidad", "footer-terms": "Términos"
+        },
+        en: {
+          "site-name": "Discovering Pinar",
+          "nav-home": "Home", "nav-about": "About us", "nav-blog": "Blog", "nav-support": "Support",
+          "support-title": "Support Center",
+          "support-subtitle": "Find answers to frequently asked questions about our interactive ecotourism guide.",
+          "search-placeholder": "🔍 Search FAQs...",
+          "cat-general": "General usage",
+          "q1": "How do I navigate the interactive guide?",
+          "a1": "The guide is organized into four main tabs: <strong>Home</strong> (featured places), <strong>Explore</strong> (all places with interactive map), <strong>Gallery</strong> (community photos) and <strong>Blog</strong> (news and articles). Just click on each tab to access its content.",
+          "q2": "Can I use the guide offline?",
+          "a2": "The guide works with local images stored in the <code>img/</code> folder. If you have downloaded the complete project, photos of the places will load offline. However, the interactive map (OpenStreetMap) and external blog images require an internet connection.",
+          "q3": "Is the page optimized for mobile?",
+          "a3": "Yes! The design is fully responsive. On screens smaller than 860px, the menu becomes a hamburger menu for easy touch navigation. All sections adapt to your device size.",
+          "cat-blog": "Blog and posts",
+          "q4": "How do I create a new blog post?",
+          "a4": "Go to the <strong>Blog</strong> tab and click the <strong>\"+ New\"</strong> button. Fill in the title, description, and upload an image or paste a YouTube video URL. Your posts are automatically saved in the browser.",
+          "q5": "Why can't I see my old posts?",
+          "a5": "Posts are stored in your browser's <code>localStorage</code>. If you change browsers, clear your cache, or use incognito mode, you won't see them. We recommend using the same browser to keep your data.",
+          "q6": "How do I delete a post?",
+          "a6": "Each blog card has a red trash icon button in the top right corner. Click it and confirm deletion. The post will be permanently removed.",
+          "q7": "Can I upload videos directly?",
+          "a7": "You can upload video files from your device or paste YouTube links. If a video doesn't play, a \"Video not available\" message will appear. For better compatibility, we recommend using YouTube links.",
+          "cat-map": "Interactive map",
+          "q8": "How do I use the interactive map?",
+          "a8": "In the <strong>Explore</strong> tab, below the place cards, you'll find a block titled \"Viñales - Map\". Click on it to open full screen. You can drag, zoom, and tap markers to see information about each point.",
+          "q9": "What do the map markers mean?",
+          "a9": "Each marker represents a geographic point of interest: 🌄 Viñales Valley, 🕳️ Indian Cave, 🎨 Mural of Prehistory, and 📸 Los Jazmines Lookout. Click on them to see a brief description and coordinates.",
+          "q10": "Can I navigate with the legend?",
+          "a10": "Yes! Below the map there are buttons labeled \"Valley\", \"Cave\", \"Mural\" and \"Lookout\". Clicking on any of them will automatically fly the map to that point and open its info window.",
+          "cat-gallery": "Photo gallery",
+          "q11": "How do I upload photos to the gallery?",
+          "a11": "In the <strong>Gallery</strong> tab, click the <strong>\"Upload Photo\"</strong> button. Select one or more images from your device. Photos will be saved automatically and appear in the gallery grid.",
+          "q12": "How do I delete a photo from the gallery?",
+          "a12": "In the gallery, each photo has an \"X\" button in the top right corner. Click it to delete the photo. Deletion is permanent.",
+          "q13": "Can I view photos in full size?",
+          "a13": "Yes, just click on any photo in the gallery and a full-screen viewer will open. If there are multiple photos, you can navigate between them using the side arrows or your keyboard arrow keys.",
+          "cat-tech": "Technical support",
+          "q14": "Why are some images not loading?",
+          "a14": "Local images must be in the <code>img/</code> folder with the exact names expected by the code (e.g., <code>hero.jpg</code>, <code>valle-principal.jpg</code>, <code>mural-1.jpg</code>, etc.). If an external image doesn't load, the system will show a fallback image to avoid empty spaces.",
+          "q15": "Which browsers are compatible?",
+          "a15": "The guide works on all modern browsers: Chrome, Firefox, Edge and Safari. We recommend keeping your browser updated to the latest version for the best experience.",
+          "q16": "How do I report a bug or issue?",
+          "a16": "You can contact us directly via email at <a href=\"mailto:rg5514478@gmail.com\">rg5514478@gmail.com</a> describing the issue you found. We will try to respond as soon as possible.",
+          "contact-title": "Didn't find what you were looking for?",
+          "contact-text": "If your question is not on this list, write to us and we will help you personally.",
+          "contact-btn": "Send an email",
+          "footer-rights": "Defending the Pinar landscape • © 2026",
+          "footer-privacy": "Privacy", "footer-terms": "Terms"
+        }
+      };
+
+      const langSelect = document.getElementById('languageSelect');
+      function changeLanguage(lang) {
+        currentLanguage = lang;
+        localStorage.setItem('preferred-language', lang);
+        document.documentElement.lang = lang;
+        if (langSelect) langSelect.value = lang;
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (translations[lang]?.[key]) el.textContent = translations[lang][key];
+        });
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+          const key = el.getAttribute('data-i18n-placeholder');
+          if (translations[lang]?.[key]) el.placeholder = translations[lang][key];
+        });
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+          const key = el.getAttribute('data-i18n');
+          if (key.startsWith('a')) el.innerHTML = translations[lang]?.[key] || el.innerHTML;
+        });
+      }
+      if (langSelect) {
+        langSelect.value = currentLanguage;
+        langSelect.addEventListener('change', function() { changeLanguage(this.value); });
+      }
+
+      // ======== FAQ ACORDEÓN ========
+      document.querySelectorAll('.faq-question').forEach(btn => {
+        btn.addEventListener('click', function() {
+          const item = this.parentElement;
+          const isOpen = item.classList.contains('open');
+          document.querySelectorAll('.faq-item.open').forEach(openItem => {
+            if (openItem !== item) openItem.classList.remove('open');
+          });
+          item.classList.toggle('open', !isOpen);
+        });
+      });
+
+      // ======== BUSCADOR FAQ ========
+      const searchInput = document.getElementById('faqSearch');
+      searchInput.addEventListener('input', function() {
+        const query = this.value.toLowerCase().trim();
+        document.querySelectorAll('.faq-item').forEach(item => {
+          const question = item.querySelector('.faq-question').textContent.toLowerCase();
+          const answer = item.querySelector('.faq-answer-content').textContent.toLowerCase();
+          if (query === '' || question.includes(query) || answer.includes(query)) {
+            item.style.display = '';
+          } else {
+            item.style.display = 'none';
+            item.classList.remove('open');
+          }
+        });
+        document.querySelectorAll('.faq-category').forEach(category => {
+          const allHidden = category.querySelectorAll('.faq-item').length === category.querySelectorAll('.faq-item[style*="display: none"]').length;
+          category.style.display = allHidden ? 'none' : '';
+        });
+      });
+
+      // ======== FORMULARIO DE CONTACTO ========
+      document.getElementById('contactForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        const name = document.getElementById('contactName').value.trim();
+        const email = document.getElementById('contactEmail').value.trim();
+        const message = document.getElementById('contactMessage').value.trim();
+        if (!name || !email || !message) {
+          document.getElementById('contactStatus').innerHTML = '⚠️ Completa todos los campos.';
+          return;
+        }
+        document.getElementById('contactStatus').innerHTML = '⏳ Enviando...';
+        const { error } = await supabaseClient.from('messages').insert([{ name, email, message }]);
+        if (error) {
+          console.error(error);
+          document.getElementById('contactStatus').innerHTML = '❌ Error al enviar. Inténtalo de nuevo.';
+          return;
+        }
+        document.getElementById('contactStatus').innerHTML = '✅ ¡Mensaje enviado! Te responderemos pronto.';
+        document.getElementById('contactForm').reset();
+      });
+
+      // ======== MENÚ HAMBURGUESA ========
+      const menuToggle = document.getElementById('menuToggle');
+      const mainNav = document.getElementById('mainNav');
+      if (menuToggle && mainNav) {
+        menuToggle.addEventListener('click', function(e) { e.stopPropagation(); mainNav.classList.toggle('show'); });
+        mainNav.addEventListener('click', function(e) { if (e.target.classList.contains('nav-link') && window.innerWidth <= 860) mainNav.classList.remove('show'); });
+        document.addEventListener('click', function(e) { if (!mainNav.contains(e.target) && e.target !== menuToggle && !menuToggle.contains(e.target)) mainNav.classList.remove('show'); });
+        window.addEventListener('resize', function() { if (window.innerWidth > 860) mainNav.classList.remove('show'); });
+      }
+
+      // ======== INICIALIZACIÓN ========
+      function init() {
+        changeLanguage(currentLanguage);
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', asignarEventos);
+        } else {
+          asignarEventos();
+        }
+      }
+      init();
+    }
+
+    // ============================================================
+    // INICIO
+    // ============================================================
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', iniciarApp);
+    } else {
+      iniciarApp();
+    }
+  })();
+</script>
