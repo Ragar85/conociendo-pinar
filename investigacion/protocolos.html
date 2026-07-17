@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Protocolos de Campo • Investigación • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --secondary-light: #f9e2b7;
+      --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+
+    /* HEADER */
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); transition: var(--transition); }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; transition: var(--transition); }
+    .logo:hover i { transform: rotate(15deg) scale(1.1); }
+    .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); white-space: nowrap; }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); line-height: 1; }
+    .menu-toggle:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+
+    /* 🔍 BUSCADOR GLOBAL */
+    .header-search-form { display: flex; align-items: center; background: rgba(255,255,255,0.15); border-radius: var(--radius-xl); padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); transition: var(--transition); }
+    .header-search-form:focus-within { background: rgba(255,255,255,0.25); border-color: var(--secondary); }
+    .header-search-form i { color: rgba(255,255,255,0.8); margin-right: 8px; font-size: 0.9rem; }
+    .header-search-form input { background: transparent; border: none; outline: none; color: white; font-size: 0.9rem; width: 160px; font-family: inherit; }
+    .header-search-form input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .mobile-search-form { display: none; width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.1); border-radius: var(--radius-sm); margin-bottom: 8px; align-items: center; gap: 8px; }
+    .mobile-search-form i { color: rgba(255,255,255,0.7); }
+    .mobile-search-form input { background: transparent; border: none; outline: none; color: white; width: 100%; font-family: inherit; font-size: 0.95rem; }
+    .mobile-search-form input::placeholder { color: rgba(255,255,255,0.6); }
+
+    /* 👤 BOTÓN CUENTA */
+    .account-btn { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; transition: var(--transition); position: relative; font-size: 0.95rem; font-family: inherit; }
+    .account-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.08); box-shadow: 0 0 0 3px rgba(244,197,66,0.3); }
+    .account-btn .tooltip { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(-4px); background: var(--primary-dark); color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; white-space: nowrap; opacity: 0; visibility: hidden; transition: all 0.2s ease; pointer-events: none; font-weight: 500; }
+    .account-btn .tooltip::before { content: ''; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-bottom-color: var(--primary-dark); }
+    .account-btn:hover .tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+    /* AVATAR */
+    .avatar-container { position: relative; display: inline-block; cursor: pointer; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 700; font-size: 1rem; border: 2px solid rgba(255,255,255,0.3); transition: var(--transition); overflow: hidden; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar:hover { border-color: white; transform: scale(1.1); box-shadow: 0 0 20px rgba(244,197,66,0.4); }
+    .dropdown-menu { display: none; position: absolute; right: 0; top: 115%; background: white; min-width: 200px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); padding: 10px 0; z-index: 200; animation: dropdownSlide 0.3s ease; }
+    @keyframes dropdownSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu a, .dropdown-menu button { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-primary); text-decoration: none; font-size: 0.9rem; background: none; border: none; width: 100%; text-align: left; cursor: pointer; transition: var(--transition); font-family: inherit; }
+    .dropdown-menu a:hover, .dropdown-menu button:hover { background: var(--surface-alt); color: var(--primary); }
+    .dropdown-menu .divider { height: 1px; background: var(--border); margin: 8px 0; }
+    .dropdown-menu .user-email { padding: 12px 20px; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--border); cursor: default; font-size: 0.85rem; word-break: break-all; }
+
+    /* AUTH MODAL */
+    .auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+    .auth-modal.active { display: flex; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .auth-modal-content { background: var(--surface); max-width: 420px; width: 90%; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); animation: modalSlide 0.4s ease; }
+    @keyframes modalSlide { from { opacity: 0; transform: translateY(-30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .auth-modal-content h2 { margin-bottom: 24px; color: var(--text-primary); font-size: 1.6rem; font-weight: 700; }
+    .auth-modal-content input { width: 100%; padding: 14px 18px; margin: 10px 0; border-radius: var(--radius-sm); border: 2px solid var(--border); font-size: 1rem; transition: var(--transition); font-family: inherit; }
+    .auth-modal-content input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,74,59,0.1); }
+    .auth-modal-content .btn-auth { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; font-size: 1rem; transition: var(--transition); margin-top: 16px; font-family: inherit; }
+    .auth-modal-content .btn-auth:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .auth-modal-content .toggle-link { display: block; margin-top: 16px; text-align: center; color: var(--primary); cursor: pointer; font-weight: 500; transition: var(--transition); }
+    .auth-modal-content .toggle-link:hover { color: var(--secondary); }
+    .auth-modal-content .close-btn { margin-top: 16px; background: var(--surface-alt); border: none; padding: 10px 20px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); font-weight: 500; font-family: inherit; }
+    .auth-modal-content .close-btn:hover { background: var(--border); }
+
+    /* HERO */
+    .protocols-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); color: white; padding: 100px 24px 80px; overflow: hidden; text-align: center; }
+    .protocols-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('../img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.1; }
+    .hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+    .breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px; }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { color: var(--secondary); }
+    .hero-content h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .hero-content h1 span { color: var(--secondary); }
+    .hero-content p { font-size: 1.1rem; opacity: 0.9; }
+
+    /* TABS */
+    .tabs-container { max-width: 1200px; margin: -30px auto 40px; padding: 0 24px; position: relative; z-index: 10; }
+    .tabs { background: var(--surface); padding: 10px; border-radius: var(--radius-md); box-shadow: var(--shadow-md); display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { flex: 1; min-width: 140px; padding: 12px 20px; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.95rem; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 8px; white-space: nowrap; font-family: inherit; }
+    .tab-btn:hover { background: var(--surface-alt); color: var(--primary); }
+    .tab-btn.active { background: var(--primary); color: white; box-shadow: 0 4px 12px rgba(30,74,59,0.25); }
+    .tab-btn i { font-size: 1rem; }
+
+    /* CONTAINER */
+    .container { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
+    .tab-content { display: none; animation: fadeIn 0.4s ease; }
+    .tab-content.active { display: block; }
+
+    /* PROTOCOL CARD */
+    .protocol-card { background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); margin-bottom: 28px; overflow: hidden; border-left: 6px solid var(--secondary); }
+    .protocol-header { padding: 24px; background: linear-gradient(135deg, var(--surface-alt), var(--surface-alt-2)); display: flex; gap: 20px; align-items: center; flex-wrap: wrap; }
+    .protocol-icon { width: 60px; height: 60px; border-radius: var(--radius-sm); background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+    .protocol-info h2 { font-size: 1.4rem; font-weight: 800; color: var(--text-primary); margin-bottom: 4px; }
+    .protocol-info .subtitle { color: var(--text-secondary); font-size: 0.95rem; margin: 0; }
+    .protocol-body { padding: 24px; }
+    
+    /* OBJECTIVE */
+    .objective { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px 20px; border-radius: var(--radius-sm); margin-bottom: 24px; }
+    .objective h4 { font-size: 0.85rem; text-transform: uppercase; color: #1e40af; font-weight: 700; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .objective p { font-size: 0.95rem; color: #1e40af; margin: 0; line-height: 1.6; }
+
+    /* STEPS */
+    .steps { counter-reset: step-counter; }
+    .step { position: relative; padding-left: 60px; margin-bottom: 24px; min-height: 50px; }
+    .step:last-child { margin-bottom: 0; }
+    .step::before { counter-increment: step-counter; content: counter(step-counter); position: absolute; left: 0; top: 0; width: 44px; height: 44px; background: var(--primary); color: var(--secondary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; box-shadow: var(--shadow-sm); }
+    .step h5 { font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .step p { font-size: 0.95rem; color: var(--text-secondary); margin: 0; line-height: 1.6; }
+    .step .tip { display: inline-block; margin-top: 8px; padding: 4px 10px; background: #fef3cd; color: #854d0e; border-radius: 6px; font-size: 0.8rem; font-weight: 600; }
+    .step .tip i { margin-right: 4px; }
+
+    /* MATERIALS NEEDED */
+    .materials { background: var(--surface-alt); padding: 20px; border-radius: var(--radius-sm); margin-bottom: 24px; }
+    .materials h4 { font-size: 0.9rem; text-transform: uppercase; color: var(--primary); font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .materials-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; }
+    .material-item { background: white; padding: 12px; border-radius: 6px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; font-weight: 600; color: var(--text-primary); border: 1px solid var(--border); }
+    .material-item i { color: var(--primary); font-size: 1.1rem; }
+
+    /* ALERTS */
+    .alert { padding: 16px 20px; border-radius: var(--radius-sm); display: flex; gap: 14px; align-items: flex-start; margin: 20px 0; }
+    .alert i { font-size: 1.3rem; flex-shrink: 0; margin-top: 2px; }
+    .alert h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 4px; }
+    .alert p { font-size: 0.9rem; line-height: 1.5; margin: 0; }
+    .alert-warning { background: #fef3cd; border-left: 4px solid #f59e0b; color: #854d0e; }
+    .alert-warning i { color: #d97706; }
+    .alert-danger { background: #fee2e2; border-left: 4px solid #dc2626; color: #991b1b; }
+    .alert-danger i { color: #dc2626; }
+    .alert-success { background: #d1fae5; border-left: 4px solid #16a34a; color: #065f46; }
+    .alert-success i { color: #16a34a; }
+    .alert-info { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
+    .alert-info i { color: #3b82f6; }
+
+    /* TABLES */
+    .reference-table { width: 100%; border-collapse: collapse; margin: 16px 0; background: var(--surface); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .reference-table th { background: var(--primary); color: white; padding: 12px 16px; text-align: left; font-size: 0.85rem; font-weight: 700; }
+    .reference-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--text-secondary); }
+    .reference-table tr:last-child td { border-bottom: none; }
+    .reference-table tr:hover td { background: var(--surface-alt); }
+    .reference-table td:first-child { font-weight: 600; color: var(--text-primary); }
+
+    /* FIELD NOTEBOOK EXAMPLE */
+    .field-notebook { background: #fefce8; border: 2px dashed #ca8a04; border-radius: var(--radius-sm); padding: 24px; margin-top: 20px; font-family: 'Courier New', monospace; }
+    .field-notebook h4 { font-size: 0.9rem; text-transform: uppercase; color: #854d0e; font-weight: 700; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; font-family: 'Inter', sans-serif; }
+    .field-notebook pre { font-size: 0.85rem; color: #713f12; line-height: 1.6; white-space: pre-wrap; margin: 0; }
+
+    /* FORMULA */
+    .formula { background: #f5f3ff; border-left: 4px solid #7c3aed; padding: 16px 20px; border-radius: 6px; margin: 16px 0; font-family: 'Courier New', monospace; }
+    .formula code { font-size: 0.95rem; color: #5b21b6; font-weight: 600; }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 60px 24px 30px; font-size: 0.9rem; text-align: center; }
+    .footer-quote { max-width: 700px; margin: 0 auto 40px; padding: 0 24px; }
+    .footer-quote p { font-size: 1.3rem; font-style: italic; color: rgba(255,255,255,0.7); line-height: 1.6; font-weight: 300; }
+    .footer-quote p::before, .footer-quote p::after { content: '"'; color: var(--secondary); font-size: 1.6rem; font-weight: 700; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+    .footer-bottom a:hover { text-decoration: underline; }
+
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .header-right { position: relative; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); flex-direction: column; padding: 24px; gap: 8px; box-shadow: var(--shadow-lg); min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); animation: dropdownSlide 0.3s ease; }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .header-search-form { display: none; }
+      .mobile-search-form { display: flex; }
+      .hero-content h1 { font-size: 2.2rem; }
+    }
+    @media (max-width: 600px) {
+      .tabs { flex-direction: column; }
+      .tab-btn { min-width: auto; }
+      .protocol-header { flex-direction: column; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="siteHeader">
+    <div class="header-container">
+      <a href="../index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        
+        <form action="../buscador.html" method="GET" class="header-search-form">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" placeholder="Buscar especies, cuevas...">
+        </form>
+
+        <nav class="main-nav" id="mainNav"></nav>
+        
+        <div id="authContainer">
+          <button id="loginBtn" class="account-btn">
+            <i class="fas fa-user"></i>
+            <span class="tooltip">Cuenta</span>
+          </button>
+          <div id="avatarContainer" style="display:none;" class="avatar-container">
+            <div class="avatar" id="avatarBtn">
+              <span id="avatarText">U</span>
+              <img id="avatarImg" style="display:none;" alt="Avatar">
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="user-email" id="userEmailDisplay">usuario@email.com</div>
+              <div class="divider"></div>
+              <button id="profileBtn"><i class="fas fa-user"></i> Mi perfil</button>
+              <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <h2 id="authModalTitle">Iniciar Sesión</h2>
+      <input type="email" id="authEmail" placeholder="Correo electrónico">
+      <input type="password" id="authPassword" placeholder="Contraseña">
+      <button class="btn-auth" id="authSubmitBtn">Iniciar Sesión</button>
+      <span class="toggle-link" id="authToggleLink">¿No tienes cuenta? Regístrate</span>
+      <button class="close-btn" id="authCloseBtn">Cerrar</button>
+    </div>
+  </div>
+
+  <section class="protocols-hero">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="../index.html">Inicio</a>
+        <span>/</span>
+        <a href="index.html">Investigación</a>
+        <span>/</span>
+        <span style="color: var(--secondary);">Protocolos de Campo</span>
+      </div>
+      <h1>Protocolos de <span>Campo</span></h1>
+      <p>Metodologías científicas validadas por el GIPPC para el estudio integral de los ecosistemas de Pinar del Río. Aprende a usar cada instrumento como un verdadero investigador.</p>
+    </div>
+  </section>
+
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="geologia"><i class="fas fa-gem"></i> Geología</button>
+      <button class="tab-btn" data-tab="climatologia"><i class="fas fa-cloud-sun"></i> Climatología</button>
+      <button class="tab-btn" data-tab="edafologia"><i class="fas fa-seedling"></i> Suelos</button>
+      <button class="tab-btn" data-tab="botanica"><i class="fas fa-leaf"></i> Botánica</button>
+      <button class="tab-btn" data-tab="hidrologia"><i class="fas fa-tint"></i> Hidrología</button>
+      <button class="tab-btn" data-tab="espeleologia"><i class="fas fa-dungeon"></i> Espeleología</button>
+    </div>
+  </div>
+
+  <main class="container">
+    
+    <!-- TAB: GEOLOGÍA -->
+    <div class="tab-content active" id="geologia">
+      
+      <!-- Protocolo 1: Identificación de Rocas con HCl -->
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <div class="protocol-icon"><i class="fas fa-flask"></i></div>
+          <div class="protocol-info">
+            <h2>Identificación de Rocas Carbonatadas</h2>
+            <p class="subtitle">Uso del ácido clorhídrico (HCl) al 10% para distinguir calizas de arenas cuarcíferas</p>
+          </div>
+        </div>
+        <div class="protocol-body">
+          <div class="objective">
+            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+            <p>Diferenciar rocas carbonatadas (calizas) que reaccionan con HCl produciendo efervescencia, de rocas silíceas (areniscas cuarcíferas) que no reaccionan. Fundamental para estudios geológicos en los 4 polígonos del GIPPC.</p>
+          </div>
+
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+              <h4>⚠️ Precauciones de Seguridad</h4>
+              <p>El HCl al 10% es corrosivo. Usa guantes de nitrilo y gafas de protección. Evita contacto con piel y ojos. En caso de contacto, lava con abundante agua durante 15 minutos.</p>
+            </div>
+          </div>
+
+          <div class="materials">
+            <h4><i class="fas fa-toolbox"></i> Materiales Necesarios</h4>
+            <div class="materials-list">
+              <div class="material-item"><i class="fas fa-flask"></i> HCl 10% (frasco gotero)</div>
+              <div class="material-item"><i class="fas fa-hammer"></i> Piqueta geológica</div>
+              <div class="material-item"><i class="fas fa-search-plus"></i> Lupa 10x</div>
+              <div class="material-item"><i class="fas fa-hand-paper"></i> Guantes nitrilo</div>
+              <div class="material-item"><i class="fas fa-glasses"></i> Gafas protección</div>
+              <div class="material-item"><i class="fas fa-book"></i> Libreta de campo</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h5>Seleccionar la muestra</h5>
+              <p>Extrae un fragmento fresco de roca usando la piqueta geológica. Busca una superficie no meteorizada (rompe la roca para exponer material fresco).</p>
+              <span class="tip"><i class="fas fa-lightbulb"></i> Superficies meteorizadas pueden dar falsos negativos.</span>
+            </div>
+            <div class="step">
+              <h5>Observación preliminar con lupa</h5>
+              <p>Examina la muestra con lupa 10x. Identifica si hay fósiles, cristales visibles o textura granular. Anota color y textura en la libreta.</p>
+            </div>
+            <div class="step">
+              <h5>Aplicar el ácido</h5>
+              <p>Coloca 2-3 gotas de HCl al 10% sobre la superficie fresca de la roca. Espera 10 segundos.</p>
+            </div>
+            <div class="step">
+              <h5>Interpretar la reacción</h5>
+              <p><strong>Efervescencia vigorosa (burbujeo):</strong> Rocas carbonatadas (caliza, dolomía). La reacción es: CaCO₃ + 2HCl → CaCl₂ + H₂O + CO₂↑</p>
+              <p><strong>Sin reacción:</strong> Rocas silíceas (areniscas cuarcíferas, pizarras). Ejemplo: las arenas blancas del Km 9 de Mantua.</p>
+            </div>
+            <div class="step">
+              <h5>Registrar en libreta</h5>
+              <p>Anota: ubicación GPS, tipo de roca, intensidad de reacción (nula/débil/vigorosa), color Munsell de la roca.</p>
+            </div>
+          </div>
+
+          <div class="field-notebook">
+            <h4><i class="fas fa-book"></i> Ejemplo de Registro en Libreta de Campo</h4>
+            <pre>Fecha: 15/03/2026    Hora: 10:45 AM
+Ubicación: Km 9 carretera Mantua (22°11'21"N, 84°04'52"O)
+Muestra: Arenisca cuarcífera blanca
+Textura: Granular, cristales de cuarzo visibles (1-2mm)
+Color Munsell: 10YR 8/2 (blanco)
+Reacción HCl 10%: NULA (roca silícea)
+Observaciones: Presencia de cantos rodados en matriz,
+posible origen sedimentario pre-metamórfico.</pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Protocolo 2: Brújula Brunton -->
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <div class="protocol-icon"><i class="fas fa-compass"></i></div>
+          <div class="protocol-info">
+            <h2>Medición de Rumbo y Buzamiento</h2>
+            <p class="subtitle">Uso de la brújula Brunton para caracterizar estratos geológicos y líneas de fractura</p>
+          </div>
+        </div>
+        <div class="protocol-body">
+          <div class="objective">
+            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+            <p>Determinar la orientación espacial de estratos rocosos y líneas de fractura. En Sierra Guasasa, las fracturas principales tienen dirección NNO-SSE.</p>
+          </div>
+
+          <div class="materials">
+            <h4><i class="fas fa-toolbox"></i> Materiales Necesarios</h4>
+            <div class="materials-list">
+              <div class="material-item"><i class="fas fa-compass"></i> Brújula Brunton</div>
+              <div class="material-item"><i class="fas fa-ruler"></i> Clinómetro integrado</div>
+              <div class="material-item"><i class="fas fa-book"></i> Libreta de campo</div>
+              <div class="material-item"><i class="fas fa-pencil-alt"></i> Lápiz (no tinta)</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h5>Medir el RUMBO (dirección horizontal)</h5>
+              <p>Coloca el lado largo de la brújula sobre la superficie del estrato. Nivelala usando la burbuja esférica. Lee el valor en grados (0-360°) donde apunta la aguja norte.</p>
+              <span class="tip"><i class="fas fa-lightbulb"></i> Ejemplo: N 45° E significa 45° al este del norte.</span>
+            </div>
+            <div class="step">
+              <h5>Medir el BUZAMIENTO (ángulo de inclinación)</h5>
+              <p>Gira la brújula 90° respecto al rumbo. Coloca el lado perpendicular a la línea de máxima pendiente del estrato. Usa el clinómetro para leer el ángulo (0-90°).</p>
+            </div>
+            <div class="step">
+              <h5>Determinar la DIRECCIÓN del buzamiento</h5>
+              <p>Es el punto cardinal hacia donde se inclina el estrato (N, S, E, O, NE, etc.). Siempre perpendicular al rumbo.</p>
+            </div>
+            <div class="step">
+              <h5>Registrar en formato estándar</h5>
+              <p>Notación: RUMBO / BUZAMIENTO° hacia DIRECCIÓN</p>
+            </div>
+          </div>
+
+          <div class="formula">
+            <strong>Formato estándar:</strong> <code>N 30° E / 45° SE</code><br>
+            <em>Significa: Rumbo N 30° E, buzamiento de 45° hacia el sureste</em>
+          </div>
+
+          <div class="field-notebook">
+            <h4><i class="fas fa-book"></i> Ejemplo de Registro</h4>
+            <pre>Fecha: 20/02/2018    Ubicación: Sierra Guasasa
+Estrato 1: N 340° / 65° NE (caliza jurásica Fm. Guasasa)
+Estrato 2: N 355° / 70° NE (plegado, mismo miembro)
+Fractura principal: N 345° (dirección NNO-SSE)
+Observaciones: Estratos muy plegados, ruptura de 
+pendiente en talud. Coincide con abras cársicas profundas.</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB: CLIMATOLOGÍA -->
+    <div class="tab-content" id="climatologia">
+      
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <div class="protocol-icon"><i class="fas fa-thermometer-half"></i></div>
+          <div class="protocol-info">
+            <h2>Estación Meteorológica de Campo</h2>
+            <p class="subtitle">Medición sistemática de variables atmosféricas: temperatura, humedad, presión y viento</p>
+          </div>
+        </div>
+        <div class="protocol-body">
+          <div class="objective">
+            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+            <p>Registrar variables meteorológicas para caracterizar el clima local. Ejemplo: Km 9 Mantua (24°C media, 1333.7 mm/año), Guanahacabibes (25.2°C, 1396 mm).</p>
+          </div>
+
+          <div class="materials">
+            <h4><i class="fas fa-toolbox"></i> Materiales Necesarios</h4>
+            <div class="materials-list">
+              <div class="material-item"><i class="fas fa-thermometer-half"></i> Termómetro</div>
+              <div class="material-item"><i class="fas fa-tachometer-alt"></i> Barómetro</div>
+              <div class="material-item"><i class="fas fa-tint"></i> Psicrómetro</div>
+              <div class="material-item"><i class="fas fa-wind"></i> Anemómetro</div>
+              <div class="material-item"><i class="fas fa-book"></i> Libreta de campo</div>
+              <div class="material-item"><i class="fas fa-clock"></i> Reloj sincronizado</div>
+            </div>
+          </div>
+
+          <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i>
+            <div>
+              <h4>Frecuencia de Medición</h4>
+              <p>Para datos climatológicos representativos, se requieren mediciones sistemáticas durante mínimo 30 años. En prácticas de campo, se toman registros cada hora durante 24-48 horas.</p>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h5>Temperatura (°C)</h5>
+              <p>Coloca el termómetro en sombra, a 1.5 m del suelo, protegido de la radiación directa. Espera 3 minutos de estabilización. Lee con precisión de 0.1°C.</p>
+            </div>
+            <div class="step">
+              <h5>Humedad Relativa (%)</h5>
+              <p>Usa el psicrómetro (termómetro seco + húmedo). Lee ambos termómetros simultáneamente. Calcula HR usando tablas psicrométricas o la fórmula:</p>
+            </div>
+            <div class="step">
+              <h5>Presión Atmosférica (hPa)</h5>
+              <p>Lee el barómetro a la sombra. Anota el valor con precisión de 1 hPa. Corrige por altitud si es necesario.</p>
+            </div>
+            <div class="step">
+              <h5>Viento (dirección y velocidad)</h5>
+              <p>Dirección: Usa la brújula para identificar de dónde viene el viento (N, NE, E, etc.). Velocidad: Lee el anemómetro durante 1 minuto y promedia.</p>
+            </div>
+            <div class="step">
+              <h5>Precipitación (mm)</h5>
+              <p>Si hay pluviómetro, lee la cantidad acumulada desde la última lectura. Registra hora y fecha.</p>
+            </div>
+          </div>
+
+          <div class="formula">
+            <strong>Humedad Relativa:</strong> <code>HR = (E' / E) × 100%</code><br>
+            <em>Donde E' = tensión de vapor actual, E = tensión de vapor de saturación a la temperatura del aire</em>
+          </div>
+
+          <div class="field-notebook">
+            <h4><i class="fas fa-book"></i> Ejemplo de Tabla de Registro</h4>
+            <pre>Fecha: 07/03/2016   Ubicación: Km 9 Mantua
+--------------------------------------------------
+Hora  | T(°C) | HR(%) | P(hPa) | Viento | Prec(mm)
+--------------------------------------------------
+08:00 | 22.5  |  85   | 1012   | NE 5km/h|   0
+10:00 | 24.8  |  78   | 1013   | NE 8km/h|   0
+12:00 | 27.2  |  68   | 1011   | E 12km/h|   0
+14:00 | 28.5  |  62   | 1009   | E 10km/h|   0
+16:00 | 26.3  |  71   | 1010   | NE 7km/h|   2
+--------------------------------------------------
+Media diaria: 25.8°C | HR media: 73%</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB: EDAFOLOGÍA (SUELOS) -->
+    <div class="tab-content" id="edafologia">
+      
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <div class="protocol-icon"><i class="fas fa-palette"></i></div>
+          <div class="protocol-info">
+            <h2>Clasificación de Suelos con Munsell</h2>
+            <p class="subtitle">Determinación del color del suelo usando la Tabla Munsell según clasificación de Alberto Hernández Jiménez</p>
+          </div>
+        </div>
+        <div class="protocol-body">
+          <div class="objective">
+            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+            <p>Caracterizar los horizontes del suelo mediante color (Hue, Value, Chroma) y clasificar según el sistema de Hernández Jiménez. Ejemplo: Suelos Ferralíticos Rojos Típicos Lixiviados (Hue más rojo que 5YR, Value ≤6, Chroma >4).</p>
+          </div>
+
+          <div class="materials">
+            <h4><i class="fas fa-toolbox"></i> Materiales Necesarios</h4>
+            <div class="materials-list">
+              <div class="material-item"><i class="fas fa-palette"></i> Tabla Munsell</div>
+              <div class="material-item"><i class="fas fa-shovel"></i> Pala / Barreno</div>
+              <div class="material-item"><i class="fas fa-ruler"></i> Cinta métrica</div>
+              <div class="material-item"><i class="fas fa-tint"></i> Agua destilada</div>
+              <div class="material-item"><i class="fas fa-hand-paper"></i> Guantes</div>
+              <div class="material-item"><i class="fas fa-book"></i> Libreta de campo</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h5>Realizar la calicata</h5>
+              <p>Excava un hoyo de 1m × 1m × 1m (o hasta encontrar roca madre). Limpia una pared vertical para observar los horizontes.</p>
+              <span class="tip"><i class="fas fa-lightbulb"></i> En suelos poco profundos, usa barreno para perfiles más rápidos.</span>
+            </div>
+            <div class="step">
+              <h5>Identificar los horizontes</h5>
+              <p>Diferencia los horizontes A (orgánico, oscuro), B (subsuperficial, acumulación) y C (material parental). Mide el espesor de cada uno.</p>
+            </div>
+            <div class="step">
+              <h5>Tomar muestra de cada horizonte</h5>
+              <p>Extrae ~100g de suelo de cada horizonte. Coloca en bolsa plástica etiquetada con: fecha, ubicación, horizonte, profundidad.</p>
+            </div>
+            <div class="step">
+              <h5>Determinar color SECO</h5>
+              <p>Deja secar la muestra al aire. Compara con las cartas Munsell. Busca la coincidencia exacta de Hue (tono), Value (claridad) y Chroma (intensidad).</p>
+            </div>
+            <div class="step">
+              <h5>Determinar color HÚMEDO</h5>
+              <p>Añade gotas de agua destilada hasta saturar. Espera 2 minutos. Vuelve a comparar con Munsell. Registra ambos valores.</p>
+            </div>
+            <div class="step">
+              <h5>Clasificar según Hernández Jiménez</h5>
+              <p>Compara con los criterios: Ferralítico (rojo, Chroma >4), Fersialítico (amarillo, Hue 7.5YR), Lixiviado (pérdida de bases).</p>
+            </div>
+          </div>
+
+          <div class="alert alert-warning">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+              <h4>Criterios para Suelos Ferralíticos Rojos</h4>
+              <p><strong>Horizonte B:</strong> Hue más rojo que 5YR | Value en húmedo ≤ 6 | Value en seco ≤ Value húmedo + 1 | Chroma > 4</p>
+            </div>
+          </div>
+
+          <table class="reference-table">
+            <thead>
+              <tr>
+                <th>Tipo de Suelo</th>
+                <th>Hue (Tono)</th>
+                <th>Value (Húmedo)</th>
+                <th>Chroma</th>
+                <th>Ubicación Típica</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Ferralítico Rojo Típico</td>
+                <td>2.5YR - 5YR</td>
+                <td>≤ 6</td>
+                <td>> 4</td>
+                <td>Guanahacabibes, San Andrés</td>
+              </tr>
+              <tr>
+                <td>Ferralítico Amarillento</td>
+                <td>7.5YR - 10YR</td>
+                <td>≥ 4</td>
+                <td>≥ 5</td>
+                <td>Km 9 Mantua</td>
+              </tr>
+              <tr>
+                <td>Carbonatados Pardos</td>
+                <td>10YR</td>
+                <td>4-6</td>
+                <td>3-4</td>
+                <td>Sierra Guasasa (base mogotes)</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="field-notebook">
+            <h4><i class="fas fa-book"></i> Ejemplo de Registro de Perfil</h4>
+            <pre>Calicata #3 - Guanahacabibes (cerca Pozo Azul)
+Profundidad total: 95 cm
+---------------------------------------------
+Horizonte A (0-15 cm):
+  Color seco: 10YR 3/2 (gris muy oscuro)
+  Color húmedo: 10YR 2/1 (negro)
+  Textura: Franco-arenosa
+  Estructura: Granular fina
+  
+Horizonte B (15-95 cm):
+  Color seco: 2.5YR 5/8 (rojo)
+  Color húmedo: 2.5YR 4/8 (rojo)
+  Textura: Arcillosa
+  Estructura: Bloques subangulares
+  Reacción HCl: NEGATIVA
+  Concreciones de Fe: presentes
+  
+Clasificación: Ferralítico Rojo Típico Lixiviado
+---------------------------------------------</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB: BOTÁNICA -->
+    <div class="tab-content" id="botanica">
+      
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <div class="protocol-icon"><i class="fas fa-leaf"></i></div>
+          <div class="protocol-info">
+            <h2>Levantamiento Florístico y Categorización UICN</h2>
+            <p class="subtitle">Metodología para identificar especies amenazadas según el Libro Rojo de la Flora Vascular de Pinar del Río</p>
+          </div>
+        </div>
+        <div class="protocol-body">
+          <div class="objective">
+            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+            <p>Identificar y categorizar especies vegetales según UICN (CR, EN, VU). En Km 9 se encontraron 11 especies amenazadas, incluyendo 4 en Peligro Crítico.</p>
+          </div>
+
+          <div class="materials">
+            <h4><i class="fas fa-toolbox"></i> Materiales Necesarios</h4>
+            <div class="materials-list">
+              <div class="material-item"><i class="fas fa-book"></i> Libro Rojo Flora Pinar</div>
+              <div class="material-item"><i class="fas fa-search-plus"></i> Lupa 10x</div>
+              <div class="material-item"><i class="fas fa-camera"></i> Cámara + macro</div>
+              <div class="material-item"><i class="fas fa-satellite-dish"></i> GPS</div>
+              <div class="material-item"><i class="fas fa-leaf"></i> Prensa botánica</div>
+              <div class="material-item"><i class="fas fa-ruler"></i> Cinta métrica</div>
+              <div class="material-item"><i class="fas fa-tag"></i> Etiquetas</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h5>Recorrido sistemático</h5>
+              <p>Establece transectos de 50m × 2m. Camina lentamente observando vegetación en estratos: herbáceo (0-1m), arbustivo (1-5m), arbóreo (>5m).</p>
+            </div>
+            <div class="step">
+              <h5>Identificación en campo</h5>
+              <p>Fotografía la planta completa, hojas, flores y frutos. Usa la lupa para detalles. Compara con el Libro Rojo y Flora de Cuba.</p>
+              <span class="tip"><i class="fas fa-lightbulb"></i> Para orquídeas: fotografía el labelo (estructura reproductiva) con macro.</span>
+            </div>
+            <div class="step">
+              <h5>Colecta (solo si es necesario)</h5>
+              <p>Si no puedes identificar en campo, colecta una rama con hojas, flores y frutos. Coloca en prensa botánica con papel secante. Etiqueta con número de colección.</p>
+            </div>
+            <div class="step">
+              <h5>Georreferenciación</h5>
+              <p>Registra coordenadas GPS (WGS84) de cada individuo o población. Anota altitud, exposición solar y tipo de suelo.</p>
+            </div>
+            <div class="step">
+              <h5>Categorización UICN</h5>
+              <p>Compara con criterios del Libro Rojo. Asigna categoría: EX (Extinto), CR (Peligro Crítico), EN (Peligro), VU (Vulnerable).</p>
+            </div>
+            <div class="step">
+              <h5>Registro de amenazas</h5>
+              <p>Documenta amenazas observadas: ganadería, agricultura, incendios, colecta ilegal, especies invasoras (marabú).</p>
+            </div>
+          </div>
+
+          <table class="reference-table">
+            <thead>
+              <tr>
+                <th>Categoría UICN</th>
+                <th>Descripción</th>
+                <th>Ejemplo en Pinar del Río</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong style="color:#dc2626;">CR - Peligro Crítico</strong></td>
+                <td>Riesgo extremadamente alto de extinción en estado silvestre</td>
+                <td>Coccothrinax yuraguana (Miraguano), Encyclia grisebachiana (Flor de San Pedro)</td>
+              </tr>
+              <tr>
+                <td><strong style="color:#ea580c;">EN - En Peligro</strong></td>
+                <td>Riesgo muy alto de extinción en estado silvestre</td>
+                <td>Colpothrinax wrightii (Palma Barrigona), Bejaria cubensis (Clavellina)</td>
+              </tr>
+              <tr>
+                <td><strong style="color:#2563eb;">VU - Vulnerable</strong></td>
+                <td>Riesgo alto de extinción en estado silvestre</td>
+                <td>Drosera capillaris, Gochnatia montana, Leptocereus prostratus</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="field-notebook">
+            <h4><i class="fas fa-book"></i> Ejemplo de Ficha Botánica</h4>
+            <pre>Colector: GIPPC    Número: 247
+Fecha: 09/03/2016   Ubicación: Km 9 carretera Mantua
+Coordenadas: 22°11'21"N, 84°04'52"O   Altitud: 120 msnm
+---------------------------------------------
+Nombre científico: Encyclia grisebachiana (Cogn.) Acuña
+Nombre común: Flor de San Pedro
+Familia: Orchidaceae
+Tipo biológico: Hierba epífita
+---------------------------------------------
+Diagnosis: Orquídea con pseudobulbos monofilos, hojas 
+oblongas 2.3 cm ancho, labelo suborbicular.
+---------------------------------------------
+Hábitat: Epífita sobre Copernicia glabrescens en bosque 
+de pinos sobre suelos arenoso-cuarcíticos.
+---------------------------------------------
+Categoría UICN: CR (Peligro Crítico)
+Criterios: B1ab(i,ii,iii,iv,v)+2ab(i,ii,iii,iv,v)
+---------------------------------------------
+Amenazas observadas:
+- Ganadería bovina en el área
+- Colecta ilegal de orquídeas
+- Invasión de Dichrostachus cinerea (marabú)
+- Huracanes (vulnerabilidad de forófitos)
+---------------------------------------------
+Población estimada: 3 individuos en 500 m²
+Estado reproductivo: 1 en floración, 2 vegetativos
+---------------------------------------------</pre>
+          </div>
+
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <h4>Importancia Científica</h4>
+              <p>El GIPPC reportó especies no registradas para el distrito Sabaloense, generando nuevas interrogantes sobre adaptaciones, migraciones y posible especiación.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB: HIDROLOGÍA -->
+    <div class="tab-content" id="hidrologia">
+      
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <div class="protocol-icon"><i class="fas fa-tint"></i></div>
+          <div class="protocol-info">
+            <h2>Muestreo de Aguas Superficiales</h2>
+            <p class="subtitle">Caracterización físico-química y biológica de ríos, arroyos y manantiales</p>
+          </div>
+        </div>
+        <div class="protocol-body">
+          <div class="objective">
+            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+            <p>Evaluar calidad del agua mediante parámetros físico-químicos y bioindicadores. Ejemplo: Camarón reculón (Procambarus cubensis) como indicador de pureza en Km 9.</p>
+          </div>
+
+          <div class="materials">
+            <h4><i class="fas fa-toolbox"></i> Materiales Necesarios</h4>
+            <div class="materials-list">
+              <div class="material-item"><i class="fas fa-thermometer-half"></i> Termómetro</div>
+              <div class="material-item"><i class="fas fa-vial"></i> Kits análisis agua</div>
+              <div class="material-item"><i class="fas fa-flask"></i> Frascos estériles</div>
+              <div class="material-item"><i class="fas fa-tint"></i> Refractómetro</div>
+              <div class="material-item"><i class="fas fa-ruler"></i> Cinta métrica</div>
+              <div class="material-item"><i class="fas fa-stopwatch"></i> Cronómetro</div>
+              <div class="material-item"><i class="fas fa-bug"></i> Red entomológica</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h5>Seleccionar punto de muestreo</h5>
+              <p>Elige un tramo representativo del cuerpo de agua. Evita zonas con perturbación inmediata (puentes, descargas). Georreferencia el punto.</p>
+            </div>
+            <div class="step">
+              <h5>Medir parámetros in situ</h5>
+              <p><strong>Temperatura:</strong> Sumerge el termómetro 30 cm, espera 2 min.<br>
+              <strong>pH:</strong> Usa tiras reactivas o pHmetro calibrado.<br>
+              <strong>Oxígeno disuelto:</strong> Kit Winkler o medidor portátil.<br>
+              <strong>Conductividad:</strong> Medidor de conductividad (µS/cm).</p>
+            </div>
+            <div class="step">
+              <h5>Medir velocidad del flujo</h5>
+              <p>Método del flotador: Marca 10 m de tramo. Suelta un corcho y cronometra el tiempo. Calcula: Velocidad = Distancia / Tiempo.</p>
+            </div>
+            <div class="step">
+              <h5>Calcular caudal</h5>
+              <p>Mide ancho y profundidad promedio del río. Calcula sección transversal. Caudal = Sección × Velocidad.</p>
+            </div>
+            <div class="step">
+              <h5>Colectar muestras para laboratorio</h5>
+              <p>Llena frascos estériles (500 ml) sumergiendo contra la corriente. Etiqueta con fecha, hora, punto, profundidad.</p>
+            </div>
+            <div class="step">
+              <h5>Búsqueda de bioindicadores</h5>
+              <p>Usa red entomológica para muestrear macroinvertebrados. Identifica especies indicadoras: presencia de Procambarus cubensis = agua pura.</p>
+            </div>
+          </div>
+
+          <div class="formula">
+            <strong>Caudal:</strong> <code>Q = A × V</code><br>
+            <em>Donde Q = caudal (m³/s), A = sección transversal (m²), V = velocidad media (m/s)</em>
+          </div>
+
+          <table class="reference-table">
+            <thead>
+              <tr>
+                <th>Parámetro</th>
+                <th>Agua Pura</th>
+                <th>Contaminación Moderada</th>
+                <th>Contaminación Severa</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Temperatura</td>
+                <td>20-25°C</td>
+                <td>25-30°C</td>
+                <td>>30°C</td>
+              </tr>
+              <tr>
+                <td>pH</td>
+                <td>6.5-8.5</td>
+                <td>5.5-6.5 o 8.5-9.5</td>
+                <td><5.5 o >9.5</td>
+              </tr>
+              <tr>
+                <td>Oxígeno disuelto</td>
+                <td>>7 mg/L</td>
+                <td>4-7 mg/L</td>
+                <td><4 mg/L</td>
+              </tr>
+              <tr>
+                <td>Bioindicadores</td>
+                <td>Procambarus cubensis, Efemépteros</td>
+                <td>Dipteros, Oligoquetos</td>
+                <td>Solo bacterias</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="field-notebook">
+            <h4><i class="fas fa-book"></i> Ejemplo de Registro Hidrológico</h4>
+            <pre>Punto de muestreo: Arroyo San Francisco (Km 9 Mantua)
+Fecha: 07/03/2016   Hora: 14:30
+Coordenadas: 22°11'35"N, 84°04'28"O   Altitud: 95 msnm
+---------------------------------------------
+Parámetros in situ:
+  Temperatura: 23.5°C
+  pH: 7.2
+  Oxígeno disuelto: 8.1 mg/L
+  Conductividad: 180 µS/cm
+---------------------------------------------
+Dimensiones del cauce:
+  Ancho: 2.8 m
+  Profundidad media: 0.35 m
+  Sección transversal: 0.98 m²
+---------------------------------------------
+Velocidad (método flotador, 10m):
+  Intento 1: 12.3 s → 0.81 m/s
+  Intento 2: 11.8 s → 0.85 m/s
+  Intento 3: 12.1 s → 0.83 m/s
+  Velocidad media: 0.83 m/s
+---------------------------------------------
+Caudal: Q = 0.98 m² × 0.83 m/s = 0.81 m³/s
+---------------------------------------------
+Bioindicadores observados:
+  ✓ Procambarus cubensis (camarón reculón) - 5 individuos
+  ✓ Larvas de Efemépteros - abundantes
+  ✓ Molusco no identificado (3-4mm, con musgo) - 2 ejemplares
+  ✓ Peces: Tilapia de río, pez gato, guajacones
+---------------------------------------------
+Calidad del agua: EXCELENTE (indicador de pureza)
+---------------------------------------------</pre>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- TAB: ESPELEOLOGÍA -->
+    <div class="tab-content" id="espeleologia">
+      
+      <div class="protocol-card">
+        <div class="protocol-header">
+          <div class="protocol-icon"><i class="fas fa-dungeon"></i></div>
+          <div class="protocol-info">
+            <h2>Exploración y Topografía de Cuevas</h2>
+            <p class="subtitle">Protocolo de seguridad y levantamiento topográfico según metodología GEDA</p>
+          </div>
+        </div>
+        <div class="protocol-body">
+          <div class="objective">
+            <h4><i class="fas fa-bullseye"></i> Objetivo</h4>
+            <p>Levantamiento topográfico de cavernas con identificación de niveles de cavernamiento. Sierra Guasasa tiene 35 cuevas en 12 niveles evolutivos (Oligoceno-Holoceno).</p>
+          </div>
+
+          <div class="alert alert-danger">
+            <i class="fas fa-exclamation-triangle"></i>
+            <div>
+              <h4>⚠️ Protocolo de Seguridad Obligatorio (GEDA)</h4>
+              <p><strong>Regla de oro:</strong> Mínimo 3 personas (nunca entrar solo). Tres puntos de luz independientes. Casco con barbiquejo obligatorio. Aviso previo a unidad de rescate local. Prohibido tocar formaciones secundarias vivas.</p>
+            </div>
+          </div>
+
+          <div class="materials">
+            <h4><i class="fas fa-toolbox"></i> Materiales Necesarios</h4>
+            <div class="materials-list">
+              <div class="material-item"><i class="fas fa-hard-hat"></i> Casco + barbiquejo</div>
+              <div class="material-item"><i class="fas fa-lightbulb"></i> 3 linternas independientes</div>
+              <div class="material-item"><i class="fas fa-compass"></i> Brújula Suunto</div>
+              <div class="material-item"><i class="fas fa-ruler"></i> Cinta métrica 50m</div>
+              <div class="material-item"><i class="fas fa-drafting-compass"></i> Teodolito (opcional)</div>
+              <div class="material-item"><i class="fas fa-book"></i> Libreta impermeable</div>
+              <div class="material-item"><i class="fas fa-camera"></i> Cámara + flash</div>
+              <div class="material-item"><i class="fas fa-tape"></i> Cintas polietileno</div>
+            </div>
+          </div>
+
+          <div class="steps">
+            <div class="step">
+              <h5>Planificación y aviso</h5>
+              <p>Informa a la unidad de rescate local: cueva a explorar, número de personas, hora estimada de salida. Lleva botiquín de primeros auxilios.</p>
+            </div>
+            <div class="step">
+              <h5>Establecer estación base</h5>
+              <p>En la entrada de la cueva, marca el punto 0 (estación inicial). Georreferencia con GPS. Anota altitud (msnm).</p>
+            </div>
+            <div class="step">
+              <h5>Levantamiento topográfico (poligonal)</h5>
+              <p>Establece estaciones (puntos numerados) cada 5-10 m. Mide: distancia entre estaciones, rumbo (brújula), inclinación (clinómetro), altura del techo, ancho de la galería.</p>
+            </div>
+            <div class="step">
+              <h5>Delimitación de zonas sensibles</h5>
+              <p>Marca con cintas de polietileno de colores: <strong>ROJO</strong> = zonas de alto valor científico (fósiles, formaciones), <strong>AMARILLO</strong> = zonas peligrosas, <strong>VERDE</strong> = ruta segura.</p>
+            </div>
+            <div class="step">
+              <h5>Documentación fotográfica</h5>
+              <p>Fotografía: entrada, galerías principales, espeleotemas, fósiles, formaciones secundarias. Usa escala (cinta métrica o persona) para referencia.</p>
+            </div>
+            <div class="step">
+              <h5>Identificación de niveles de cavernamiento</h5>
+              <p>Registra altitud de cada galería. Compara con los 12 niveles de Guasasa: Nivel 1 (370-457m, Oligoceno) hasta Nivel 12 (90-109m, Holoceno).</p>
+            </div>
+            <div class="step">
+              <h5>Búsqueda de fósiles y restos</h5>
+              <p>En niveles superiores (fosilizados), busca restos de megafauna (desdentados). NO extraer sin autorización del CITMA. Fotografía y georreferencia.</p>
+            </div>
+          </div>
+
+          <table class="reference-table">
+            <thead>
+              <tr>
+                <th>Nivel</th>
+                <th>Altitud (msnm)</th>
+                <th>Época</th>
+                <th>Cuevas Representativas</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nivel 1</td>
+                <td>370-457</td>
+                <td>Oligoceno</td>
+                <td>Superficie fosilizada (sin cuevas)</td>
+              </tr>
+              <tr>
+                <td>Nivel 7</td>
+                <td>190-209</td>
+                <td>Pleistoceno</td>
+                <td>Cueva Geda I y II, El Mirador</td>
+              </tr>
+              <tr>
+                <td>Nivel 12</td>
+                <td>90-109</td>
+                <td>Holoceno</td>
+                <td>Cueva del Indio, Los Fósiles, El Sótano</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="field-notebook">
+            <h4><i class="fas fa-book"></i> Ejemplo de Libreta Topográfica</h4>
+            <pre>Cueva: Los Fósiles (Sierra Guasasa)
+Fecha: 20/02/2018   Equipo: GIPPC
+Entrada: 22°39'00"N, 83°42'30"O   Altitud: 99 msnm
+Nivel de cavernamiento: 12 (Holoceno)
+---------------------------------------------
+Poligonal topográfica:
+Est | Dist(m) | Rumbo | Inclin | Ancho | Alto
+---------------------------------------------
+ 0  |   -     |   -   |   -    |  2.5  | 3.0
+ 1  |  8.5    | N 45E |  -5°   |  3.0  | 4.5
+ 2  | 12.3    | N 70E |  -8°   |  4.2  | 5.0
+ 3  | 15.7    | N 85E | -12°   |  5.5  | 6.2
+ 4  |  9.8    | S 20E | -15°   |  3.8  | 4.0
+ 5  | 18.2    | N 60E |  -3°   |  6.0  | 7.5
+---------------------------------------------
+Longitud total explorada: 64.5 m
+Desnivel acumulado: -12 m
+---------------------------------------------
+Hallazgos:
+- Estación 3: Restos óseos de Megalocnus rodens 
+  (perezoso gigante) - NO EXTRAER
+- Estación 5: Formación de estalactitas vivas - 
+  DELIMITAR con cinta roja
+- Galería principal: Dirección NO-SE (nivel joven)
+---------------------------------------------
+Delimitación:
+- Cinta roja: Estación 3 (fósiles), Estación 5 
+  (formaciones vivas)
+- Cinta amarilla: Paso estrecho entre Est 2-3
+- Cinta verde: Ruta principal 0-5
+---------------------------------------------</pre>
+          </div>
+
+          <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <div>
+              <h4>Importancia del Sistema Guasasa</h4>
+              <p>35 cuevas estudiadas, 15,326 m de galerías totales. Contiene uno de los mayores recintos paleontológicos de desdentados del país en niveles fosilizados superiores.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-quote">
+      <p>La ciencia es la disciplina de la observación sistemática y el registro riguroso.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="../index.html">Conociendo Pinar</a> | <a href="../privacidad.html">Privacidad</a> | <a href="../terminos.html">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://mixfzeuzhooujqzaexpp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peGZ6ZXV6aG9vdWpxemFleHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODk2NjYsImV4cCI6MjA5NzM2NTY2Nn0.re-BvpmaB3vMXIBwbOY_88PE0q9Hw1L9xsyL6JurvaI';
+
+    (function() {
+      let supabaseClient = null;
+
+      function md5(string) {
+        function md5cycle(x, k) {
+          var a = x[0], b = x[1], c = x[2], d = x[3];
+          a = ff(a, b, c, d, k[0], 7, -680876936); d = ff(d, a, b, c, k[1], 12, -389564586);
+          c = ff(c, d, a, b, k[2], 17, 606105819); b = ff(b, c, d, a, k[3], 22, -1044525330);
+          a = ff(a, b, c, d, k[4], 7, -176418897); d = ff(d, a, b, c, k[5], 12, 1200080426);
+          c = ff(c, d, a, b, k[6], 17, -1473231341); b = ff(b, c, d, a, k[7], 22, -45705983);
+          a = ff(a, b, c, d, k[8], 7, 1770035416); d = ff(d, a, b, c, k[9], 12, -1958414417);
+          c = ff(c, d, a, b, k[10], 17, -42063); b = ff(b, c, d, a, k[11], 22, -1990404162);
+          a = ff(a, b, c, d, k[12], 7, 1804603682); d = ff(d, a, b, c, k[13], 12, -40341101);
+          c = ff(c, d, a, b, k[14], 17, -1502002290); b = ff(b, c, d, a, k[15], 22, 1236535329);
+          a = gg(a, b, c, d, k[1], 5, -165796510); d = gg(d, a, b, c, k[6], 9, -1069501632);
+          c = gg(c, d, a, b, k[11], 14, 643717713); b = gg(b, c, d, a, k[0], 20, -373897302);
+          a = gg(a, b, c, d, k[5], 5, -701558691); d = gg(d, a, b, c, k[10], 9, 38016083);
+          c = gg(c, d, a, b, k[15], 14, -660478335); b = gg(b, c, d, a, k[4], 20, -405537848);
+          a = gg(a, b, c, d, k[9], 5, 568446438); d = gg(d, a, b, c, k[14], 9, -1019803690);
+          c = gg(c, d, a, b, k[3], 14, -187363961); b = gg(b, c, d, a, k[8], 20, 1163531501);
+          a = gg(a, b, c, d, k[13], 5, -1444681467); d = gg(d, a, b, c, k[2], 9, -51403784);
+          c = gg(c, d, a, b, k[7], 14, 1735328473); b = gg(b, c, d, a, k[12], 20, -1926607734);
+          a = hh(a, b, c, d, k[5], 4, -378558); d = hh(d, a, b, c, k[8], 11, -2022574463);
+          c = hh(c, d, a, b, k[11], 16, 1839030562); b = hh(b, c, d, a, k[14], 23, -35309556);
+          a = hh(a, b, c, d, k[1], 4, -1530992060); d = hh(d, a, b, c, k[4], 11, 1272893353);
+          c = hh(c, d, a, b, k[7], 16, -155497632); b = hh(b, c, d, a, k[10], 23, -1094730640);
+          a = hh(a, b, c, d, k[13], 4, 681279174); d = hh(d, a, b, c, k[0], 11, -358537222);
+          c = hh(c, d, a, b, k[3], 16, -722521979); b = hh(b, c, d, a, k[6], 23, 76029189);
+          a = hh(a, b, c, d, k[9], 4, -640364487); d = hh(d, a, b, c, k[12], 11, -421815835);
+          c = hh(c, d, a, b, k[15], 16, 530742520); b = hh(b, c, d, a, k[2], 23, -995338651);
+          a = ii(a, b, c, d, k[0], 6, -198630844); d = ii(d, a, b, c, k[7], 10, 1126891415);
+          c = ii(c, d, a, b, k[14], 15, -1416354905); b = ii(b, c, d, a, k[5], 21, -57434055);
+          a = ii(a, b, c, d, k[12], 6, 1700485571); d = ii(d, a, b, c, k[3], 10, -1894986606);
+          c = ii(c, d, a, b, k[10], 15, -1051523); b = ii(b, c, d, a, k[1], 21, -2054922799);
+          a = ii(a, b, c, d, k[8], 6, 1873313359); d = ii(d, a, b, c, k[15], 10, -30611744);
+          c = ii(c, d, a, b, k[6], 15, -1560198380); b = ii(b, c, d, a, k[13], 21, 1309151649);
+          a = ii(a, b, c, d, k[4], 6, -145523070); d = ii(d, a, b, c, k[11], 10, -1120210379);
+          c = ii(c, d, a, b, k[2], 15, 718787259); b = ii(b, c, d, a, k[9], 21, -343485551);
+          x[0] = add32(a, x[0]); x[1] = add32(b, x[1]); x[2] = add32(c, x[2]); x[3] = add32(d, x[3]);
+        }
+        function cmn(q, a, b, x, s, t) { a = add32(add32(a, q), add32(x, t)); return add32((a << s) | (a >>> (32 - s)), b); }
+        function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+        function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+        function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+        function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
+        function add32(a, b) { var lsw = (a & 0xFFFF) + (b & 0xFFFF); var msw = (a >> 16) + (b >> 16) + (lsw >> 16); return (msw << 16) | (lsw & 0xFFFF); }
+        function str2binl(str) { var n = str.length; var bin = Array((n + 7) >> 2); for (var i = 0; i < n; i++) { bin[i >> 2] |= str.charCodeAt(i) << ((i % 4) * 8); } return bin; }
+        function binl2hex(binarray) { var hex_tab = "0123456789abcdef"; var str = ""; for (var i = 0; i < binarray.length * 4; i++) { str += hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8 + 4)) & 0xF) + hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8)) & 0xF); } return str; }
+        var x = str2binl(string);
+        var a = 1732584193, b = -271733879, c = -1732584194, d = 271733878;
+        for (var i = 0; i < x.length; i += 16) {
+          var olda = a, oldb = b, oldc = c, oldd = d;
+          md5cycle([a, b, c, d], x.slice(i, i + 16));
+          a = add32(a, olda); b = add32(b, oldb); c = add32(c, oldc); d = add32(d, oldd);
+        }
+        return binl2hex([a, b, c, d]);
+      }
+
+      function iniciarApp() {
+        if (typeof window.supabase === 'undefined') {
+          const script = document.createElement('script');
+          script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+          script.onload = () => {
+            supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            ejecutarApp();
+          };
+          document.head.appendChild(script);
+        } else {
+          supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+          ejecutarApp();
+        }
+      }
+
+      function ejecutarApp() {
+        let currentUser = null;
+        let isLoginMode = true;
+
+        async function registrarUsuario(email, password) {
+          try {
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) { alert('❌ Error al registrar: ' + error.message); return null; }
+            if (data.user) {
+              alert('✅ ¡Registro exitoso! ' + (data.user.confirmation_sent_at ? 'Revisa tu correo.' : 'Ya puedes iniciar sesión.'));
+              return data.user;
+            }
+            return null;
+          } catch (error) { alert('❌ Error: ' + error.message); return null; }
+        }
+
+        async function iniciarSesion(email, password) {
+          try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) { alert('❌ Error al iniciar sesión: ' + error.message); return null; }
+            alert('✅ ¡Bienvenido!');
+            return data.user;
+          } catch (error) { alert('❌ Error: ' + error.message); return null; }
+        }
+
+        async function cerrarSesion() {
+          const { error } = await supabaseClient.auth.signOut();
+          if (error) alert('❌ Error al cerrar sesión: ' + error.message);
+          else { alert('👋 Sesión cerrada'); currentUser = null; actualizarUIUsuario(null); }
+        }
+
+        function abrirModalAuth() {
+          document.getElementById('authModal').classList.add('active');
+          isLoginMode = true;
+          document.getElementById('authModalTitle').textContent = 'Iniciar Sesión';
+          document.getElementById('authSubmitBtn').textContent = 'Iniciar Sesión';
+          document.getElementById('authToggleLink').textContent = '¿No tienes cuenta? Regístrate';
+        }
+
+        function cerrarModalAuth() {
+          document.getElementById('authModal').classList.remove('active');
+        }
+
+        function generarAvatar(email) {
+          const avatarContainer = document.getElementById('avatarContainer');
+          const loginBtn = document.getElementById('loginBtn');
+          const avatarImg = document.getElementById('avatarImg');
+          const avatarText = document.getElementById('avatarText');
+          const userEmailDisplay = document.getElementById('userEmailDisplay');
+          if (!email) { loginBtn.style.display = 'inline-flex'; avatarContainer.style.display = 'none'; return; }
+          loginBtn.style.display = 'none';
+          avatarContainer.style.display = 'inline-block';
+          userEmailDisplay.textContent = email;
+          const hash = md5(email.trim().toLowerCase());
+          const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?d=404&s=100`;
+          const img = new Image();
+          img.onload = function() { avatarImg.src = gravatarUrl; avatarImg.style.display = 'block'; avatarText.style.display = 'none'; };
+          img.onerror = function() {
+            avatarImg.style.display = 'none'; avatarText.style.display = 'flex';
+            const parts = email.split('@')[0].split('.');
+            const initials = parts.map(p => p[0]).join('').toUpperCase().slice(0, 2);
+            avatarText.textContent = initials || 'U';
+          };
+          img.src = gravatarUrl;
+        }
+
+        function actualizarUIUsuario(user) {
+          if (user) { currentUser = user; generarAvatar(user.email); }
+          else {
+            currentUser = null;
+            document.getElementById('loginBtn').style.display = 'inline-flex';
+            document.getElementById('avatarContainer').style.display = 'none';
+          }
+        }
+
+        function asignarEventos() {
+          document.getElementById('loginBtn').addEventListener('click', abrirModalAuth);
+          document.getElementById('authCloseBtn').addEventListener('click', cerrarModalAuth);
+          document.getElementById('authToggleLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            document.getElementById('authModalTitle').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse';
+            document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse';
+            document.getElementById('authToggleLink').textContent = isLoginMode ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión';
+          });
+          document.getElementById('authSubmitBtn').addEventListener('click', async function() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            if (!email || !password) { alert('Completa todos los campos'); return; }
+            const user = isLoginMode ? await iniciarSesion(email, password) : await registrarUsuario(email, password);
+            if (user) { currentUser = user; actualizarUIUsuario(user); cerrarModalAuth(); }
+          });
+
+          const avatarBtn = document.getElementById('avatarBtn');
+          const dropdown = document.getElementById('dropdownMenu');
+          avatarBtn.addEventListener('click', function(e) { e.stopPropagation(); dropdown.classList.toggle('show'); });
+          document.addEventListener('click', function(e) { 
+            if (!avatarBtn.contains(e.target)) dropdown.classList.remove('show'); 
+          });
+          document.getElementById('logoutBtn').addEventListener('click', function(e) { e.stopPropagation(); cerrarSesion(); dropdown.classList.remove('show'); });
+          document.getElementById('profileBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('🔧 Función de perfil en desarrollo.'); dropdown.classList.remove('show'); });
+
+          // Tabs
+          const tabBtns = document.querySelectorAll('.tab-btn');
+          const tabContents = document.querySelectorAll('.tab-content');
+          tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+              tabBtns.forEach(b => b.classList.remove('active'));
+              tabContents.forEach(c => c.classList.remove('active'));
+              btn.classList.add('active');
+              document.getElementById(btn.dataset.tab).classList.add('active');
+            });
+          });
+
+          // Menú hamburguesa
+          const menuToggle = document.getElementById('menuToggle');
+          const mainNav = document.getElementById('mainNav');
+          if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
+            mainNav.addEventListener('click', (e) => { if (e.target.classList.contains('nav-link') && window.innerWidth <= 968) mainNav.classList.remove('show'); });
+            document.addEventListener('click', (e) => { if (!mainNav.contains(e.target) && e.target !== menuToggle && !menuToggle.contains(e.target)) mainNav.classList.remove('show'); });
+            window.addEventListener('resize', () => { if (window.innerWidth > 968) mainNav.classList.remove('show'); });
+          }
+        }
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (session) { currentUser = session.user; actualizarUIUsuario(session.user); }
+          else { currentUser = null; actualizarUIUsuario(null); }
+        });
+        (async function checkSession() {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          if (session) { currentUser = session.user; actualizarUIUsuario(session.user); }
+        })();
+
+        window.addEventListener('scroll', () => {
+          const header = document.querySelector('.site-header');
+          if (window.scrollY > 50) header.classList.add('scrolled');
+          else header.classList.remove('scrolled');
+        });
+
+        if (document.readyState === 'loading') {
+          document.addEventListener('DOMContentLoaded', asignarEventos);
+        } else {
+          asignarEventos();
+        }
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciarApp);
+      } else {
+        iniciarApp();
+      }
+    })();
+  </script>
+  <script src="menu.js" defer></script>
+</body>
+</html>

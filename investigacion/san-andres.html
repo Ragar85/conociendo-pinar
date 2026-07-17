@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>San Andrés y Caiguanabo • Polígonos de Estudio • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --secondary-light: #f9e2b7;
+      --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+
+    /* HEADER */
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); transition: var(--transition); }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+
+    /* HERO */
+    .polygon-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); color: white; padding: 100px 24px 80px; overflow: hidden; }
+    .polygon-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('../img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.1; }
+    .hero-container { position: relative; z-index: 2; max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center; }
+    .hero-text .breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px; }
+    .hero-text .breadcrumb a { color: white; text-decoration: none; }
+    .hero-text .breadcrumb a:hover { color: var(--secondary); }
+    .hero-text h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; line-height: 1.1; }
+    .hero-text h1 span { color: var(--secondary); }
+    .hero-text p { font-size: 1.1rem; opacity: 0.95; margin-bottom: 24px; line-height: 1.6; }
+    .hero-badge { display: inline-block; background: rgba(244,197,66,0.2); color: var(--secondary); padding: 6px 16px; border-radius: var(--radius-xl); font-size: 0.8rem; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 20px; border: 1px solid rgba(244,197,66,0.3); }
+    .hero-stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; background: rgba(255,255,255,0.05); backdrop-filter: blur(10px); padding: 24px; border-radius: var(--radius-md); border: 1px solid rgba(255,255,255,0.1); }
+    .stat-box { text-align: center; }
+    .stat-box .value { font-size: 2rem; font-weight: 800; color: var(--secondary); line-height: 1; }
+    .stat-box .label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; margin-top: 6px; }
+
+    /* NAV IN-PAGE */
+    .section-nav-wrapper { background: var(--surface); border-bottom: 1px solid var(--border); position: sticky; top: 72px; z-index: 90; box-shadow: var(--shadow-sm); }
+    .section-nav { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; gap: 8px; overflow-x: auto; scrollbar-width: none; }
+    .section-nav::-webkit-scrollbar { display: none; }
+    .section-nav a { padding: 16px 20px; color: var(--text-secondary); text-decoration: none; font-size: 0.9rem; font-weight: 600; white-space: nowrap; border-bottom: 3px solid transparent; transition: var(--transition); }
+    .section-nav a:hover { color: var(--primary); border-bottom-color: var(--border); }
+    .section-nav a.active { color: var(--primary); border-bottom-color: var(--secondary); }
+
+    /* CONTENT */
+    .container { max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; }
+    .content-section { margin-bottom: 60px; scroll-margin-top: 140px; }
+    .content-section h2 { font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; display: flex; align-items: center; gap: 12px; letter-spacing: -0.02em; }
+    .content-section h2 i { color: var(--secondary); }
+    .content-section > p { color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 24px; }
+
+    /* CARDS & GRIDS */
+    .info-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-top: 24px; }
+    .info-card { background: var(--surface); border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-sm); transition: var(--transition); border-top: 4px solid var(--secondary); }
+    .info-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .info-card .icon { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--surface-alt); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; margin-bottom: 16px; }
+    .info-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .info-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin: 0; }
+
+    /* TOPOONYMY SPECIAL */
+    .toponymy-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; margin-top: 24px; }
+    .toponymy-card { background: var(--surface); padding: 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); border-left: 4px solid var(--primary); transition: var(--transition); }
+    .toponymy-card:hover { transform: translateX(4px); box-shadow: var(--shadow-md); }
+    .toponymy-card .tag { display: inline-block; padding: 3px 10px; background: var(--surface-alt); color: var(--primary); border-radius: var(--radius-xl); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; }
+    .toponymy-card h4 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .toponymy-card p { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin: 0; }
+
+    /* ARCHAEOLOGY TIMELINE */
+    .archaeology-list { margin-top: 24px; }
+    .arch-item { background: var(--surface); padding: 24px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); margin-bottom: 16px; display: flex; gap: 20px; align-items: flex-start; border-left: 4px solid #b45309; transition: var(--transition); }
+    .arch-item:hover { transform: translateX(4px); box-shadow: var(--shadow-md); }
+    .arch-icon { width: 50px; height: 50px; border-radius: 50%; background: #fef3c7; color: #b45309; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .arch-info h4 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .arch-info .location { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; gap: 6px; }
+    .arch-info p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.5; margin: 0; }
+
+    /* TABLES */
+    .data-table { width: 100%; border-collapse: collapse; margin-top: 24px; background: var(--surface); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-sm); }
+    .data-table th { background: var(--primary); color: white; padding: 14px 16px; text-align: left; font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+    .data-table td { padding: 14px 16px; border-bottom: 1px solid var(--border); font-size: 0.95rem; color: var(--text-secondary); }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: var(--surface-alt); }
+    .data-table td:first-child { font-weight: 600; color: var(--text-primary); }
+
+    /* ALERTS */
+    .alert { padding: 20px 24px; border-radius: var(--radius-sm); display: flex; gap: 16px; align-items: flex-start; margin: 24px 0; }
+    .alert i { font-size: 1.4rem; flex-shrink: 0; margin-top: 2px; }
+    .alert h4 { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
+    .alert p { font-size: 0.95rem; line-height: 1.6; margin: 0; }
+    .alert-info { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
+    .alert-info i { color: #3b82f6; }
+    .alert-warning { background: #fef3cd; border-left: 4px solid #f59e0b; color: #854d0e; }
+    .alert-warning i { color: #d97706; }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 60px 24px 30px; text-align: center; }
+    .footer-quote { max-width: 700px; margin: 0 auto 40px; font-size: 1.3rem; font-style: italic; color: rgba(255,255,255,0.7); }
+    .footer-quote::before, .footer-quote::after { content: '"'; color: var(--secondary); font-size: 1.6rem; font-weight: 700; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--primary-dark); flex-direction: column; padding: 24px; gap: 8px; min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); box-shadow: var(--shadow-lg); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .hero-container { grid-template-columns: 1fr; }
+      .hero-text h1 { font-size: 2.2rem; }
+      .section-nav-wrapper { top: 64px; }
+      .content-section { scroll-margin-top: 120px; }
+      .arch-item { flex-direction: column; gap: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        <nav class="main-nav" id="mainNav"></nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="polygon-hero">
+    <div class="hero-container">
+      <div class="hero-text">
+        <div class="breadcrumb">
+          <a href="../index.html">Inicio</a>
+          <span>/</span>
+          <a href="index.html">Investigación</a>
+          <span>/</span>
+          <span style="color: var(--secondary);">San Andrés</span>
+        </div>
+        <span class="hero-badge"><i class="fas fa-monument"></i> VALLE INTRAMONTANO</span>
+        <h1>San Andrés y <span>Caiguanabo</span></h1>
+        <p>Valle intramontano con geología compleja, aguas mineromedicinales, rica toponimia local y sitios arqueológicos aborígenes. Cuna del Plan Integral inaugurado por Fidel Castro en 1967.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box"><div class="value">25°C</div><div class="label">Temp. Media</div></div>
+        <div class="stat-box"><div class="value">523m</div><div class="label">Pico Grande</div></div>
+        <div class="stat-box"><div class="value">1426mm</div><div class="label">Precipitación</div></div>
+        <div class="stat-box"><div class="value">9,104</div><div class="label">Habitantes</div></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-nav-wrapper">
+    <nav class="section-nav">
+      <a href="#ubicacion" class="active">Ubicación</a>
+      <a href="#historia">Historia</a>
+      <a href="#toponimia">Toponimia</a>
+      <a href="#geologia">Geología</a>
+      <a href="#relieve">Relieve</a>
+      <a href="#clima">Clima</a>
+      <a href="#hidrografia">Hidrografía</a>
+      <a href="#suelos">Suelos</a>
+      <a href="#vegetacion">Vegetación</a>
+      <a href="#arqueologia">Arqueología</a>
+      <a href="#socioeconomico">Socioeconómico</a>
+      <a href="#problematica">Problemática</a>
+    </nav>
+  </div>
+
+  <main class="container">
+
+    <!-- UBICACIÓN -->
+    <section class="content-section" id="ubicacion">
+      <h2><i class="fas fa-map-marked-alt"></i> Ubicación Geográfica</h2>
+      <p>El área de estudio se encuentra ubicada al norte del municipio Los Palacios y dentro del municipio La Palma, en la provincia de Pinar del Río. Se localiza en la cuenca del río San Diego de los Baños, desde su nacimiento hasta la zona de la Cueva de los Portales en el poblado Caiguanabo.</p>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-compass"></i></div>
+          <h3>Límites</h3>
+          <p><strong>Norte:</strong> Sierra Guacamaya (La Palma)<br><strong>Sur:</strong> Entronque Herradura (Consolación del Sur)<br><strong>Este:</strong> Área Protegida Mil Cumbres<br><strong>Oeste:</strong> Cuenca río La Jagua (Viñales)</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-water"></i></div>
+          <h3>Cuenca Hidrográfica</h3>
+          <p>Cuenca del río San Diego de los Baños. La parte alta es la cuenca de captación del embalse La Juventud (105 millones de m³), principal proveedor de agua para zonas arroceras del sur.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- HISTORIA -->
+    <section class="content-section" id="historia">
+      <h2><i class="fas fa-landmark"></i> Historia Local</h2>
+      <p>La zona tiene una rica historia de tenencia de la tierra y transformación social. Antes de 1959, las tierras pertenecían a terratenientes como Fidel Canalete y Pascuala Palomina. En el valle Caiguanabo, los campesinos vivían como arrendatarios de José Manuel Cortinas, dueño de la Hacienda Cortina, quien utilizó la Cueva de los Portales como atractivo turístico.</p>
+      
+      <div class="alert alert-info">
+        <i class="fas fa-star"></i>
+        <div>
+          <h4>Plan Integral San Andrés (1967)</h4>
+          <p>Inaugurado por Fidel Castro el 28 de enero de 1967. Se crearon dos círculos infantiles, un internado para 300 estudiantes, se asfaltaron carreteras a Puerto Escondido y Entronque Herradura, y se remodelaron comercios locales. Transformó radicalmente las condiciones de vida de la población rural.</p>
+        </div>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-graduation-cap"></i></div>
+          <h3>Educación</h3>
+          <p>Cuenta con escuelas desde el Círculo Infantil hasta la Universidad, garantizando formación integral en la zona rural.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-music"></i></div>
+          <h3>Cultura</h3>
+          <p>Posterior a 1959 se construyeron salas de video, clubes juveniles, mini bibliotecas y grupos de aficionados en música, teatro y danza. Se trabaja con el programa "Educa a tu hijo".</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOPONIMIA (NUEVO) -->
+    <section class="content-section" id="toponimia">
+      <h2><i class="fas fa-map-signs"></i> Toponimia Local</h2>
+      <p>Los nombres de los lugares en San Andrés guardan historias fascinantes de los campesinos que habitaron estas tierras, transmitidas por tradición oral. Según la clasificación de Camps Alina, se identifican hidrónimos, orónimos, ecónimos, odónimos y espeleónimos.</p>
+      
+      <div class="toponymy-grid">
+        <div class="toponymy-card">
+          <span class="tag">Ecónimo</span>
+          <h4>Canalete</h4>
+          <p>Recibe este nombre porque las tierras pertenecían al terrateniente Fidel Canalete, una de las primeras familias en vivir en el lugar. Actualmente quedan familias con este apellido en la zona.</p>
+        </div>
+        <div class="toponymy-card">
+          <span class="tag">Hidrónimo</span>
+          <h4>Río Los Mirandas</h4>
+          <p>Toma su nombre porque atraviesa la finca de Santiago Miranda, campesino de la época neocolonial cuya familia continuó trabajando estas tierras tras la Reforma Agraria.</p>
+        </div>
+        <div class="toponymy-card">
+          <span class="tag">Hidrónimo</span>
+          <h4>Río La Pimienta</h4>
+          <p>Nombrado así porque en sus alrededores se sembraban abundantes plantaciones de pimienta, utilizada como sazón en los alimentos por los lugareños.</p>
+        </div>
+        <div class="toponymy-card">
+          <span class="tag">Orónimo</span>
+          <h4>Mogote de Pío</h4>
+          <p>Recibe este nombre porque a su lado vive el campesino Orestes Pérez, apodado "Pío", conocido por toda la comunidad.</p>
+        </div>
+        <div class="toponymy-card">
+          <span class="tag">Orónimo</span>
+          <h4>Hoyo de Nieve</h4>
+          <p>Debe su nombre a Nieves Rodríguez Seguís, señora que vivió en esta depresión. Sus sobrinos aún residen en Canalete.</p>
+        </div>
+        <div class="toponymy-card">
+          <span class="tag">Espeleónimo</span>
+          <h4>Cueva del Negro</h4>
+          <p>Según la tradición oral más antigua de los campesinos de la zona, esta cueva sirvió de refugio a un negro cimarrón que huía de la esclavitud.</p>
+        </div>
+        <div class="toponymy-card">
+          <span class="tag">Agrónimo</span>
+          <h4>Vega de Fonte</h4>
+          <p>Perteneciente a Miguel Fonte. La Vega Guacamaya recibe su nombre por los árboles frondosos que predominaban en la zona.</p>
+        </div>
+        <div class="toponymy-card">
+          <span class="tag">Odónimo</span>
+          <h4>Camino a Guacamaya</h4>
+          <p>Vía histórica que conecta el valle con la sierra. Otros odónimos incluyen Camino a Canalete, Camino al Yayal y Carretera a Puerto Escondido.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- GEOLOGÍA -->
+    <section class="content-section" id="geologia">
+      <h2><i class="fas fa-gem"></i> Geología Compleja</h2>
+      <p>La constitución geológica regional es extraordinariamente compleja, representando algunas de las formaciones más antiguas del país. Desde el nacimiento del río San Diego hasta la Cueva de los Portales, alternan rocas terrígenas y carbonatadas del Jurásico y Cretácico Inferior.</p>
+      
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>Formación</th>
+            <th>Edad</th>
+            <th>Litología</th>
+            <th>Ambiente</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>San Cayetano</td>
+            <td>Jurásico Inf.-Sup.</td>
+            <td>Areniscas grises oscuras, lutitas, limolitas arcillosas. Al intemperizarse toman colores rojizos.</td>
+            <td>Mar somero con influencia deltaica. Espesor hasta 6,000 m.</td>
+          </tr>
+          <tr>
+            <td>Jagua</td>
+            <td>Jurásico Sup.</td>
+            <td>Calizas micríticas, calcarenitas, lentes de pedernales. Miembros Pimienta y Pan de Azúcar.</td>
+            <td>Aguas marinas someras.</td>
+          </tr>
+          <tr>
+            <td>Guasasa</td>
+            <td>Jurásico Sup. - Cretácico Inf.</td>
+            <td>Calizas micríticas, calcarenitas, pedernales. Miembros: San Vicente, El Americano, Tumbadero, Tumbitas.</td>
+            <td>Aguas someras a profundas. Espesor 300-800 m.</td>
+          </tr>
+          <tr>
+            <td>Ancón</td>
+            <td>Paleoceno - Eoceno</td>
+            <td>Calizas esquistosas, arcillosas, margas, brechas calcáreas con fragmentos de pedernales.</td>
+            <td>Cuenca marina inestable de aguas profundas. 50-70 m.</td>
+          </tr>
+          <tr>
+            <td>Manacas</td>
+            <td>Eoceno Inf.-Medio</td>
+            <td>Areniscas polimícticas, limolitas, olistostroma Vieja (depósitos caóticos con bloques de calizas, serpentinitas, rocas volcánicas).</td>
+            <td>Talud continental, corrientes turbidíticas asociadas al sobrecorrimiento. ~200 m.</td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- RELIEVE -->
+    <section class="content-section" id="relieve">
+      <h2><i class="fas fa-mountain"></i> Relieve Intramontano</h2>
+      <p>El área se sitúa en un valle intramontano con características de polja marginal de contacto litológico entre alturas cársicas y alturas pizarrosas.</p>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-mountain"></i></div>
+          <h3>Sierra Guacamaya (Norte)</h3>
+          <p>Elevaciones con laderas verticales, pendientes fuertes y cimas redondeadas, propias de la faja mogótica. Altura máxima: <strong>Pico Grande (523 msnm)</strong>.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-layer-group"></i></div>
+          <h3>Alturas de Pizarras (Sur)</h3>
+          <p>Pendientes suaves y cimas puntiagudas, caracterizadas por crestas y vaguadas. Contacto litológico con depósitos mixtos (arenas, arcillas, conglomerados).</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-map"></i></div>
+          <h3>Valle y Llanuras</h3>
+          <p>Rocas terrígenas con llanuras onduladas fluvio-denudativas disecadas. Altitud promedio 105-200 msnm. Mogotes aislados como cerros testigos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CLIMA -->
+    <section class="content-section" id="clima">
+      <h2><i class="fas fa-cloud-sun"></i> Clima de Valle Intramontano</h2>
+      <p>La zona posee un clima de valle intramontano con humedad relativa alta y estable. En el fondo de los valles las temperaturas suelen bajar mucho más que en las laderas, produciéndose inversiones térmicas.</p>
+      <table class="data-table">
+        <thead>
+          <tr><th>Variable</th><th>Valor</th><th>Detalle</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Temperatura Media</td><td><strong>25°C</strong></td><td>Agosto: 27.1°C (máx) | Enero: 20.9°C (mín)</td></tr>
+          <tr><td>Precipitación Anual</td><td><strong>1,426 mm</strong></td><td>77% entre 20 mayo - 30 octubre. Junio y septiembre máximos.</td></tr>
+          <tr><td>Evaporación Media</td><td><strong>1,763 mm</strong></td><td>Superior a la precipitación anual.</td></tr>
+          <tr><td>Humedad Relativa</td><td><strong>82%</strong></td><td>Alta y estable durante todo el año.</td></tr>
+          <tr><td>Vientos</td><td><strong>ENE 10.3 km/h</strong></td><td>Dirección predominante Este-Noreste.</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <!-- HIDROGRAFÍA -->
+    <section class="content-section" id="hidrografia">
+      <h2><i class="fas fa-tint"></i> Hidrografía</h2>
+      <p>El río Caiguanabo nace en tres arroyos de las Alturas de Pizarras del Centro, sobre esquistos pizarrosos y areniscas cuarcíticas. Realiza un paso subterráneo mediante la Cueva de los Portales y se une al río Las Catalinas para conformar el río San Diego.</p>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-water"></i></div>
+          <h3>Río San Diego</h3>
+          <p>Río principal con dirección norte-sur y 11 afluentes. Atraviesa San Andrés, Baños de Bermejales y San Diego de los Baños. Divide geográficamente la Sierra de los Órganos de la Sierra del Rosario.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-dungeon"></i></div>
+          <h3>Sistema Ojo de Agua</h3>
+          <p>Red hidrográfica kárstica al norte de Canalete. Las alturas cársicas drenan mediante resolladeros hacia un sumidero central que alimenta el río Jagua en Hoyos de San Antonio.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-hot-tub"></i></div>
+          <h3>Aguas Mineromedicinales</h3>
+          <p>Baños de Bermejales: aguas cálcicas, sulfatadas, fluoradas y sulfuradas. Baja mineralización (2 g/L), reacción hipotermal. Fangos medicinales en orillas del Caiguanabo.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-database"></i></div>
+          <h3>Embalse La Juventud</h3>
+          <p>Capacidad: 105 millones de m³. Principal proveedor de agua para zonas arroceras de la llanura costera sur y cultivos varios.</p>
+        </div>
+      </div>
+
+      <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i>
+        <div>
+          <h4>Principales Afluentes del Caiguanabo-San Diego</h4>
+          <p>Río Hondo, La Catalina, El Flamenco, Galalón, Las Pomarrosas, La Pimienta, Los Miranda, La Julia, Río Colorado, Cayo Hueso y Río Palma.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SUELOS -->
+    <section class="content-section" id="suelos">
+      <h2><i class="fas fa-seedling"></i> Suelos</h2>
+      <p>Los suelos son fundamentalmente ferralíticos rojos típicos, alternando con fersialíticos claros (aporte de sedimentos arcillo-arenosos desde Alturas de Pizarras) y carbonatados pardos cerca de mogotes. Existe fuerte contraste edáfico que permite diferenciación de cultivos en un mismo lugar.</p>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-circle" style="color:#b91c1c;"></i></div>
+          <h3>Ferralítico Rojo Típico</h3>
+          <p>Predominio minerales arcillosos 1:1. CIC &lt;20 cmol(+)/kg. Fe libre &gt;60% del Fe total. Estructura con microagregados redondeados. Mohs &lt;3. Productivos para café y cultivos varios.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-circle" style="color:#d97706;"></i></div>
+          <h3>Fersialítico Claro</h3>
+          <p>Formados por arrastre de sedimentos arcillo-arenosos desde Alturas de Pizarras del Centro durante período lluvioso. Colores claros por menor acumulación de óxidos de hierro.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-circle" style="color:#78350f;"></i></div>
+          <h3>Carbonatados Pardos</h3>
+          <p>Cercanos a mogotes y alturas cársicas. Génesis a partir de rocas serpentinitas en lugares puntuales entre pequeños mogotes (&lt;30m) y alturas de pizarras.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- VEGETACIÓN -->
+    <section class="content-section" id="vegetacion">
+      <h2><i class="fas fa-leaf"></i> Vegetación y Flora</h2>
+      <p>La zona se ubica en la confluencia de tres distritos fitogeográficos: <strong>Viñalense, Pinarense y Rosariense</strong>, lo que genera una zona de contrastes vegetacionales. Se desarrollan bosques tropicales con complejo de vegetación de mogotes y coníferas sobre alturas de pizarras.</p>
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-tree"></i></div>
+          <h3>Complejo de Mogotes</h3>
+          <p>Matorral xeromorfo de crestas sobre rendzina húmica entre rocas calizas. Especies adaptadas a sequedad extrema.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-tree"></i></div>
+          <h3>Bosque de Coníferas</h3>
+          <p>Sobre alturas de pizarras. Recursos forestales como principal uso económico. Pinos dispersos permiten vegetación secundaria arbustiva.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ARQUEOLOGÍA (NUEVO) -->
+    <section class="content-section" id="arqueologia">
+      <h2><i class="fas fa-bone"></i> Sitios Arqueológicos Aborígenes</h2>
+      <p>El área de San Andrés-Caiguanabo atesora importantes evidencias de asentamientos precolombinos. Los sitios fueron documentados mediante entrevistas a pobladores locales y prospección de campo por el GIPPC.</p>
+      
+      <div class="archaeology-list">
+        <div class="arch-item">
+          <div class="arch-icon"><i class="fas fa-dungeon"></i></div>
+          <div class="arch-info">
+            <h4>Cueva del Cojo</h4>
+            <div class="location"><i class="fas fa-map-pin"></i> Extremo oriental del Mogote Las Cruces, Caiguanabo</div>
+            <p>Se encontraron fragmentos y núcleos de sílex, así como restos alimenticios terrestres. Evidencia de taller lítico y actividad doméstica.</p>
+          </div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon"><i class="fas fa-skull"></i></div>
+          <div class="arch-info">
+            <h4>Cueva Funeraria (sin nombre)</h4>
+            <div class="location"><i class="fas fa-map-pin"></i> A 50 metros de la Cueva de los Portales, Caiguanabo</div>
+            <p>Cueva funeraria donde en la década de 1950 un desconocido extrajo varios sacos de restos humanos. Sitio de alto valor antropológico no excavado científicamente.</p>
+          </div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon"><i class="fas fa-tooth"></i></div>
+          <div class="arch-info">
+            <h4>Cueva del Malangal I</h4>
+            <div class="location"><i class="fas fa-map-pin"></i> Zona de Galalón</div>
+            <p>Cueva funeraria donde se encontraron piezas dentales humanas. Evidencia directa de uso sepulcral por comunidades aborígenes.</p>
+          </div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon"><i class="fas fa-hammer"></i></div>
+          <div class="arch-info">
+            <h4>Cueva del Malangal II</h4>
+            <div class="location"><i class="fas fa-map-pin"></i> Zona de Galalón</div>
+            <p>Paradero de abrigo rocoso. Se colectó un majador de roca cuarcífera, herramienta utilizada para procesamiento de alimentos.</p>
+          </div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon"><i class="fas fa-fire"></i></div>
+          <div class="arch-info">
+            <h4>Cueva de Las Coloradas</h4>
+            <div class="location"><i class="fas fa-map-pin"></i> Zona de Galalón</div>
+            <p>Presenta estratos cenizosos de 30 cm de espesor. Varios fragmentos deteriorados de restos humanos y dos majadores partidos. Evidencia de fogatas y ocupación prolongada.</p>
+          </div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon"><i class="fas fa-shield-alt"></i></div>
+          <div class="arch-info">
+            <h4>Cueva de la Maniobra (El Polvorín)</h4>
+            <div class="location"><i class="fas fa-map-pin"></i> Mogote Dos Cruces, Caiguanabo</div>
+            <p>Sitio con posible uso histórico-militar además de ocupación aborigen. Requiere investigación arqueológica sistemática.</p>
+          </div>
+        </div>
+        <div class="arch-item">
+          <div class="arch-icon"><i class="fas fa-search"></i></div>
+          <div class="arch-info">
+            <h4>Cueva del Salvador</h4>
+            <div class="location"><i class="fas fa-map-pin"></i> Caiguanabo</div>
+            <p>Sitio reportado por informantes locales. Pendiente de prospección arqueológica detallada por el GIPPC.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="alert alert-warning">
+        <i class="fas fa-exclamation-triangle"></i>
+        <div>
+          <h4>⚠️ Nota Importante</h4>
+          <p>Varios sitios arqueológicos han sido afectados por extracciones no autorizadas (como la cueva funeraria cerca de Los Portales). Se recomienda la protección legal y excavación científica sistemática de estos yacimientos.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SOCIOECONÓMICO (NUEVO) -->
+    <section class="content-section" id="socioeconomico">
+      <h2><i class="fas fa-users"></i> Características Socioeconómicas</h2>
+      <p>El Consejo Popular San Andrés está integrado por <strong>7 circunscripciones con 9,104 habitantes</strong>. Es un territorio totalmente agrícola cuyo principal cultivo es el café.</p>
+      
+      <div class="info-grid">
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-coffee"></i></div>
+          <h3>Cultivo Principal: Café</h3>
+          <p>El café es el rubro económico fundamental, aprovechando los suelos ferralíticos rojos y las condiciones climáticas del valle intramontano.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-carrot"></i></div>
+          <h3>Cultivos Varios</h3>
+          <p>Malanga, yuca, boniato, plátano y granos. Tabaco como cultivo secundario de importancia económica.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-tree"></i></div>
+          <h3>Silvicultura</h3>
+          <p>Clasifica en primer orden junto al café. Bosques de pinares sobre alturas de pizarras no aptas para laboreo agrícola.</p>
+        </div>
+        <div class="info-card">
+          <div class="icon"><i class="fas fa-heartbeat"></i></div>
+          <h3>Turismo de Salud</h3>
+          <p>Baños de Bermejales: aprovechamiento de aguas mineromedicinales y fangos terapéuticos. Cueva de los Portales como atractivo histórico-natural.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEMÁTICA -->
+    <section class="content-section" id="problematica">
+      <h2><i class="fas fa-exclamation-circle"></i> Problemática Ambiental</h2>
+      <p>En la región de Canalete-San Andrés se constataron los siguientes problemas ambientales principales:</p>
+      <div class="info-grid">
+        <div class="info-card" style="border-top-color: #dc2626;">
+          <div class="icon" style="background:#fee2e2; color:#dc2626;"><i class="fas fa-cut"></i></div>
+          <h3>Tala Ilegal</h3>
+          <p>Extracción ilegal de maderas preciosas en zonas de montaña, afectando la cobertura boscosa.</p>
+        </div>
+        <div class="info-card" style="border-top-color: #dc2626;">
+          <div class="icon" style="background:#fee2e2; color:#dc2626;"><i class="fas fa-crosshairs"></i></div>
+          <h3>Caza Ilegal</h3>
+          <p>Caza de animales en período de veda, amenazando la fauna terrestre del valle.</p>
+        </div>
+        <div class="info-card" style="border-top-color: #dc2626;">
+          <div class="icon" style="background:#fee2e2; color:#dc2626;"><i class="fas fa-leaf"></i></div>
+          <h3>Colecta Ilegal de Plantas</h3>
+          <p>Extracción de orquídeas, bromeliáceas y otras especies endémicas en peligro de extinción.</p>
+        </div>
+        <div class="info-card" style="border-top-color: #f59e0b;">
+          <div class="icon" style="background:#fef3c7; color:#d97706;"><i class="fas fa-wind"></i></div>
+          <h3>Ciclones y Sequías</h3>
+          <p>Afectaciones por ciclones debido al cambio climático. Sequías prolongadas afectan zonas de cultivos.</p>
+        </div>
+        <div class="info-card" style="border-top-color: #f59e0b;">
+          <div class="icon" style="background:#fef3c7; color:#d97706;"><i class="fas fa-erosion"></i></div>
+          <h3>Degradación de Suelos</h3>
+          <p>Erosión en crestas de alturas de pizarras por mal manejo agrícola y deforestación.</p>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-quote">Cada paisaje cuenta una historia. Descubre la tuya en Pinar del Río.</p>
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="../index.html">Conociendo Pinar</a> | <a href="../privacidad.html">Privacidad</a> | <a href="../terminos.html">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
+    document.addEventListener('click', (e) => {
+      if (!mainNav.contains(e.target) && e.target !== menuToggle) mainNav.classList.remove('show');
+    });
+
+    // Header scroll
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('.site-header');
+      if (window.scrollY > 50) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    });
+
+    // In-page nav active state
+    const sections = document.querySelectorAll('.content-section');
+    const navLinks = document.querySelectorAll('.section-nav a');
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (pageYOffset >= sectionTop - 160) current = section.getAttribute('id');
+      });
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) link.classList.add('active');
+      });
+    });
+  </script>
+  <script src="menu.js" defer></script>
+</body>
+</html>

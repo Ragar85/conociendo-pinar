@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Descargas y Recursos • Investigación • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-dark: #0e2c22;
+      --primary: #1e4a3b;
+      --primary-light: #2d6b54;
+      --secondary: #f4c542;
+      --secondary-light: #f9e2b7;
+      --surface: #ffffff;
+      --surface-alt: #f4f8f0;
+      --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b;
+      --text-secondary: #5a7a6a;
+      --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06);
+      --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+
+    /* HEADER */
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); transition: var(--transition); }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+
+    /* HERO */
+    .downloads-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); color: white; padding: 100px 24px 80px; overflow: hidden; text-align: center; }
+    .downloads-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('../img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.1; }
+    .hero-content { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+    .breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px; }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { color: var(--secondary); }
+    .hero-content h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .hero-content h1 span { color: var(--secondary); }
+    .hero-content p { font-size: 1.15rem; opacity: 0.9; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .hero-badge { display: inline-block; background: rgba(244,197,66,0.2); color: var(--secondary); padding: 8px 20px; border-radius: var(--radius-xl); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 20px; border: 1px solid rgba(244,197,66,0.3); }
+
+    /* CONTAINER */
+    .container { max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; }
+    
+    /* FILTERS */
+    .filters { background: var(--surface); padding: 16px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; margin-bottom: 40px; position: sticky; top: 80px; z-index: 50; }
+    .filter-btn { padding: 8px 18px; border-radius: var(--radius-xl); border: 2px solid var(--border); background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.9rem; cursor: pointer; transition: var(--transition); font-family: inherit; }
+    .filter-btn:hover { border-color: var(--primary); color: var(--primary); }
+    .filter-btn.active { background: var(--primary); color: white; border-color: var(--primary); }
+
+    /* DOWNLOADS GRID */
+    .downloads-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 24px; }
+    
+    .download-card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); display: flex; flex-direction: column; border-top: 4px solid var(--secondary); }
+    .download-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    
+    .card-header { padding: 24px; display: flex; gap: 16px; align-items: flex-start; }
+    .file-icon { width: 56px; height: 56px; border-radius: var(--radius-sm); background: var(--surface-alt); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; flex-shrink: 0; }
+    .file-icon.pdf { color: #dc2626; background: #fee2e2; }
+    .file-icon.map { color: #2563eb; background: #dbeafe; }
+    .file-icon.img { color: #16a34a; background: #d1fae5; }
+    .file-icon.xls { color: #059669; background: #d1fae5; }
+    
+    .card-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; line-height: 1.3; }
+    .card-category { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); margin-bottom: 8px; }
+    
+    .card-body { padding: 0 24px 20px; flex: 1; }
+    .card-desc { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 16px; }
+    
+    .card-meta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 20px; }
+    .meta-tag { font-size: 0.75rem; padding: 3px 10px; background: var(--surface-alt); color: var(--text-secondary); border-radius: var(--radius-xl); font-weight: 600; display: flex; align-items: center; gap: 4px; }
+    .meta-tag i { font-size: 0.7rem; }
+    
+    .card-footer { padding: 16px 24px; background: var(--surface-alt); border-top: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; }
+    .download-btn { display: inline-flex; align-items: center; gap: 8px; padding: 10px 20px; background: var(--primary); color: white; text-decoration: none; border-radius: var(--radius-xl); font-weight: 600; font-size: 0.9rem; transition: var(--transition); border: none; cursor: pointer; font-family: inherit; }
+    .download-btn:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-sm); }
+    .download-btn i { transition: transform 0.3s ease; }
+    .download-btn:hover i { transform: translateY(2px); }
+    
+    .file-size { font-size: 0.85rem; color: var(--text-muted); font-weight: 600; }
+
+    /* INFO BOX */
+    .info-section { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-radius: var(--radius-lg); padding: 40px; margin-top: 60px; text-align: center; position: relative; overflow: hidden; }
+    .info-section::before { content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(244,197,66,0.15), transparent); border-radius: 50%; }
+    .info-content { position: relative; z-index: 1; max-width: 700px; margin: 0 auto; }
+    .info-section h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 12px; }
+    .info-section p { font-size: 1rem; opacity: 0.95; line-height: 1.6; margin-bottom: 20px; }
+    .info-section a { color: var(--secondary); font-weight: 700; text-decoration: none; border-bottom: 2px solid var(--secondary); transition: var(--transition); }
+    .info-section a:hover { color: white; border-bottom-color: white; }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 60px 24px 30px; text-align: center; }
+    .footer-quote { max-width: 700px; margin: 0 auto 40px; font-size: 1.3rem; font-style: italic; color: rgba(255,255,255,0.7); }
+    .footer-quote::before, .footer-quote::after { content: '"'; color: var(--secondary); font-size: 1.6rem; font-weight: 700; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--primary-dark); flex-direction: column; padding: 24px; gap: 8px; min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); box-shadow: var(--shadow-lg); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .hero-content h1 { font-size: 2.2rem; }
+      .filters { top: 70px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        <nav class="main-nav" id="mainNav"></nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="downloads-hero">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="../index.html">Inicio</a>
+        <span>/</span>
+        <a href="index.html">Investigación</a>
+        <span>/</span>
+        <span style="color: var(--secondary);">Descargas</span>
+      </div>
+      <span class="hero-badge"><i class="fas fa-download"></i> Biblioteca Digital GIPPC</span>
+      <h1>Recursos y <span>Descargas</span></h1>
+      <p>Accede a guías de campo, mapas topográficos, fichas biológicas y plantillas de registro validadas por el Grupo de Investigaciones de Polígonos de Prácticas de Campo.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    
+    <!-- FILTERS -->
+    <div class="filters">
+      <button class="filter-btn active" data-filter="all">Todos los Recursos</button>
+      <button class="filter-btn" data-filter="guias"><i class="fas fa-book"></i> Guías y Protocolos</button>
+      <button class="filter-btn" data-filter="mapas"><i class="fas fa-map"></i> Cartografía</button>
+      <button class="filter-btn" data-filter="fichas"><i class="fas fa-leaf"></i> Fichas Biológicas</button>
+      <button class="filter-btn" data-filter="plantillas"><i class="fas fa-file-alt"></i> Plantillas</button>
+    </div>
+
+    <!-- DOWNLOADS GRID -->
+    <div class="downloads-grid">
+
+      <!-- RECURSO 1: Guía Flora Amenazada -->
+      <div class="download-card" data-category="guias fichas">
+        <div class="card-header">
+          <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+          <div>
+            <div class="card-category">Guía de Campo</div>
+            <h3 class="card-title">Flora Amenazada de Pinar del Río</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Guía visual para la identificación de especies en Peligro Crítico (CR) y En Peligro (EN). Incluye <em>Coccothrinax yuraguana</em>, <em>Encyclia grisebachiana</em> y más.</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-file-pdf"></i> PDF</span>
+            <span class="meta-tag"><i class="fas fa-copy"></i> 24 páginas</span>
+            <span class="meta-tag"><i class="fas fa-leaf"></i> Botánica</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">4.2 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Guía_Flora_Amenazada.pdf')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- RECURSO 2: Mapa Sierra Guasasa -->
+      <div class="download-card" data-category="mapas">
+        <div class="card-header">
+          <div class="file-icon map"><i class="fas fa-map-marked-alt"></i></div>
+          <div>
+            <div class="card-category">Cartografía</div>
+            <h3 class="card-title">Mapa Topográfico Sierra Guasasa</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Mapa topográfico escala 1:25,000 con las 35 cuevas del sistema, los 12 niveles de cavernamiento y curvas de nivel detalladas.</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-image"></i> JPG/PDF</span>
+            <span class="meta-tag"><i class="fas fa-expand"></i> Alta Resolución</span>
+            <span class="meta-tag"><i class="fas fa-mountain"></i> Geología</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">8.7 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Mapa_Sierra_Guasasa_1-25000.pdf')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- RECURSO 3: Protocolo Suelos Munsell -->
+      <div class="download-card" data-category="guias">
+        <div class="card-header">
+          <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+          <div>
+            <div class="card-category">Protocolo</div>
+            <h3 class="card-title">Clasificación de Suelos con Munsell</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Metodología paso a paso para realizar calicatas, identificar horizontes y determinar colores según la tabla Munsell (Ferralíticos, Fersialíticos).</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-file-pdf"></i> PDF</span>
+            <span class="meta-tag"><i class="fas fa-copy"></i> 8 páginas</span>
+            <span class="meta-tag"><i class="fas fa-seedling"></i> Edafología</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">1.8 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Protocolo_Suelos_Munsell.pdf')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- RECURSO 4: Fichas Especies Emblemáticas -->
+      <div class="download-card" data-category="fichas">
+        <div class="card-header">
+          <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+          <div>
+            <div class="card-category">Fichas Biológicas</div>
+            <h3 class="card-title">Especies Emblemáticas (Pack Completo)</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Pack de 8 fichas técnicas imprimibles: Zunzuncito, Iguana Gigante, Palma Barrigona, Flor de San Pedro, Camarón Reculón y más.</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-file-pdf"></i> PDF</span>
+            <span class="meta-tag"><i class="fas fa-copy"></i> 16 páginas</span>
+            <span class="meta-tag"><i class="fas fa-paw"></i> Zoología/Botánica</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">5.4 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Fichas_Especies_Emblematicas.pdf')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- RECURSO 5: Libreta de Campo -->
+      <div class="download-card" data-category="plantillas">
+        <div class="card-header">
+          <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+          <div>
+            <div class="card-category">Plantilla</div>
+            <h3 class="card-title">Libreta de Campo GIPPC</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Plantilla imprimible para registro sistemático de datos: estaciones, rumbos, buzamientos, clima, flora y fauna. Formato profesional.</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-file-pdf"></i> PDF</span>
+            <span class="meta-tag"><i class="fas fa-copy"></i> 30 páginas</span>
+            <span class="meta-tag"><i class="fas fa-pen"></i> Registro</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">2.1 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Libreta_Campo_GIPPC.pdf')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- RECURSO 6: Informe Guanahacabibes -->
+      <div class="download-card" data-category="guias">
+        <div class="card-header">
+          <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+          <div>
+            <div class="card-category">Informe Técnico</div>
+            <h3 class="card-title">Estudio Integral Guanahacabibes</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Informe completo de la Reserva de la Biosfera: geología, clima (25.2°C), hidrografía, 172 especies de aves y problemática ambiental.</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-file-pdf"></i> PDF</span>
+            <span class="meta-tag"><i class="fas fa-copy"></i> 45 páginas</span>
+            <span class="meta-tag"><i class="fas fa-water"></i> Integral</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">12.3 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Informe_Guanahacabibes_2018.pdf')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- RECURSO 7: Tabla Munsell Digital -->
+      <div class="download-card" data-category="plantillas guias">
+        <div class="card-header">
+          <div class="file-icon img"><i class="fas fa-palette"></i></div>
+          <div>
+            <div class="card-category">Referencia</div>
+            <h3 class="card-title">Tabla Munsell Digital (Suelos)</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Versión digital de alta resolución de las cartas de color Munsell para identificación de Hue, Value y Chroma en campo.</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-image"></i> PNG</span>
+            <span class="meta-tag"><i class="fas fa-expand"></i> 4K</span>
+            <span class="meta-tag"><i class="fas fa-palette"></i> Color</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">6.8 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Tabla_Munsell_Digital_4K.png')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+      <!-- RECURSO 8: Protocolo HCl -->
+      <div class="download-card" data-category="guias">
+        <div class="card-header">
+          <div class="file-icon pdf"><i class="fas fa-file-pdf"></i></div>
+          <div>
+            <div class="card-category">Protocolo</div>
+            <h3 class="card-title">Identificación de Rocas con HCl</h3>
+          </div>
+        </div>
+        <div class="card-body">
+          <p class="card-desc">Guía de seguridad y procedimiento para usar ácido clorhídrico al 10% en la diferenciación de calizas y arenas cuarcíferas.</p>
+          <div class="card-meta">
+            <span class="meta-tag"><i class="fas fa-file-pdf"></i> PDF</span>
+            <span class="meta-tag"><i class="fas fa-copy"></i> 4 páginas</span>
+            <span class="meta-tag"><i class="fas fa-gem"></i> Geología</span>
+          </div>
+        </div>
+        <div class="card-footer">
+          <span class="file-size">1.2 MB</span>
+          <button class="download-btn" onclick="simularDescarga('Protocolo_HCl_10.pdf')">
+            <i class="fas fa-download"></i> Descargar
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- INFO SECTION -->
+    <section class="info-section">
+      <div class="info-content">
+        <h2>📚 ¿Necesitas más recursos?</h2>
+        <p>Si eres profesor o investigador y requieres acceso a los datos crudos, mapas en formato SIG o informes completos de expediciones específicas, contáctanos directamente.</p>
+        <a href="../soporte.html">Solicitar acceso a datos científicos <i class="fas fa-arrow-right"></i></a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-quote">El conocimiento compartido es el que multiplica su valor.</p>
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="../index.html">Conociendo Pinar</a> | <a href="../privacidad.html">Privacidad</a> | <a href="../terminos.html">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
+    document.addEventListener('click', (e) => {
+      if (!mainNav.contains(e.target) && e.target !== menuToggle) mainNav.classList.remove('show');
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('.site-header');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // Filters Logic
+    const filterBtns = document.querySelectorAll('.filter-btn');
+    const cards = document.querySelectorAll('.download-card');
+
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        // Remove active class from all buttons
+        filterBtns.forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+
+        const filter = btn.getAttribute('data-filter');
+
+        cards.forEach(card => {
+          const categories = card.getAttribute('data-category');
+          if (filter === 'all' || categories.includes(filter)) {
+            card.style.display = 'flex';
+            setTimeout(() => card.style.opacity = '1', 10);
+          } else {
+            card.style.opacity = '0';
+            setTimeout(() => card.style.display = 'none', 300);
+          }
+        });
+      });
+    });
+
+    // Simulate Download Function
+    function simularDescarga(nombreArchivo) {
+      // Create a temporary modal/alert
+      const modal = document.createElement('div');
+      modal.style.cssText = `
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background: rgba(0,0,0,0.7); z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        backdrop-filter: blur(8px);
+      `;
+      
+      modal.innerHTML = `
+        <div style="
+          background: white; padding: 40px; border-radius: 20px;
+          max-width: 400px; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+          animation: slideIn 0.3s ease;
+        ">
+          <div style="
+            width: 80px; height: 80px; border-radius: 50%;
+            background: #d1fae5; color: #16a34a;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 2.5rem; margin: 0 auto 20px;
+          ">
+            <i class="fas fa-check-circle"></i>
+          </div>
+          <h3 style="color: #1a3c2b; margin-bottom: 12px; font-size: 1.3rem;">Descarga Iniciada</h3>
+          <p style="color: #5a7a6a; margin-bottom: 8px; font-size: 0.95rem;">
+            <strong>${nombreArchivo}</strong>
+          </p>
+          <p style="color: #8ba89a; font-size: 0.85rem; margin-bottom: 24px;">
+            Este es un entorno de demostración. En producción, el archivo se descargaría automáticamente.
+          </p>
+          <button onclick="this.closest('div[style]').parentElement.remove()" style="
+            background: #1e4a3b; color: white; border: none;
+            padding: 12px 32px; border-radius: 40px; font-weight: 600;
+            cursor: pointer; font-size: 0.95rem; font-family: inherit;
+          ">
+            Entendido
+          </button>
+        </div>
+      `;
+      
+      document.body.appendChild(modal);
+    }
+  </script>
+  <script src="menu.js" defer></script>
+</body>
+</html>

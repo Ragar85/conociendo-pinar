@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Dashboard de Biodiversidad • Investigación • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --green: #10b981; --blue: #3b82f6; --orange: #f59e0b; --red: #ef4444; --purple: #8b5cf6; --pink: #ec4899; --cyan: #06b6d4;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); transition: var(--transition); }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; transition: var(--transition); }
+    .header-right { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); white-space: nowrap; }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+
+    .header-search-form { display: flex; align-items: center; background: rgba(255,255,255,0.15); border-radius: var(--radius-xl); padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); transition: var(--transition); }
+    .header-search-form:focus-within { background: rgba(255,255,255,0.25); border-color: var(--secondary); }
+    .header-search-form i { color: rgba(255,255,255,0.8); margin-right: 8px; font-size: 0.9rem; }
+    .header-search-form input { background: transparent; border: none; outline: none; color: white; font-size: 0.9rem; width: 160px; font-family: inherit; }
+    .header-search-form input::placeholder { color: rgba(255,255,255,0.6); }
+    .mobile-search-form { display: none; width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.1); border-radius: var(--radius-sm); margin-bottom: 8px; align-items: center; gap: 8px; }
+    .mobile-search-form i { color: rgba(255,255,255,0.7); }
+    .mobile-search-form input { background: transparent; border: none; outline: none; color: white; width: 100%; font-family: inherit; font-size: 0.95rem; }
+    .mobile-search-form input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .account-btn { display: inline-flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; transition: var(--transition); position: relative; font-size: 0.95rem; font-family: inherit; }
+    .account-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.08); box-shadow: 0 0 0 3px rgba(244,197,66,0.3); }
+    .account-btn .tooltip { position: absolute; top: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(-4px); background: var(--primary-dark); color: white; padding: 4px 10px; border-radius: 6px; font-size: 0.75rem; white-space: nowrap; opacity: 0; visibility: hidden; transition: all 0.2s ease; pointer-events: none; font-weight: 500; }
+    .account-btn .tooltip::before { content: ''; position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); border: 4px solid transparent; border-bottom-color: var(--primary-dark); }
+    .account-btn:hover .tooltip { opacity: 1; visibility: visible; transform: translateX(-50%) translateY(0); }
+
+    .avatar-container { position: relative; display: inline-block; cursor: pointer; }
+    .avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--secondary); display: flex; align-items: center; justify-content: center; color: var(--primary); font-weight: 700; font-size: 1rem; border: 2px solid rgba(255,255,255,0.3); transition: var(--transition); overflow: hidden; }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .dropdown-menu { display: none; position: absolute; right: 0; top: 115%; background: white; min-width: 200px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); padding: 10px 0; z-index: 200; animation: dropdownSlide 0.3s ease; }
+    @keyframes dropdownSlide { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu button { display: flex; align-items: center; gap: 12px; padding: 12px 20px; color: var(--text-primary); font-size: 0.9rem; background: none; border: none; width: 100%; text-align: left; cursor: pointer; font-family: inherit; }
+    .dropdown-menu button:hover { background: var(--surface-alt); }
+    .dropdown-menu .divider { height: 1px; background: var(--border); margin: 8px 0; }
+    .dropdown-menu .user-email { padding: 12px 20px; font-weight: 600; color: var(--primary); border-bottom: 1px solid var(--border); font-size: 0.85rem; word-break: break-all; }
+
+    .auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+    .auth-modal.active { display: flex; }
+    .auth-modal-content { background: var(--surface); max-width: 420px; width: 90%; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); }
+    .auth-modal-content h2 { margin-bottom: 24px; color: var(--text-primary); font-size: 1.6rem; font-weight: 700; }
+    .auth-modal-content input { width: 100%; padding: 14px 18px; margin: 10px 0; border-radius: var(--radius-sm); border: 2px solid var(--border); font-size: 1rem; font-family: inherit; }
+    .auth-modal-content input:focus { outline: none; border-color: var(--primary); }
+    .auth-modal-content .btn-auth { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; font-size: 1rem; margin-top: 16px; font-family: inherit; }
+    .auth-modal-content .toggle-link { display: block; margin-top: 16px; text-align: center; color: var(--primary); cursor: pointer; font-weight: 500; }
+    .auth-modal-content .close-btn { margin-top: 16px; background: var(--surface-alt); border: none; padding: 10px 20px; border-radius: var(--radius-sm); cursor: pointer; font-family: inherit; font-weight: 500; }
+
+    /* HERO */
+    .dash-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #065f46 50%, #047857 100%); color: white; padding: 80px 24px 60px; overflow: hidden; text-align: center; }
+    .dash-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('../img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.08; }
+    .hero-content { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+    .breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; opacity: 0.9; margin-bottom: 16px; }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { color: var(--secondary); }
+    .hero-content h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; }
+    .hero-content h1 span { color: var(--secondary); }
+    .hero-content p { font-size: 1.05rem; opacity: 0.95; }
+    .live-badge { display: inline-flex; align-items: center; gap: 8px; background: rgba(239,68,68,0.2); border: 1px solid rgba(239,68,68,0.4); padding: 6px 16px; border-radius: var(--radius-xl); font-size: 0.8rem; font-weight: 700; margin-top: 16px; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: #ef4444; animation: pulse 1.5s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
+
+    /* CONTAINER */
+    .container { max-width: 1200px; margin: 0 auto; padding: 40px 24px 80px; }
+
+    /* KPI CARDS */
+    .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .kpi-card { background: var(--surface); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); transition: var(--transition); border-top: 4px solid var(--primary); text-align: center; }
+    .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .kpi-card .kpi-icon { font-size: 2rem; margin-bottom: 10px; }
+    .kpi-card .kpi-value { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); line-height: 1; margin-bottom: 4px; }
+    .kpi-card .kpi-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted); font-weight: 600; }
+    .kpi-card .kpi-change { font-size: 0.8rem; margin-top: 6px; font-weight: 600; }
+    .kpi-change.up { color: var(--green); }
+    .kpi-change.down { color: var(--red); }
+
+    /* CHARTS GRID */
+    .charts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(360px, 1fr)); gap: 24px; margin-bottom: 40px; }
+    .chart-card { background: var(--surface); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); }
+    .chart-card h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .chart-card .chart-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+    .chart-container { position: relative; height: 280px; }
+
+    /* FULL WIDTH CHART */
+    .chart-full { background: var(--surface); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 40px; }
+    .chart-full h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .chart-full .chart-subtitle { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 20px; }
+    .chart-full .chart-container { height: 320px; }
+
+    /* FILTERS */
+    .dash-filters { background: var(--surface); padding: 16px 20px; border-radius: var(--radius-md); box-shadow: var(--shadow-sm); margin-bottom: 30px; display: flex; gap: 12px; flex-wrap: wrap; align-items: center; }
+    .dash-filters label { font-size: 0.85rem; font-weight: 600; color: var(--text-secondary); }
+    .dash-filters select { padding: 8px 16px; border: 2px solid var(--border); border-radius: var(--radius-xl); font-family: inherit; font-size: 0.85rem; background: var(--surface); color: var(--text-primary); cursor: pointer; }
+    .dash-filters select:focus { outline: none; border-color: var(--primary); }
+
+    /* RECENT REPORTS */
+    .reports-section { background: var(--surface); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); margin-bottom: 40px; }
+    .reports-section h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
+    .report-list { display: flex; flex-direction: column; gap: 12px; }
+    .report-item { display: flex; gap: 16px; padding: 16px; background: var(--surface-alt); border-radius: var(--radius-sm); border-left: 4px solid var(--primary); transition: var(--transition); }
+    .report-item:hover { transform: translateX(4px); box-shadow: var(--shadow-sm); }
+    .report-icon { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+    .report-icon.ave { background: #dbeafe; color: var(--blue); }
+    .report-icon.flora { background: #d1fae5; color: var(--green); }
+    .report-icon.reptil { background: #fef3c7; color: var(--orange); }
+    .report-icon.mamifero { background: #ede9fe; color: var(--purple); }
+    .report-info h4 { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); margin-bottom: 2px; }
+    .report-info .report-meta { font-size: 0.8rem; color: var(--text-muted); }
+    .report-info .report-location { font-size: 0.8rem; color: var(--primary); font-weight: 600; margin-top: 4px; }
+
+    /* REPORT FORM */
+    .report-form-section { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-radius: var(--radius-lg); padding: 40px; margin-bottom: 40px; }
+    .report-form-section h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+    .report-form-section > p { opacity: 0.9; margin-bottom: 24px; }
+    .report-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; }
+    .form-group { display: flex; flex-direction: column; gap: 6px; }
+    .form-group label { font-size: 0.85rem; font-weight: 600; opacity: 0.9; }
+    .form-group input, .form-group select, .form-group textarea { padding: 12px 16px; border: 2px solid rgba(255,255,255,0.2); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem; background: rgba(255,255,255,0.1); color: white; transition: var(--transition); }
+    .form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,0.5); }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { outline: none; border-color: var(--secondary); background: rgba(255,255,255,0.15); }
+    .form-group select option { background: var(--primary-dark); color: white; }
+    .form-group textarea { min-height: 80px; resize: vertical; }
+    .btn-submit { padding: 14px 32px; background: var(--secondary); color: var(--primary-dark); border: none; border-radius: var(--radius-xl); font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition); font-family: inherit; align-self: end; }
+    .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(244,197,66,0.4); }
+    .btn-submit:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 40px 24px 30px; text-align: center; font-size: 0.85rem; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .header-right { position: relative; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); flex-direction: column; padding: 24px; gap: 8px; box-shadow: var(--shadow-lg); min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .header-search-form { display: none; }
+      .mobile-search-form { display: flex; }
+      .hero-content h1 { font-size: 2rem; }
+      .charts-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+      .report-form { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="siteHeader">
+    <div class="header-container">
+      <a href="../index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        <form action="../buscador.html" method="GET" class="header-search-form"><i class="fas fa-search"></i><input type="text" name="q" placeholder="Buscar..."></form>
+        <nav class="main-nav" id="mainNav"></nav>
+        <div id="authContainer">
+          <button id="loginBtn" class="account-btn"><i class="fas fa-user"></i><span class="tooltip">Cuenta</span></button>
+          <div id="avatarContainer" style="display:none;" class="avatar-container">
+            <div class="avatar" id="avatarBtn"><span id="avatarText">U</span><img id="avatarImg" style="display:none;" alt="Avatar"></div>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="user-email" id="userEmailDisplay">usuario@email.com</div>
+              <div class="divider"></div>
+              <button id="profileBtn"><i class="fas fa-user"></i> Mi perfil</button>
+              <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <h2 id="authModalTitle">Iniciar Sesión</h2>
+      <input type="email" id="authEmail" placeholder="Correo electrónico">
+      <input type="password" id="authPassword" placeholder="Contraseña">
+      <button class="btn-auth" id="authSubmitBtn">Iniciar Sesión</button>
+      <span class="toggle-link" id="authToggleLink">¿No tienes cuenta? Regístrate</span>
+      <button class="close-btn" id="authCloseBtn">Cerrar</button>
+    </div>
+  </div>
+
+  <section class="dash-hero">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="../index.html">Inicio</a><span>/</span>
+        <a href="index.html">Investigación</a><span>/</span>
+        <span style="color: var(--secondary);">Dashboard</span>
+      </div>
+      <h1>Dashboard de <span>Biodiversidad</span></h1>
+      <p>Monitoreo en tiempo real de la diversidad biológica en los 4 polígonos de estudio del GIPPC.</p>
+      <div class="live-badge"><span class="live-dot"></span> DATOS EN TIEMPO REAL</div>
+    </div>
+  </section>
+
+  <main class="container">
+
+    <!-- FILTERS -->
+    <div class="dash-filters">
+      <label><i class="fas fa-filter"></i> Polígono:</label>
+      <select id="filterPolygon">
+        <option value="all">Todos</option>
+        <option value="guanahacabibes">Guanahacabibes</option>
+        <option value="km9">Km 9 Mantua</option>
+        <option value="sanandres">San Andrés</option>
+        <option value="guasasa">Sierra Guasasa</option>
+      </select>
+      <label><i class="fas fa-paw"></i> Grupo:</label>
+      <select id="filterTaxon">
+        <option value="all">Todos</option>
+        <option value="aves">Aves</option>
+        <option value="reptiles">Reptiles</option>
+        <option value="anfibios">Anfibios</option>
+        <option value="mamiferos">Mamíferos</option>
+        <option value="flora">Flora</option>
+        <option value="invertebrados">Invertebrados</option>
+      </select>
+      <label><i class="fas fa-calendar"></i> Período:</label>
+      <select id="filterPeriod">
+        <option value="month">Último mes</option>
+        <option value="quarter">Último trimestre</option>
+        <option value="year" selected>Último año</option>
+        <option value="all">Todo</option>
+      </select>
+    </div>
+
+    <!-- KPI CARDS -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-icon">🦜</div>
+        <div class="kpi-value" id="kpiEspecies">358</div>
+        <div class="kpi-label">Especies Registradas</div>
+        <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +12 este mes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">📸</div>
+        <div class="kpi-value" id="kpiAvistamientos">1,247</div>
+        <div class="kpi-label">Avistamientos Totales</div>
+        <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +89 esta semana</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">⚠️</div>
+        <div class="kpi-value" id="kpiAmenazadas">17</div>
+        <div class="kpi-label">Especies Amenazadas</div>
+        <div class="kpi-change down"><i class="fas fa-exclamation-circle"></i> 5 en peligro crítico</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">👥</div>
+        <div class="kpi-value" id="kpiReportes">342</div>
+        <div class="kpi-label">Reportes Ciudadanos</div>
+        <div class="kpi-change up"><i class="fas fa-arrow-up"></i> +23 este mes</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🗺️</div>
+        <div class="kpi-value">4</div>
+        <div class="kpi-label">Polígonos Activos</div>
+        <div class="kpi-change up"><i class="fas fa-check-circle"></i> 100% cobertura</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-icon">🌡️</div>
+        <div class="kpi-value" id="kpiTemp">25.2°</div>
+        <div class="kpi-label">Temp. Media Actual</div>
+        <div class="kpi-change up"><i class="fas fa-thermometer-half"></i> Estación Macurije</div>
+      </div>
+    </div>
+
+    <!-- CHARTS ROW 1 -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-pie" style="color:var(--primary);margin-right:8px;"></i>Distribución por Grupo Taxonómico</h3>
+        <p class="chart-subtitle">Proporción de especies por grupo en los 4 polígonos</p>
+        <div class="chart-container"><canvas id="chartTaxon"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-bar" style="color:var(--primary);margin-right:8px;"></i>Especies por Polígono</h3>
+        <p class="chart-subtitle">Número total de especies documentadas por zona de estudio</p>
+        <div class="chart-container"><canvas id="chartPolygon"></canvas></div>
+      </div>
+    </div>
+
+    <!-- CHART ROW 2 (FULL WIDTH) -->
+    <div class="chart-full">
+      <h3><i class="fas fa-chart-line" style="color:var(--primary);margin-right:8px;"></i>Tendencia de Avistamientos Mensuales</h3>
+      <p class="chart-subtitle">Evolución de los avistamientos registrados durante los últimos 12 meses</p>
+      <div class="chart-container"><canvas id="chartTrend"></canvas></div>
+    </div>
+
+    <!-- CHARTS ROW 3 -->
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3><i class="fas fa-exclamation-triangle" style="color:var(--red);margin-right:8px;"></i>Estado de Conservación (UICN)</h3>
+        <p class="chart-subtitle">Distribución de especies según categoría de amenaza</p>
+        <div class="chart-container"><canvas id="chartConservation"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3><i class="fas fa-temperature-high" style="color:var(--orange);margin-right:8px;"></i>Variables Climáticas por Polígono</h3>
+        <p class="chart-subtitle">Temperatura media y precipitación anual comparadas</p>
+        <div class="chart-container"><canvas id="chartClimate"></canvas></div>
+      </div>
+    </div>
+
+    <!-- RECENT REPORTS -->
+    <div class="reports-section">
+      <h3><i class="fas fa-clock" style="color:var(--primary);"></i> Avistamientos Recientes</h3>
+      <div class="report-list" id="recentReports">
+        <div class="report-item">
+          <div class="report-icon ave"><i class="fas fa-dove"></i></div>
+          <div class="report-info">
+            <h4>Zunzuncito (Mellisuga helenae)</h4>
+            <div class="report-meta">📅 Hace 2 horas • 👤 Investigador GIPPC</div>
+            <div class="report-location">📍 Guanahacabibes - Encinar de Cayuco</div>
+          </div>
+        </div>
+        <div class="report-item">
+          <div class="report-icon flora"><i class="fas fa-seedling"></i></div>
+          <div class="report-info">
+            <h4>Palma Barrigona (Colpothrinax wrightii)</h4>
+            <div class="report-meta">📅 Hace 5 horas • 👤 Estudiante Biología</div>
+            <div class="report-location">📍 Km 9 Mantua - Bosque de Pinar</div>
+          </div>
+        </div>
+        <div class="report-item">
+          <div class="report-icon reptil"><i class="fas fa-dragon"></i></div>
+          <div class="report-info">
+            <h4>Iguana Gigante (Cyclura carinata)</h4>
+            <div class="report-meta">📅 Hace 1 día • 👤 Guardabosques</div>
+            <div class="report-location">📍 Guanahacabibes - Zona costera sur</div>
+          </div>
+        </div>
+        <div class="report-item">
+          <div class="report-icon mamifero"><i class="fas fa-paw"></i></div>
+          <div class="report-info">
+            <h4>Jutía Conga (Capromys pilorides)</h4>
+            <div class="report-meta">📅 Hace 2 días • 👤 Reporte ciudadano</div>
+            <div class="report-location">📍 Sierra Guasasa - Cueva del Indio</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REPORT FORM -->
+    <div class="report-form-section">
+      <h2>📝 Reportar un Avistamiento</h2>
+      <p>Contribuye al monitoreo de la biodiversidad. Registra las especies que observes en los polígonos de estudio.</p>
+      <form class="report-form" id="reportForm">
+        <div class="form-group">
+          <label>Especie observada *</label>
+          <input type="text" id="reportSpecies" placeholder="Ej: Zunzuncito" required>
+        </div>
+        <div class="form-group">
+          <label>Grupo taxonómico *</label>
+          <select id="reportTaxon" required>
+            <option value="">Seleccionar...</option>
+            <option value="ave">Ave</option>
+            <option value="reptil">Reptil</option>
+            <option value="anfibio">Anfibio</option>
+            <option value="mamifero">Mamífero</option>
+            <option value="flora">Planta</option>
+            <option value="invertebrado">Invertebrado</option>
+            <option value="pez">Pez</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Polígono *</label>
+          <select id="reportPolygon" required>
+            <option value="">Seleccionar...</option>
+            <option value="guanahacabibes">Guanahacabibes</option>
+            <option value="km9">Km 9 Mantua</option>
+            <option value="sanandres">San Andrés</option>
+            <option value="guasasa">Sierra Guasasa</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Número de individuos</label>
+          <input type="number" id="reportCount" placeholder="Ej: 3" min="1" value="1">
+        </div>
+        <div class="form-group" style="grid-column: 1 / -1;">
+          <label>Observaciones</label>
+          <textarea id="reportNotes" placeholder="Describe el hábitat, comportamiento, amenazas observadas..."></textarea>
+        </div>
+        <button type="submit" class="btn-submit" id="btnSubmitReport"><i class="fas fa-paper-plane"></i> Enviar Reporte</button>
+      </form>
+      <div id="reportStatus" style="margin-top: 16px; display: none;"></div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <p style="font-style:italic; color:rgba(255,255,255,0.7); margin-bottom:20px;">"Cada observación ciudadana es un dato científico que ayuda a proteger la biodiversidad."</p>
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="../index.html">Conociendo Pinar</a> | <a href="../privacidad.html">Privacidad</a> | <a href="../terminos.html">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://mixfzeuzhooujqzaexpp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peGZ6ZXV6aG9vdWpxemFleHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODk2NjYsImV4cCI6MjA5NzM2NTY2Nn0.re-BvpmaB3vMXIBwbOY_88PE0q9Hw1L9xsyL6JurvaI';
+
+    // ===========================
+    // CHARTS INITIALIZATION
+    // ===========================
+    const chartColors = {
+      green: '#10b981', blue: '#3b82f6', orange: '#f59e0b', red: '#ef4444',
+      purple: '#8b5cf6', pink: '#ec4899', cyan: '#06b6d4', lime: '#84cc16',
+      primary: '#1e4a3b', secondary: '#f4c542'
+    };
+
+    // 1. DONUT: Distribución por Grupo Taxonómico
+    new Chart(document.getElementById('chartTaxon'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Aves', 'Reptiles', 'Anfibios', 'Mamíferos', 'Flora', 'Invertebrados', 'Peces'],
+        datasets: [{
+          data: [193, 35, 16, 18, 52, 37, 7],
+          backgroundColor: [chartColors.blue, chartColors.orange, chartColors.green, chartColors.purple, chartColors.lime, chartColors.pink, chartColors.cyan],
+          borderWidth: 0,
+          hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'right', labels: { padding: 12, usePointStyle: true, font: { family: 'Inter', size: 12 } } }
+        },
+        cutout: '65%'
+      }
+    });
+
+    // 2. BARS: Especies por Polígono
+    new Chart(document.getElementById('chartPolygon'), {
+      type: 'bar',
+      data: {
+        labels: ['Guanahacabibes', 'Km 9 Mantua', 'San Andrés', 'Sierra Guasasa'],
+        datasets: [{
+          label: 'Especies Registradas',
+          data: [262, 42, 28, 81],
+          backgroundColor: [chartColors.green, chartColors.orange, chartColors.blue, chartColors.purple],
+          borderRadius: 8,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' }, ticks: { font: { family: 'Inter' } } },
+          x: { grid: { display: false }, ticks: { font: { family: 'Inter', size: 11 } } }
+        }
+      }
+    });
+
+    // 3. LINE: Tendencia Mensual
+    new Chart(document.getElementById('chartTrend'), {
+      type: 'line',
+      data: {
+        labels: ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'],
+        datasets: [
+          { label: 'Aves', data: [45, 52, 78, 95, 110, 88, 72, 65, 82, 98, 105, 89], borderColor: chartColors.blue, backgroundColor: 'rgba(59,130,246,0.1)', fill: true, tension: 0.4, pointRadius: 4 },
+          { label: 'Flora', data: [20, 25, 35, 42, 55, 48, 38, 30, 35, 45, 50, 42], borderColor: chartColors.green, backgroundColor: 'rgba(16,185,129,0.1)', fill: true, tension: 0.4, pointRadius: 4 },
+          { label: 'Reptiles', data: [8, 12, 18, 25, 32, 28, 22, 20, 24, 18, 14, 10], borderColor: chartColors.orange, backgroundColor: 'rgba(245,158,11,0.1)', fill: true, tension: 0.4, pointRadius: 4 },
+          { label: 'Mamíferos', data: [5, 7, 10, 14, 18, 15, 12, 10, 13, 16, 14, 11], borderColor: chartColors.purple, backgroundColor: 'rgba(139,92,246,0.1)', fill: true, tension: 0.4, pointRadius: 4 }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { usePointStyle: true, font: { family: 'Inter', size: 12 } } } },
+        scales: {
+          y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+          x: { grid: { display: false } }
+        },
+        interaction: { intersect: false, mode: 'index' }
+      }
+    });
+
+    // 4. DOUGHNUT: Estado de Conservación
+    new Chart(document.getElementById('chartConservation'), {
+      type: 'doughnut',
+      data: {
+        labels: ['Peligro Crítico (CR)', 'En Peligro (EN)', 'Vulnerable (VU)', 'Preocupación Menor (LC)', 'Endémica estable'],
+        datasets: [{
+          data: [5, 3, 4, 280, 66],
+          backgroundColor: [chartColors.red, chartColors.orange, '#eab308', chartColors.green, chartColors.cyan],
+          borderWidth: 0, hoverOffset: 8
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'right', labels: { padding: 12, usePointStyle: true, font: { family: 'Inter', size: 11 } } } },
+        cutout: '65%'
+      }
+    });
+
+    // 5. BAR: Variables Climáticas
+    new Chart(document.getElementById('chartClimate'), {
+      type: 'bar',
+      data: {
+        labels: ['Guanahacabibes', 'Km 9 Mantua', 'San Andrés', 'Sierra Guasasa'],
+        datasets: [
+          { label: 'Temp. Media (°C)', data: [25.2, 24.0, 25.0, 22.3], backgroundColor: chartColors.orange, borderRadius: 8, yAxisID: 'y' },
+          { label: 'Precipitación (mm/año)', data: [1396, 1333, 1426, 1950], backgroundColor: chartColors.blue, borderRadius: 8, yAxisID: 'y1' }
+        ]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { position: 'top', labels: { usePointStyle: true, font: { family: 'Inter', size: 11 } } } },
+        scales: {
+          y: { type: 'linear', position: 'left', title: { display: true, text: 'Temperatura (°C)' }, min: 20, max: 28, grid: { color: 'rgba(0,0,0,0.05)' } },
+          y1: { type: 'linear', position: 'right', title: { display: true, text: 'Precipitación (mm)' }, min: 1200, max: 2100, grid: { drawOnChartArea: false } },
+          x: { grid: { display: false } }
+        }
+      }
+    });
+
+    // ===========================
+    // SUPABASE & AUTH
+    // ===========================
+    (function() {
+      let supabaseClient = null;
+
+      function md5(s){function m(x,k){var a=x[0],b=x[1],c=x[2],d=x[3];a=f(a,b,c,d,k[0],7,-680876936);d=f(d,a,b,c,k[1],12,-389564586);c=f(c,d,a,b,k[2],17,606105819);b=f(b,c,d,a,k[3],22,-1044525330);a=f(a,b,c,d,k[4],7,-176418897);d=f(d,a,b,c,k[5],12,1200080426);c=f(c,d,a,b,k[6],17,-1473231341);b=f(b,c,d,a,k[7],22,-45705983);a=f(a,b,c,d,k[8],7,1770035416);d=f(d,a,b,c,k[9],12,-1958414417);c=f(c,d,a,b,k[10],17,-42063);b=f(b,c,d,a,k[11],22,-1990404162);a=f(a,b,c,d,k[12],7,1804603682);d=f(d,a,b,c,k[13],12,-40341101);c=f(c,d,a,b,k[14],17,-1502002290);b=f(b,c,d,a,k[15],22,1236535329);a=g(a,b,c,d,k[1],5,-165796510);d=g(d,a,b,c,k[6],9,-1069501632);c=g(c,d,a,b,k[11],14,643717713);b=g(b,c,d,a,k[0],20,-373897302);a=g(a,b,c,d,k[5],5,-701558691);d=g(d,a,b,c,k[10],9,38016083);c=g(c,d,a,b,k[15],14,-660478335);b=g(b,c,d,a,k[4],20,-405537848);a=g(a,b,c,d,k[9],5,568446438);d=g(d,a,b,c,k[14],9,-1019803690);c=g(c,d,a,b,k[3],14,-187363961);b=g(b,c,d,a,k[8],20,1163531501);a=g(a,b,c,d,k[13],5,-1444681467);d=g(d,a,b,c,k[2],9,-51403784);c=g(c,d,a,b,k[7],14,1735328473);b=g(b,c,d,a,k[12],20,-1926607734);a=h(a,b,c,d,k[5],4,-378558);d=h(d,a,b,c,k[8],11,-2022574463);c=h(c,d,a,b,k[11],16,1839030562);b=h(b,c,d,a,k[14],23,-35309556);a=h(a,b,c,d,k[1],4,-1530992060);d=h(d,a,b,c,k[4],11,1272893353);c=h(c,d,a,b,k[7],16,-155497632);b=h(b,c,d,a,k[10],23,-1094730640);a=h(a,b,c,d,k[13],4,681279174);d=h(d,a,b,c,k[0],11,-358537222);c=h(c,d,a,b,k[3],16,-722521979);b=h(b,c,d,a,k[6],23,76029189);a=h(a,b,c,d,k[9],4,-640364487);d=h(d,a,b,c,k[12],11,-421815835);c=h(c,d,a,b,k[15],16,530742520);b=h(b,c,d,a,k[2],23,-995338651);a=i(a,b,c,d,k[0],6,-198630844);d=i(d,a,b,c,k[7],10,1126891415);c=i(c,d,a,b,k[14],15,-1416354905);b=i(b,c,d,a,k[5],21,-57434055);a=i(a,b,c,d,k[12],6,1700485571);d=i(d,a,b,c,k[3],10,-1894986606);c=i(c,d,a,b,k[10],15,-1051523);b=i(b,c,d,a,k[1],21,-2054922799);a=i(a,b,c,d,k[8],6,1873313359);d=i(d,a,b,c,k[15],10,-30611744);c=i(c,d,a,b,k[6],15,-1560198380);b=i(b,c,d,a,k[13],21,1309151649);a=i(a,b,c,d,k[4],6,-145523070);d=i(d,a,b,c,k[11],10,-1120210379);c=i(c,d,a,b,k[2],15,718787259);b=i(b,c,d,a,k[9],21,-343485551);x[0]=A(a,x[0]);x[1]=A(b,x[1]);x[2]=A(c,x[2]);x[3]=A(d,x[3])}function cm(q,a,b,x,s,t){a=A(A(a,q),A(x,t));return A((a<<s)|(a>>>(32-s)),b)}function f(a,b,c,d,x,s,t){return cm((b&c)|((~b)&d),a,b,x,s,t)}function g(a,b,c,d,x,s,t){return cm((b&d)|(c&(~d)),a,b,x,s,t)}function h(a,b,c,d,x,s,t){return cm(b^c^d,a,b,x,s,t)}function i(a,b,c,d,x,s,t){return cm(c^(b|(~d)),a,b,x,s,t)}function A(a,b){var l=(a&0xFFFF)+(b&0xFFFF);var m=(a>>16)+(b>>16)+(l>>16);return(m<<16)|(l&0xFFFF)}function s2b(s){var n=s.length;var b=Array((n+7)>>2);for(var i=0;i<n;i++){b[i>>2]|=s.charCodeAt(i)<<((i%4)*8)}return b}function b2h(b){var h="0123456789abcdef";var s="";for(var i=0;i<b.length*4;i++){s+=h.charAt((b[i>>2]>>((i%4)*8+4))&0xF)+h.charAt((b[i>>2]>>((i%4)*8))&0xF)}return s}var x=s2b(s);var a=1732584193,b=-271733879,c=-1732584194,d=271733878;for(var i=0;i<x.length;i+=16){var oa=a,ob=b,oc=c,od=d;m([a,b,c,d],x.slice(i,i+16));a=A(a,oa);b=A(b,ob);c=A(c,oc);d=A(d,od)}return b2h([a,b,c,d])}
+
+      function iniciarApp() {
+        if (typeof window.supabase === 'undefined') {
+          const s = document.createElement('script');
+          s.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+          s.onload = () => { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); ejecutarApp(); };
+          document.head.appendChild(s);
+        } else { supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); ejecutarApp(); }
+      }
+
+      function ejecutarApp() {
+        let currentUser = null, isLoginMode = true;
+
+        function abrirModalAuth() { document.getElementById('authModal').classList.add('active'); isLoginMode = true; document.getElementById('authModalTitle').textContent = 'Iniciar Sesión'; document.getElementById('authSubmitBtn').textContent = 'Iniciar Sesión'; document.getElementById('authToggleLink').textContent = '¿No tienes cuenta? Regístrate'; }
+        function cerrarModalAuth() { document.getElementById('authModal').classList.remove('active'); }
+
+        function generarAvatar(email) {
+          const ac = document.getElementById('avatarContainer'), lb = document.getElementById('loginBtn'), ai = document.getElementById('avatarImg'), at = document.getElementById('avatarText'), ue = document.getElementById('userEmailDisplay');
+          if (!email) { lb.style.display = 'inline-flex'; ac.style.display = 'none'; return; }
+          lb.style.display = 'none'; ac.style.display = 'inline-block'; ue.textContent = email;
+          const hash = md5(email.trim().toLowerCase()), url = `https://www.gravatar.com/avatar/${hash}?d=404&s=100`, img = new Image();
+          img.onload = function() { ai.src = url; ai.style.display = 'block'; at.style.display = 'none'; };
+          img.onerror = function() { ai.style.display = 'none'; at.style.display = 'flex'; at.textContent = email.split('@')[0].substring(0,2).toUpperCase() || 'U'; };
+          img.src = url;
+        }
+
+        function actualizarUI(user) {
+          if (user) { currentUser = user; generarAvatar(user.email); }
+          else { currentUser = null; document.getElementById('loginBtn').style.display = 'inline-flex'; document.getElementById('avatarContainer').style.display = 'none'; }
+        }
+
+        document.getElementById('loginBtn').addEventListener('click', abrirModalAuth);
+        document.getElementById('authCloseBtn').addEventListener('click', cerrarModalAuth);
+        document.getElementById('authToggleLink').addEventListener('click', function(e) { e.preventDefault(); isLoginMode = !isLoginMode; document.getElementById('authModalTitle').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse'; document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse'; document.getElementById('authToggleLink').textContent = isLoginMode ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión'; });
+        document.getElementById('authSubmitBtn').addEventListener('click', async function() {
+          const e = document.getElementById('authEmail').value.trim(), p = document.getElementById('authPassword').value.trim();
+          if (!e || !p) { alert('Completa todos los campos'); return; }
+          try {
+            const { data, error } = isLoginMode ? await supabaseClient.auth.signInWithPassword({ email: e, password: p }) : await supabaseClient.auth.signUp({ email: e, password: p });
+            if (error) { alert('❌ Error: ' + error.message); return; }
+            if (data.user) { alert('✅ ' + (isLoginMode ? '¡Bienvenido!' : '¡Registro exitoso!')); actualizarUI(data.user); cerrarModalAuth(); }
+          } catch (err) { alert('❌ Error: ' + err.message); }
+        });
+
+        const ab = document.getElementById('avatarBtn'), dd = document.getElementById('dropdownMenu');
+        ab.addEventListener('click', function(e) { e.stopPropagation(); dd.classList.toggle('show'); });
+        document.addEventListener('click', function(e) { if (!ab.contains(e.target)) dd.classList.remove('show'); });
+        document.getElementById('logoutBtn').addEventListener('click', async function(e) { e.stopPropagation(); await supabaseClient.auth.signOut(); actualizarUI(null); dd.classList.remove('show'); });
+
+        // REPORT FORM
+        document.getElementById('reportForm').addEventListener('submit', async function(e) {
+          e.preventDefault();
+          const btn = document.getElementById('btnSubmitReport');
+          const status = document.getElementById('reportStatus');
+          const species = document.getElementById('reportSpecies').value.trim();
+          const taxon = document.getElementById('reportTaxon').value;
+          const polygon = document.getElementById('reportPolygon').value;
+          const count = document.getElementById('reportCount').value || 1;
+          const notes = document.getElementById('reportNotes').value.trim();
+
+          if (!species || !taxon || !polygon) { status.style.display = 'block'; status.innerHTML = '<div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:12px;">⚠️ Completa los campos obligatorios.</div>'; return; }
+
+          btn.disabled = true; btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
+          try {
+            const { error } = await supabaseClient.from('biodiversity_reports').insert([{
+              species_name: species, taxon_group: taxon, polygon: polygon,
+              individual_count: parseInt(count), notes: notes,
+              reporter_email: currentUser ? currentUser.email : 'anónimo',
+              created_at: new Date().toISOString()
+            }]);
+            if (error) throw error;
+            status.style.display = 'block';
+            status.innerHTML = '<div style="background:#d1fae5;color:#065f46;padding:12px 16px;border-radius:12px;">✅ ¡Reporte enviado exitosamente! Gracias por contribuir al monitoreo de la biodiversidad.</div>';
+            this.reset();
+            // Actualizar KPI
+            const kpi = document.getElementById('kpiReportes');
+            kpi.textContent = (parseInt(kpi.textContent.replace(',','')) + 1).toLocaleString();
+          } catch (err) {
+            status.style.display = 'block';
+            status.innerHTML = `<div style="background:#fee2e2;color:#991b1b;padding:12px 16px;border-radius:12px;">❌ Error al enviar: ${err.message}. Verifica que la tabla 'biodiversity_reports' exista en Supabase.</div>`;
+          } finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-paper-plane"></i> Enviar Reporte'; }
+        });
+
+        // SUPABASE REALTIME (si la tabla existe)
+        try {
+          supabaseClient.channel('biodiversity_reports')
+            .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'biodiversity_reports' }, (payload) => {
+              const r = payload.new;
+              const iconMap = { ave: 'ave', reptil: 'reptil', anfibio: 'ave', mamifero: 'mamifero', flora: 'flora', invertebrado: 'ave', pez: 'ave' };
+              const iconClass = iconMap[r.taxon_group] || 'ave';
+              const list = document.getElementById('recentReports');
+              const item = document.createElement('div');
+              item.className = 'report-item';
+              item.style.animation = 'fadeIn 0.5s ease';
+              item.innerHTML = `<div class="report-icon ${iconClass}"><i class="fas fa-${r.taxon_group === 'flora' ? 'seedling' : r.taxon_group === 'mamifero' ? 'paw' : r.taxon_group === 'reptil' ? 'dragon' : 'dove'}"></i></div><div class="report-info"><h4>${r.species_name}</h4><div class="report-meta">📅 Ahora mismo • 👤 ${r.reporter_email}</div><div class="report-location">📍 ${r.polygon} • ${r.individual_count} individuo(s)</div></div>`;
+              list.insertBefore(item, list.firstChild);
+              if (list.children.length > 10) list.removeChild(list.lastChild);
+              const kpi = document.getElementById('kpiAvistamientos');
+              kpi.textContent = (parseInt(kpi.textContent.replace(/,/g, '')) + parseInt(r.individual_count || 1)).toLocaleString();
+            }).subscribe();
+        } catch(e) { console.log('Realtime no disponible:', e); }
+
+        supabaseClient.auth.onAuthStateChange((event, session) => { if (session) actualizarUI(session.user); else actualizarUI(null); });
+        (async () => { const { data: { session } } = await supabaseClient.auth.getSession(); if (session) actualizarUI(session.user); })();
+
+        window.addEventListener('scroll', () => { const h = document.querySelector('.site-header'); if (window.scrollY > 50) h.classList.add('scrolled'); else h.classList.remove('scrolled'); });
+
+        const mt = document.getElementById('menuToggle'), mn = document.getElementById('mainNav');
+        if (mt && mn) { mt.addEventListener('click', (e) => { e.stopPropagation(); mn.classList.toggle('show'); }); document.addEventListener('click', (e) => { if (!mn.contains(e.target) && e.target !== mt) mn.classList.remove('show'); }); window.addEventListener('resize', () => { if (window.innerWidth > 968) mn.classList.remove('show'); }); }
+      }
+
+      if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', iniciarApp); else iniciarApp();
+    })();
+  </script>
+  <script src="menu.js" defer></script>
+</body>
+</html>

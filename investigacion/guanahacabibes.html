@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Guanahacabibes • Polígonos de Estudio • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-dark: #0e2c22;
+      --primary: #1e4a3b;
+      --primary-light: #2d6b54;
+      --secondary: #f4c542;
+      --secondary-light: #f9e2b7;
+      --surface: #ffffff;
+      --surface-alt: #f4f8f0;
+      --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b;
+      --text-secondary: #5a7a6a;
+      --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --error: #dc2626;
+      --success: #16a34a;
+      --warning: #f59e0b;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06);
+      --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { 
+      font-family: 'Inter', sans-serif; 
+      background: var(--surface-alt-2); 
+      color: var(--text-primary);
+      line-height: 1.7;
+    }
+
+    /* ====== HEADER ====== */
+    .site-header { 
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+      color: white; padding: 1rem 0; 
+      position: sticky; top: 0; z-index: 100; 
+      box-shadow: var(--shadow-md); transition: var(--transition);
+    }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+    
+    /* ====== HERO ====== */
+    .polygon-hero {
+      position: relative;
+      background: linear-gradient(135deg, #064e3b 0%, #022c22 100%);
+      color: white;
+      padding: 100px 24px 80px;
+      overflow: hidden;
+    }
+    .polygon-hero::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+      background-image: url('../img/hero.jpg');
+      background-size: cover; background-position: center;
+      opacity: 0.15;
+    }
+    .hero-container {
+      position: relative; z-index: 2;
+      max-width: 1100px; margin: 0 auto;
+      display: grid; grid-template-columns: 1fr 1fr; gap: 40px; align-items: center;
+    }
+    .hero-text .breadcrumb {
+      display: inline-flex; align-items: center; gap: 8px;
+      font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px;
+    }
+    .hero-text .breadcrumb a { color: white; text-decoration: none; }
+    .hero-text .breadcrumb a:hover { color: var(--secondary); }
+    .hero-text .badge {
+      display: inline-block; background: rgba(220,38,38,0.2); color: #fca5a5;
+      padding: 6px 16px; border-radius: var(--radius-xl); font-size: 0.8rem;
+      font-weight: 700; letter-spacing: 0.05em; margin-bottom: 20px;
+      border: 1px solid rgba(220,38,38,0.4);
+    }
+    .hero-text h1 { font-size: 3.5rem; font-weight: 800; letter-spacing: -0.03em; line-height: 1.1; margin-bottom: 16px; }
+    .hero-text h1 span { color: var(--secondary); }
+    .hero-text p { font-size: 1.1rem; opacity: 0.9; line-height: 1.6; margin-bottom: 24px; }
+    
+    .hero-stats {
+      display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px;
+      background: rgba(255,255,255,0.05); backdrop-filter: blur(10px);
+      padding: 24px; border-radius: var(--radius-md);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .stat-box { text-align: center; }
+    .stat-box .value { font-size: 2rem; font-weight: 800; color: var(--secondary); line-height: 1; }
+    .stat-box .label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.8; margin-top: 4px; }
+
+    /* ====== IN-PAGE NAV ====== */
+    .section-nav-wrapper {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 72px; z-index: 90;
+      box-shadow: var(--shadow-sm);
+    }
+    .section-nav {
+      max-width: 1100px; margin: 0 auto; padding: 0 24px;
+      display: flex; gap: 8px; overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .section-nav::-webkit-scrollbar { display: none; }
+    .section-nav a {
+      padding: 16px 20px;
+      color: var(--text-secondary);
+      text-decoration: none;
+      font-size: 0.9rem;
+      font-weight: 600;
+      white-space: nowrap;
+      border-bottom: 3px solid transparent;
+      transition: var(--transition);
+    }
+    .section-nav a:hover { color: var(--primary); border-bottom-color: var(--border); }
+    .section-nav a.active { color: var(--primary); border-bottom-color: var(--secondary); }
+
+    /* ====== MAIN CONTENT ====== */
+    .main-content {
+      max-width: 1100px; margin: 0 auto; padding: 60px 24px;
+      display: grid; grid-template-columns: 280px 1fr; gap: 60px;
+    }
+    
+    /* Sidebar */
+    .sidebar {
+      position: sticky; top: 140px; align-self: start;
+    }
+    .sidebar-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .sidebar-card h4 {
+      font-size: 0.8rem; text-transform: uppercase;
+      letter-spacing: 0.08em; color: var(--text-muted);
+      margin-bottom: 16px; font-weight: 700;
+    }
+    .sidebar-list { list-style: none; }
+    .sidebar-list li { margin-bottom: 12px; }
+    .sidebar-list a {
+      display: flex; align-items: center; gap: 10px;
+      color: var(--text-secondary); text-decoration: none;
+      font-size: 0.9rem; font-weight: 500;
+      transition: var(--transition);
+    }
+    .sidebar-list a:hover { color: var(--primary); transform: translateX(4px); }
+    .sidebar-list i { color: var(--secondary); width: 16px; text-align: center; }
+
+    /* Sections */
+    .content-section {
+      margin-bottom: 60px;
+      scroll-margin-top: 140px;
+    }
+    .content-section h2 {
+      font-size: 1.8rem; font-weight: 800; color: var(--text-primary);
+      margin-bottom: 24px; display: flex; align-items: center; gap: 12px;
+      letter-spacing: -0.02em;
+    }
+    .content-section h2 i { color: var(--secondary); }
+    .content-section p {
+      color: var(--text-secondary); margin-bottom: 16px; font-size: 1rem;
+    }
+    .content-section h3 {
+      font-size: 1.2rem; font-weight: 700; color: var(--text-primary);
+      margin: 24px 0 12px;
+    }
+
+    /* Cards Grid */
+    .cards-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 20px; margin-top: 20px;
+    }
+    .info-card {
+      background: var(--surface);
+      border-radius: var(--radius-md);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      border-top: 4px solid var(--secondary);
+      transition: var(--transition);
+    }
+    .info-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .info-card .icon {
+      width: 48px; height: 48px; border-radius: var(--radius-sm);
+      background: var(--surface-alt); color: var(--primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.3rem; margin-bottom: 16px;
+    }
+    .info-card h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 8px; }
+    .info-card p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+
+    /* Timeline */
+    .timeline { position: relative; padding-left: 30px; margin-top: 20px; }
+    .timeline::before {
+      content: ''; position: absolute; left: 8px; top: 0; bottom: 0;
+      width: 2px; background: var(--border);
+    }
+    .timeline-item { position: relative; margin-bottom: 24px; }
+    .timeline-item::before {
+      content: ''; position: absolute; left: -26px; top: 6px;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--secondary); border: 3px solid var(--surface);
+      box-shadow: 0 0 0 2px var(--secondary);
+    }
+    .timeline-item .year {
+      font-size: 0.8rem; font-weight: 700; color: var(--primary);
+      text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;
+    }
+    .timeline-item h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .timeline-item p { font-size: 0.9rem; color: var(--text-secondary); margin: 0; }
+
+    /* Data Table */
+    .data-table {
+      width: 100%; border-collapse: collapse; margin-top: 20px;
+      background: var(--surface); border-radius: var(--radius-sm);
+      overflow: hidden; box-shadow: var(--shadow-sm);
+    }
+    .data-table th {
+      background: var(--primary); color: white; padding: 12px 16px;
+      text-align: left; font-size: 0.85rem; font-weight: 600;
+    }
+    .data-table td {
+      padding: 12px 16px; border-bottom: 1px solid var(--border);
+      font-size: 0.9rem; color: var(--text-secondary);
+    }
+    .data-table tr:last-child td { border-bottom: none; }
+    .data-table tr:hover td { background: var(--surface-alt); }
+
+    /* Species List */
+    .species-list {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 16px; margin-top: 20px;
+    }
+    .species-item {
+      background: var(--surface); padding: 16px;
+      border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .species-item .emoji { font-size: 2rem; }
+    .species-item .info h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 2px; }
+    .species-item .info p { font-size: 0.8rem; font-style: italic; color: var(--text-muted); margin: 0; }
+
+    /* Alerts */
+    .alert {
+      padding: 16px 20px; border-radius: var(--radius-sm);
+      display: flex; gap: 14px; align-items: flex-start; margin-top: 20px;
+    }
+    .alert i { font-size: 1.2rem; margin-top: 2px; flex-shrink: 0; }
+    .alert p { margin: 0; font-size: 0.95rem; }
+    .alert-danger { background: #fee2e2; border-left: 4px solid var(--error); color: #991b1b; }
+    .alert-danger i { color: var(--error); }
+    .alert-info { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
+    .alert-info i { color: #3b82f6; }
+    .alert-warning { background: #fef3cd; border-left: 4px solid var(--warning); color: #854d0e; }
+    .alert-warning i { color: var(--warning); }
+
+    /* Itineraries */
+    .itinerary-list { margin-top: 20px; }
+    .itinerary-item {
+      background: var(--surface); padding: 20px;
+      border-radius: var(--radius-sm); box-shadow: var(--shadow-sm);
+      margin-bottom: 12px; display: flex; gap: 16px; align-items: center;
+      transition: var(--transition);
+    }
+    .itinerary-item:hover { transform: translateX(4px); box-shadow: var(--shadow-md); }
+    .itinerary-num {
+      width: 40px; height: 40px; border-radius: 50%;
+      background: var(--primary); color: white;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 1.1rem; flex-shrink: 0;
+    }
+    .itinerary-info h4 { font-size: 1rem; font-weight: 700; margin-bottom: 4px; }
+    .itinerary-info p { font-size: 0.85rem; color: var(--text-secondary); margin: 0; }
+
+    /* ====== FOOTER ====== */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 60px 24px 30px; }
+    .footer-quote { text-align: center; max-width: 700px; margin: 0 auto 40px; }
+    .footer-quote p { font-size: 1.3rem; font-style: italic; color: rgba(255,255,255,0.7); }
+    .footer-quote p::before, .footer-quote p::after { content: '"'; color: var(--secondary); font-size: 1.6rem; font-weight: 700; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+
+    /* ====== RESPONSIVE ====== */
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--primary-dark); flex-direction: column; padding: 24px; gap: 8px; min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; }
+      .hero-container { grid-template-columns: 1fr; }
+      .hero-text h1 { font-size: 2.5rem; }
+      .main-content { grid-template-columns: 1fr; }
+      .sidebar { position: static; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+      .section-nav-wrapper { top: 64px; }
+      .content-section { scroll-margin-top: 120px; }
+    }
+    @media (max-width: 600px) {
+      .polygon-hero { padding: 60px 20px 40px; }
+      .hero-text h1 { font-size: 2rem; }
+      .sidebar { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="siteHeader">
+    <div class="header-container">
+      <a href="../index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        <nav class="main-nav" id="mainNav"></nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="polygon-hero">
+    <div class="hero-container">
+      <div class="hero-text">
+	    <div class="breadcrumb" style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px;">
+          <a href="../index.html" style="color: white; text-decoration: none;">Inicio</a>
+          <span style="color: rgba(255,255,255,0.5);">/</span>
+          <a href="index.html" style="color: white; text-decoration: none;">Investigación</a>
+          <span style="color: rgba(255,255,255,0.5);">/</span>
+          <span style="color: var(--secondary); font-weight: 600;">Guanahacabibes</span> <!-- Cambiar según el archivo -->
+        </div>
+        <div class="breadcrumb">
+          <a href="index.html"><i class="fas fa-arrow-left"></i> Polígonos</a>
+          <span>/ Guanahacabibes</span>
+        </div>
+        <span class="badge"><i class="fas fa-award"></i> RESERVA DE LA BIOSFERA UNESCO (1987)</span>
+        <h1>Península de <span>Guanahacabibes</span></h1>
+        <p>El extremo más occidental de Cuba. Un laboratorio natural de llanuras kársticas, bosques semidesiduos y costas vírgenes que atesora el último refugio de los aborígenes taínos y especies únicas en el planeta.</p>
+      </div>
+      <div class="hero-stats">
+        <div class="stat-box">
+          <div class="value">25.2°C</div>
+          <div class="label">Temp. Media</div>
+        </div>
+        <div class="stat-box">
+          <div class="value">1396mm</div>
+          <div class="label">Precipitación</div>
+        </div>
+        <div class="stat-box">
+          <div class="value">172</div>
+          <div class="label">Especies Aves</div>
+        </div>
+        <div class="stat-box">
+          <div class="value">5</div>
+          <div class="label">Ecosistemas</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- IN-PAGE NAV -->
+  <div class="section-nav-wrapper">
+    <nav class="section-nav" id="sectionNav">
+      <a href="#historia" class="active">Historia</a>
+      <a href="#geologia">Geología</a>
+      <a href="#clima">Clima</a>
+      <a href="#hidrografia">Hidrografía</a>
+      <a href="#suelos">Suelos</a>
+      <a href="#biodiversidad">Biodiversidad</a>
+      <a href="#itinerarios">Itinerarios</a>
+      <a href="#instalaciones">Instalaciones</a>
+    </nav>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <main class="main-content">
+    
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="sidebar-card">
+        <h4>Ficha Técnica</h4>
+        <ul class="sidebar-list">
+          <li><a href="#"><i class="fas fa-map-marker-alt"></i> Municipio: Sandino</a></li>
+          <li><a href="#"><i class="fas fa-mountain"></i> Altitud: 0 - 20 msnm</a></li>
+          <li><a href="#"><i class="fas fa-layer-group"></i> Relieve: Llanura kárstica</a></li>
+          <li><a href="#"><i class="fas fa-water"></i> Clima: Aw (Tropical)</a></li>
+          <li><a href="#"><i class="fas fa-leaf"></i> Vegetación: 5 complejos</a></li>
+        </ul>
+      </div>
+      <div class="sidebar-card">
+        <h4>Destacados</h4>
+        <ul class="sidebar-list">
+          <li><a href="#biodiversidad"><i class="fas fa-dove"></i> Zunzuncito</a></li>
+          <li><a href="#biodiversidad"><i class="fas fa-paw"></i> Iguana Gigante</a></li>
+          <li><a href="#hidrografia"><i class="fas fa-tint"></i> Pozo Azul</a></li>
+          <li><a href="#historia"><i class="fas fa-anchor"></i> Faro Roncali</a></li>
+        </ul>
+      </div>
+    </aside>
+
+    <!-- CONTENT SECTIONS -->
+    <div class="content">
+      
+      <!-- HISTORIA -->
+      <section class="content-section" id="historia">
+        <h2><i class="fas fa-landmark"></i> Historia Local</h2>
+        <p>Guanahacabibes es un territorio de profunda significación histórica y cultural. Fue el último refugio de los aborígenes del occidente de Cuba que huían de los conquistadores españoles. A lo largo de los siglos, su geografía aislada la convirtió en un punto estratégico para la navegación y el comercio.</p>
+        
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="year">Época Precolombina</div>
+            <h4>Último Refugio Aborigen</h4>
+            <p>Los taínos y siboneyes se refugiaron en esta península huyendo del avance de los colonizadores españoles.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="year">1850</div>
+            <h4>Faro Roncali</h4>
+            <p>Construido en el Cabo de San Antonio, ha sido testigo de naufragios y guía de navegantes. La zona fue refugio de piratas, corsarios y puerto de desembarque de la trata de esclavos.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="year">1896</div>
+            <h4>Guerra de Independencia</h4>
+            <p>Punto de embarque y llegada de expediciones patriotas, destacando el General puertorriqueño Juan Rius Rivera en el Vapor Therre Friends.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="year">1960</div>
+            <h4>Ernesto "Che" Guevara</h4>
+            <p>La península estuvo bajo la dirección del Che con el objetivo de proteger al país de una posible invasión militar estadounidense.</p>
+          </div>
+          <div class="timeline-item">
+            <div class="year">1987</div>
+            <h4>Reserva de la Biosfera</h4>
+            <p>La UNESCO otorga esta categoría internacional para la protección y conservación de su excepcional entorno paisajístico y biodiversidad.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- GEOLOGÍA -->
+      <section class="content-section" id="geologia">
+        <h2><i class="fas fa-gem"></i> Geología y Geomorfología</h2>
+        <p>La península es una vasta llanura kárstica desarrollada sobre rocas calizas marinas. El relieve se caracteriza por la ausencia de montañas altas y la presencia de formas cársicas únicas moldeadas por la disolución del agua.</p>
+        
+        <div class="cards-grid">
+          <div class="info-card">
+            <div class="icon"><i class="fas fa-cubes"></i></div>
+            <h4>Bloques Tectónicos</h4>
+            <p>El territorio se divide en bloques sin basculamiento (relieve llano), bloques elevados (farallones costeros de hasta 20m) y bloques con basculamiento de sur a norte.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon"><i class="fas fa-water"></i></div>
+            <h4>Cuevas Fluvio-Marinas</h4>
+            <p>Manifestaciones del relieve kárstico donde la acción combinada del agua dulce subterránea y el oleaje marino ha creado cavidades costeras únicas.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon"><i class="fas fa-circle-notch"></i></div>
+            <h4>Dolinas y Casimbas</h4>
+            <p>Dolinas costeras originadas por el desplome del techo de antiguas cavernas. Las dolinas inundadas de agua dulce son conocidas localmente como "casimbas".</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- CLIMA -->
+      <section class="content-section" id="clima">
+        <h2><i class="fas fa-cloud-sun"></i> Clima</h2>
+        <p>Según la clasificación de Köppen-Geiger, el clima de la zona (estación Manuel Lazo) es <strong>Tropical (Aw)</strong>. Se caracteriza por inviernos con menor precipitación y veranos lluviosos.</p>
+        
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Variable</th>
+              <th>Valor</th>
+              <th>Detalle</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Temperatura Media</strong></td>
+              <td>25.2 °C</td>
+              <td>Agosto es el más caluroso (27.7°C) y Enero el más frío (22.2°C).</td>
+            </tr>
+            <tr>
+              <td><strong>Precipitación Anual</strong></td>
+              <td>1396 mm</td>
+              <td>Septiembre es el más lluvioso (230mm) y Diciembre el más seco (33mm).</td>
+            </tr>
+            <tr>
+              <td><strong>Amplitud Térmica</strong></td>
+              <td>5.5 °C</td>
+              <td>Variación de las temperaturas medias durante el año.</td>
+            </tr>
+            <tr>
+              <td><strong>Amplitud Pluvial</strong></td>
+              <td>197 mm</td>
+              <td>Diferencia entre el mes más seco y el más lluvioso.</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- HIDROGRAFÍA -->
+      <section class="content-section" id="hidrografia">
+        <h2><i class="fas fa-tint"></i> Hidrografía</h2>
+        <p>En la llanura kárstica de Guanahacabibes, las aguas de escorrentía superficial son muy escasas. El agua circula principalmente de forma subterránea, aflorando en puntos específicos.</p>
+        
+        <h3>Lagunas Paleo-lacustres</h3>
+        <p>De origen tectónico, se localizan al norte de la península y son una de las zonas más representativas del occidente cubano. Destacan las lagunas de <strong>Los Indios, Cheve, El Pesquero y Blanquizales</strong>.</p>
+        
+        <h3>Puntos de Interés Hídrico</h3>
+        <div class="cards-grid">
+          <div class="info-card">
+            <div class="icon"><i class="fas fa-swimming-pool"></i></div>
+            <h4>Pozo Azul</h4>
+            <p>Ubicado a 3 km de Manuel Lazo. Un ojo de agua cristalina rodeado de vegetación, ideal para el estudio de la hidrogeología local.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon"><i class="fas fa-water"></i></div>
+            <h4>Las Casimbas</h4>
+            <p>Dolinas inundadas de agua dulce, originadas por el desplome de cavernas con circulación subterránea activa.</p>
+          </div>
+          <div class="info-card">
+            <div class="icon"><i class="fas fa-hand-holding-water"></i></div>
+            <h4>Pozos Artesanales</h4>
+            <p>Las aguas subterráneas se localizan a pocos metros de la superficie, permitiendo la construcción de pozos para el aprovechamiento humano.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- SUELOS -->
+      <section class="content-section" id="suelos">
+        <h2><i class="fas fa-seedling"></i> Suelos</h2>
+        <p>Los suelos predominantes en el área son los <strong>Ferralíticos Rojos Típicos Lixiviados</strong>. Son suelos profundos, bien drenados y ricos en óxidos de hierro y aluminio, resultado de la intensa meteorización química en clima tropical húmedo.</p>
+        
+        <div class="alert alert-info">
+          <i class="fas fa-flask"></i>
+          <p><strong>Características Químicas:</strong> Predominio de minerales arcillosos 1:1, capacidad de intercambio catiónico baja (<20 cmol/kg), relación SiO2:Al2O3 menor de 2.3, y alto contenido de hierro libre (>60% del Fe total). El proceso de lixiviación arrastra las bases hacia los horizontes inferiores.</p>
+        </div>
+      </section>
+
+      <!-- BIODIVERSIDAD -->
+      <section class="content-section" id="biodiversidad">
+        <h2><i class="fas fa-paw"></i> Flora y Fauna</h2>
+        <p>La biodiversidad de Guanahacabibes es excepcional. La flora presenta alta diversidad con rasgos botánicos únicos, mientras que la fauna incluye especies endémicas y migratorias de gran valor ecológico.</p>
+        
+        <h3>Complejos de Vegetación</h3>
+        <div class="cards-grid">
+          <div class="info-card"><div class="icon"><i class="fas fa-umbrella-beach"></i></div><h4>Costa Arenosa</h4><p>Vegetación adaptada a la salinidad y la arena suelta.</p></div>
+          <div class="info-card"><div class="icon"><i class="fas fa-wind"></i></div><h4>Costa Rocosa</h4><p>Destaca el "efecto bandera" por la acción constante del viento sobre la vegetación.</p></div>
+          <div class="info-card"><div class="icon"><i class="fas fa-tree"></i></div><h4>Bosque Semidesiduo</h4><p>Bosques que pierden parte de sus hojas en la estación seca (ej. Encinar).</p></div>
+          <div class="info-card"><div class="icon"><i class="fas fa-leaf"></i></div><h4>Manglares</h4><p>Ecosistemas costeros vitales para la reproducción de peces y crustáceos.</p></div>
+          <div class="info-card"><div class="icon"><i class="fas fa-frog"></i></div><h4>Ciénaga</h4><p>Zonas palustres con vegetación hidrófila especializada.</p></div>
+        </div>
+
+        <h3>Fauna Emblemática</h3>
+        <div class="species-list">
+          <div class="species-item">
+            <div class="emoji">🐦</div>
+            <div class="info">
+              <h4>Zunzuncito</h4>
+              <p>Mellisuga helenae (Ave más pequeña del mundo)</p>
+            </div>
+          </div>
+          <div class="species-item">
+            <div class="emoji">🦎</div>
+            <div class="info">
+              <h4>Iguana Gigante</h4>
+              <p>Cyclura carinata (Mayor del género en el mundo)</p>
+            </div>
+          </div>
+          <div class="species-item">
+            <div class="emoji">🐢</div>
+            <div class="info">
+              <h4>Tortugas Marinas</h4>
+              <p>4 de las 7 especies del planeta anidan aquí</p>
+            </div>
+          </div>
+          <div class="species-item">
+            <div class="emoji">🦜</div>
+            <div class="info">
+              <h4>Aves</h4>
+              <p>172 especies (11 endémicas, 84 migratorias)</p>
+            </div>
+          </div>
+          <div class="species-item">
+            <div class="emoji">🐚</div>
+            <div class="info">
+              <h4>Moluscos Marinos</h4>
+              <p>576 tipos registrados en sus fondos</p>
+            </div>
+          </div>
+          <div class="species-item">
+            <div class="emoji">🦀</div>
+            <div class="info">
+              <h4>Cangrejos</h4>
+              <p>Poblaciones masivas costeras y terrestres</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="alert alert-danger">
+          <i class="fas fa-exclamation-triangle"></i>
+          <p><strong>Problemática Ambiental:</strong> Recalo de desechos sólidos marinos, caza y pesca ilegal, colecta ilegal de plantas, afectaciones por ciclones, sequías prolongadas y contaminación por aumento del turismo (María la Gorda, Villa Cabo San Antonio).</p>
+        </div>
+      </section>
+
+      <!-- ITINERARIOS -->
+      <section class="content-section" id="itinerarios">
+        <h2><i class="fas fa-route"></i> Itinerarios Didácticos</h2>
+        <p>Rutas diseñadas por el GIPPC para el desarrollo de prácticas de campo integrales, abarcando geología, hidrología, ecología y conservación.</p>
+        
+        <div class="itinerary-list">
+          <div class="itinerary-item">
+            <div class="itinerary-num">1</div>
+            <div class="itinerary-info">
+              <h4>Recorrido a Pozo Azul</h4>
+              <p>Estudio hidrogeológico de afloramientos kársticos y vegetación ribereña.</p>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-num">2</div>
+            <div class="itinerary-info">
+              <h4>Encinar de Manuel Lazo</h4>
+              <p>Análisis del bosque semidesiduo, suelos ferralíticos y flora endémica.</p>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-num">3</div>
+            <div class="itinerary-info">
+              <h4>Ciénaga y Manglar</h4>
+              <p>Evaluación de ecosistemas palustres, adaptaciones vegetales y avifauna.</p>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-num">4</div>
+            <div class="itinerary-info">
+              <h4>Uvero Quemado</h4>
+              <p>Estudio de la vegetación de costa rocosa y el efecto del viento (efecto bandera).</p>
+            </div>
+          </div>
+          <div class="itinerary-item">
+            <div class="itinerary-num">5</div>
+            <div class="itinerary-info">
+              <h4>Cabo de San Antonio</h4>
+              <p>Geología costera, faro Roncali, arrecifes de coral y conservación marina.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- INSTALACIONES -->
+      <section class="content-section" id="instalaciones">
+        <h2><i class="fas fa-campground"></i> Unidad Docente e Instalaciones</h2>
+        <p>El polígono es atendido directamente por la Empresa Forestal Integral del municipio Sandino. El campamento base se localiza en el centro del poblado Manuel Lazo y cuenta con excelentes condiciones para el alojamiento y la investigación.</p>
+        
+        <div class="cards-grid">
+          <div class="info-card"><div class="icon"><i class="fas fa-bed"></i></div><h4>Albergues</h4><p>3 albergues estudiantiles con baños interiores y 2 para profesores.</p></div>
+          <div class="info-card"><div class="icon"><i class="fas fa-utensils"></i></div><h4>Servicios</h4><p>Cocina-comedor, almacenes y área deportiva-recreativa.</p></div>
+          <div class="info-card"><div class="icon"><i class="fas fa-laptop"></i></div><h4>Docencia</h4><p>Aula especializada con PC y dirección administrativa.</p></div>
+          <div class="info-card"><div class="icon"><i class="fas fa-faucet"></i></div><h4>Infraestructura</h4><p>Tanque elevado con agua 24 horas y policlínico a menos de 100m.</p></div>
+        </div>
+      </section>
+
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-quote">
+      <p>Cada paisaje cuenta una historia. Descubre la tuya en Pinar del Río.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="../index.html">Conociendo Pinar</a> | <a href="../privacidad.html">Privacidad</a> | <a href="../terminos.html">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // Header scroll
+    window.addEventListener('scroll', () => {
+      const header = document.getElementById('siteHeader');
+      if (window.scrollY > 50) header.classList.add('scrolled');
+      else header.classList.remove('scrolled');
+    });
+
+    // Menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    if (menuToggle && mainNav) {
+      menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        mainNav.classList.toggle('show');
+      });
+      document.addEventListener('click', (e) => {
+        if (!mainNav.contains(e.target) && e.target !== menuToggle) mainNav.classList.remove('show');
+      });
+    }
+
+    // In-page nav active state on scroll
+    const sections = document.querySelectorAll('.content-section');
+    const navLinks = document.querySelectorAll('.section-nav a');
+
+    window.addEventListener('scroll', () => {
+      let current = '';
+      sections.forEach(section => {
+        const sectionTop = section.offsetTop;
+        if (pageYOffset >= sectionTop - 160) {
+          current = section.getAttribute('id');
+        }
+      });
+
+      navLinks.forEach(link => {
+        link.classList.remove('active');
+        if (link.getAttribute('href') === '#' + current) {
+          link.classList.add('active');
+        }
+      });
+    });
+  </script>
+  <script src="menu.js" defer></script>
+</body>
+</html>

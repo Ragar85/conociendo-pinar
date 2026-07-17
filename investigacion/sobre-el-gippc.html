@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Sobre el GIPPC • Investigación • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-dark: #0e2c22;
+      --primary: #1e4a3b;
+      --primary-light: #2d6b54;
+      --secondary: #f4c542;
+      --secondary-light: #f9e2b7;
+      --surface: #ffffff;
+      --surface-alt: #f4f8f0;
+      --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b;
+      --text-secondary: #5a7a6a;
+      --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06);
+      --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px;
+      --radius-md: 20px;
+      --radius-lg: 28px;
+      --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+
+    /* HEADER */
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); transition: var(--transition); }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+
+    /* HERO */
+    .gippc-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); color: white; padding: 100px 24px 80px; overflow: hidden; text-align: center; }
+    .gippc-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('../img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.1; }
+    .hero-content { position: relative; z-index: 2; max-width: 900px; margin: 0 auto; }
+    .breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px; }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { color: var(--secondary); }
+    .hero-content h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .hero-content h1 span { color: var(--secondary); }
+    .hero-content .subtitle { font-size: 1.3rem; opacity: 0.95; margin-bottom: 12px; font-weight: 600; }
+    .hero-content p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 30px; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .hero-badge { display: inline-block; background: rgba(244,197,66,0.2); color: var(--secondary); padding: 8px 20px; border-radius: var(--radius-xl); font-size: 0.85rem; font-weight: 700; letter-spacing: 0.05em; margin-bottom: 20px; border: 1px solid rgba(244,197,66,0.3); }
+
+    /* CONTAINER */
+    .container { max-width: 1200px; margin: 0 auto; padding: 60px 24px 80px; }
+    .section-title { text-align: center; font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 12px; letter-spacing: -0.02em; }
+    .section-subtitle { text-align: center; color: var(--text-secondary); font-size: 1.1rem; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; }
+
+    /* MISSION SECTION */
+    .mission-section { background: var(--surface); border-radius: var(--radius-lg); padding: 50px; margin-bottom: 60px; box-shadow: var(--shadow-md); }
+    .mission-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; margin-top: 40px; }
+    .mission-card { text-align: center; padding: 30px 20px; }
+    .mission-icon { width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: var(--secondary); display: flex; align-items: center; justify-content: center; font-size: 2rem; margin: 0 auto 20px; box-shadow: var(--shadow-sm); }
+    .mission-card h3 { font-size: 1.3rem; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; }
+    .mission-card p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; }
+
+    /* TEAM SECTION */
+    .team-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 28px; margin-bottom: 60px; }
+    .team-card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); }
+    .team-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .team-avatar { width: 100%; height: 200px; background: linear-gradient(135deg, var(--primary), var(--primary-light)); display: flex; align-items: center; justify-content: center; position: relative; }
+    .team-avatar i { font-size: 4rem; color: var(--secondary); opacity: 0.6; }
+    .team-avatar.lead { background: linear-gradient(135deg, var(--secondary), #d4a017); }
+    .team-avatar.lead i { color: var(--primary-dark); opacity: 0.8; }
+    .team-badge { position: absolute; top: 16px; right: 16px; background: rgba(244,197,66,0.9); color: var(--primary-dark); padding: 4px 12px; border-radius: var(--radius-xl); font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; }
+    .team-info { padding: 24px; }
+    .team-info h3 { font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 4px; }
+    .team-info .role { color: var(--primary); font-size: 0.85rem; font-weight: 600; margin-bottom: 12px; }
+    .team-info p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5; }
+
+    /* METHODOLOGY */
+    .methodology-section { background: var(--surface); border-radius: var(--radius-lg); padding: 50px; margin-bottom: 60px; box-shadow: var(--shadow-md); }
+    .methodology-timeline { position: relative; padding-left: 40px; margin-top: 40px; }
+    .methodology-timeline::before { content: ''; position: absolute; left: 12px; top: 0; bottom: 0; width: 3px; background: linear-gradient(to bottom, var(--primary), var(--secondary)); }
+    .method-item { position: relative; margin-bottom: 40px; }
+    .method-item:last-child { margin-bottom: 0; }
+    .method-item::before { content: ''; position: absolute; left: -34px; top: 8px; width: 20px; height: 20px; border-radius: 50%; background: var(--secondary); border: 4px solid var(--surface); box-shadow: 0 0 0 3px var(--secondary); }
+    .method-item h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .method-item h3 i { color: var(--primary); }
+    .method-item p { color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6; margin-bottom: 12px; }
+    .method-tools { display: flex; gap: 8px; flex-wrap: wrap; }
+    .tool-tag { background: var(--surface-alt); color: var(--primary); padding: 4px 12px; border-radius: var(--radius-xl); font-size: 0.8rem; font-weight: 600; }
+
+    /* RESEARCH LINES */
+    .research-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 60px; }
+    .research-card { background: var(--surface); border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-sm); transition: var(--transition); border-top: 4px solid var(--secondary); }
+    .research-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .research-icon { width: 60px; height: 60px; border-radius: var(--radius-sm); background: var(--surface-alt); color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 1.8rem; margin-bottom: 16px; }
+    .research-card h3 { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 8px; }
+    .research-card .location { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .research-card p { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.6; margin-bottom: 16px; }
+    .research-link { display: inline-flex; align-items: center; gap: 8px; color: var(--primary); font-weight: 600; font-size: 0.9rem; text-decoration: none; transition: var(--transition); }
+    .research-link:hover { color: var(--primary-light); gap: 12px; }
+
+    /* PUBLICATIONS */
+    .publications-section { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; border-radius: var(--radius-lg); padding: 50px; margin-bottom: 60px; position: relative; overflow: hidden; }
+    .publications-section::before { content: ''; position: absolute; top: -50%; right: -10%; width: 400px; height: 400px; background: radial-gradient(circle, rgba(244,197,66,0.15), transparent); border-radius: 50%; }
+    .publications-content { position: relative; z-index: 1; }
+    .publications-section h2 { font-size: 2rem; font-weight: 800; margin-bottom: 16px; text-align: center; }
+    .publications-section > .publications-content > p { font-size: 1.05rem; opacity: 0.95; line-height: 1.7; margin-bottom: 30px; text-align: center; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .pub-list { list-style: none; max-width: 800px; margin: 0 auto; }
+    .pub-item { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 20px; border-radius: var(--radius-sm); margin-bottom: 16px; border-left: 4px solid var(--secondary); }
+    .pub-item:last-child { margin-bottom: 0; }
+    .pub-item h4 { font-size: 1.05rem; font-weight: 700; margin-bottom: 6px; }
+    .pub-item .pub-meta { font-size: 0.85rem; opacity: 0.9; margin-bottom: 8px; }
+    .pub-item p { font-size: 0.9rem; opacity: 0.95; line-height: 1.5; }
+
+    /* STATS */
+    .stats-section { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; margin-bottom: 60px; }
+    .stat-card { background: var(--surface); border-radius: var(--radius-md); padding: 30px; text-align: center; box-shadow: var(--shadow-sm); transition: var(--transition); }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .stat-number { font-size: 3rem; font-weight: 800; color: var(--primary); line-height: 1; margin-bottom: 8px; }
+    .stat-label { color: var(--text-secondary); font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+
+    /* CTA */
+    .cta-section { background: var(--surface); border-radius: var(--radius-lg); padding: 50px; text-align: center; box-shadow: var(--shadow-md); }
+    .cta-section h2 { font-size: 2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; }
+    .cta-section p { color: var(--text-secondary); font-size: 1.05rem; margin-bottom: 30px; max-width: 600px; margin-left: auto; margin-right: auto; }
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .cta-btn { display: inline-flex; align-items: center; gap: 10px; padding: 14px 28px; border-radius: var(--radius-xl); text-decoration: none; font-weight: 600; transition: var(--transition); }
+    .cta-btn-primary { background: var(--primary); color: white; box-shadow: var(--shadow-sm); }
+    .cta-btn-primary:hover { background: var(--primary-light); transform: translateY(-3px); box-shadow: var(--shadow-md); }
+    .cta-btn-secondary { background: var(--surface-alt); color: var(--primary); border: 2px solid var(--primary); }
+    .cta-btn-secondary:hover { background: var(--primary); color: white; transform: translateY(-3px); }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 60px 24px 30px; text-align: center; }
+    .footer-quote { max-width: 700px; margin: 0 auto 40px; font-size: 1.3rem; font-style: italic; color: rgba(255,255,255,0.7); }
+    .footer-quote::before, .footer-quote::after { content: '"'; color: var(--secondary); font-size: 1.6rem; font-weight: 700; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--primary-dark); flex-direction: column; padding: 24px; gap: 8px; min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); box-shadow: var(--shadow-lg); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .hero-content h1 { font-size: 2.2rem; }
+      .mission-section, .methodology-section, .publications-section, .cta-section { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="../index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        <nav class="main-nav" id="mainNav"></nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="gippc-hero">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="../index.html">Inicio</a>
+        <span>/</span>
+        <a href="index.html">Investigación</a>
+        <span>/</span>
+        <span style="color: var(--secondary);">Sobre el GIPPC</span>
+      </div>
+      <span class="hero-badge"><i class="fas fa-university"></i> Universidad de Pinar del Río</span>
+      <h1>Grupo de Investigaciones de <span>Polígonos de Prácticas de Campo</span></h1>
+      <p class="subtitle">GIPPC</p>
+      <p>Investigación científica integral de los ecosistemas únicos de Pinar del Río para la formación de profesionales en Ciencias Naturales.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    
+    <!-- STATS -->
+    <div class="stats-section">
+      <div class="stat-card">
+        <div class="stat-number">4</div>
+        <div class="stat-label">Polígonos estudiados</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">7</div>
+        <div class="stat-label">Investigadores</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">15.3km</div>
+        <div class="stat-label">Galerías mapeadas</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">64+</div>
+        <div class="stat-label">Especies catalogadas</div>
+      </div>
+    </div>
+
+    <!-- MISSION -->
+    <section class="mission-section">
+      <h2 class="section-title">Nuestra Misión</h2>
+      <p class="section-subtitle">Caracterizar integralmente las áreas de prácticas de campo para fortalecer la formación de docentes en Ciencias Naturales.</p>
+      
+      <div class="mission-grid">
+        <div class="mission-card">
+          <div class="mission-icon"><i class="fas fa-microscope"></i></div>
+          <h3>Investigación Científica</h3>
+          <p>Realizamos estudios integrales de geología, hidrología, climatología, flora y fauna en los principales ecosistemas de Pinar del Río.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-icon"><i class="fas fa-graduation-cap"></i></div>
+          <h3>Formación Docente</h3>
+          <p>Preparamos a futuros profesores de Biología-Geografía y Biología-Química con conocimiento práctico y validado del territorio.</p>
+        </div>
+        <div class="mission-card">
+          <div class="mission-icon"><i class="fas fa-leaf"></i></div>
+          <h3>Conservación Ambiental</h3>
+          <p>Documentamos especies amenazadas y proponemos áreas protegidas para preservar el patrimonio natural de la provincia.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TEAM -->
+    <section>
+      <h2 class="section-title">Equipo de Investigación</h2>
+      <p class="section-subtitle">Profesionales comprometidos con la ciencia y la educación ambiental.</p>
+      
+      <div class="team-grid">
+        <div class="team-card">
+          <div class="team-avatar lead">
+            <i class="fas fa-user-tie"></i>
+            <span class="team-badge">Director</span>
+          </div>
+          <div class="team-info">
+            <h3>MSc. Antonio Javier Quintana Baños</h3>
+            <p class="role">Profesor Auxiliar</p>
+            <p>Director del GIPPC. Especialista en Geografía Física y coordinador de las expediciones de campo a los polígonos de estudio.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="team-info">
+            <h3>Diana L. Ortega Pérez</h3>
+            <p class="role">Investigadora</p>
+            <p>Participante activa en las expediciones de campo y análisis de datos geológicos y biológicos de los polígonos.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="team-info">
+            <h3>Raudel Rojas Corrales</h3>
+            <p class="role">Investigador</p>
+            <p>Colaborador en estudios de hidrología, climatología y levantamientos topográficos en campo.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="team-info">
+            <h3>Danilo Sánchez Robaina</h3>
+            <p class="role">Investigador</p>
+            <p>Especialista en análisis de suelos y vegetación. Participante en expediciones a Km 9 Mantua y otros polígonos.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="team-info">
+            <h3>Ernesto Rodríguez Mirabal</h3>
+            <p class="role">Investigador</p>
+            <p>Colaborador en estudios de fauna, espeleología y documentación fotográfica de las expediciones.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="team-info">
+            <h3>Enmanuel Erdwin Lezcano García</h3>
+            <p class="role">Investigador</p>
+            <p>Participante en análisis geológicos y cartografía de los polígonos de estudio.</p>
+          </div>
+        </div>
+
+        <div class="team-card">
+          <div class="team-avatar">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="team-info">
+            <h3>Elizabet Angelina Flores Dotsenko</h3>
+            <p class="role">Investigadora</p>
+            <p>Colaboradora en estudios botánicos y análisis de especies amenazadas en los ecosistemas estudiados.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- METHODOLOGY -->
+    <section class="methodology-section">
+      <h2 class="section-title">Metodología de Trabajo</h2>
+      <p class="section-subtitle">Proceso sistemático de investigación científica validada.</p>
+      
+      <div class="methodology-timeline">
+        <div class="method-item">
+          <h3><i class="fas fa-book"></i> Revisión Bibliográfica</h3>
+          <p>Consulta de fuentes especializadas: Nuevo Atlas de Cuba, Libro Rojo de la Flora Vascular de Pinar del Río, mapas topográficos 1:25,000, y literatura científica actualizada.</p>
+          <div class="method-tools">
+            <span class="tool-tag">Atlas de Cuba</span>
+            <span class="tool-tag">Libro Rojo</span>
+            <span class="tool-tag">Mapas topográficos</span>
+          </div>
+        </div>
+
+        <div class="method-item">
+          <h3><i class="fas fa-hiking"></i> Expediciones de Campo</h3>
+          <p>Trabajo in situ con mediciones sistemáticas, colecta de muestras, observación directa y entrevistas a pobladores locales para validar y complementar la información bibliográfica.</p>
+          <div class="method-tools">
+            <span class="tool-tag">Brújulas</span>
+            <span class="tool-tag">GPS</span>
+            <span class="tool-tag">Piquetas</span>
+            <span class="tool-tag">Cámaras</span>
+          </div>
+        </div>
+
+        <div class="method-item">
+          <h3><i class="fas fa-flask"></i> Análisis de Laboratorio</h3>
+          <p>Procesamiento de muestras de suelos, rocas y agua. Identificación taxonómica de especies vegetales y análisis químico de suelos según clasificaciones internacionales.</p>
+          <div class="method-tools">
+            <span class="tool-tag">HCl 10%</span>
+            <span class="tool-tag">Tabla Munsell</span>
+            <span class="tool-tag">Microscopía</span>
+          </div>
+        </div>
+
+        <div class="method-item">
+          <h3><i class="fas fa-chart-line"></i> Análisis de Datos</h3>
+          <p>Compilación de variables meteorológicas, hidrológicas y biológicas. Elaboración de climogramas, perfiles edáficos y mapas temáticos de distribución de especies.</p>
+          <div class="method-tools">
+            <span class="tool-tag">Estadística</span>
+            <span class="tool-tag">SIG</span>
+            <span class="tool-tag">Climatología</span>
+          </div>
+        </div>
+
+        <div class="method-item">
+          <h3><i class="fas fa-file-alt"></i> Publicación y Divulgación</h3>
+          <p>Elaboración de informes técnicos, presentaciones en eventos científicos y materiales didácticos para la formación de docentes y estudiantes.</p>
+          <div class="method-tools">
+            <span class="tool-tag">Informes</span>
+            <span class="tool-tag">Ponencias</span>
+            <span class="tool-tag">Material docente</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RESEARCH LINES -->
+    <section>
+      <h2 class="section-title">Líneas de Investigación</h2>
+      <p class="section-subtitle">Cuatro polígonos de estudio con características únicas.</p>
+      
+      <div class="research-grid">
+        <div class="research-card">
+          <div class="research-icon"><i class="fas fa-water"></i></div>
+          <h3>Guanahacabibes</h3>
+          <div class="location"><i class="fas fa-map-marker-alt"></i> Sandino • Península Occidental</div>
+          <p>Reserva de la Biosfera UNESCO. Estudio de ecosistemas costeros, kársticos y marinos con 172 especies de aves y 5 complejos de vegetación.</p>
+          <a href="guanahacabibes.html" class="research-link">Ver ficha completa <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="research-card">
+          <div class="research-icon"><i class="fas fa-tree"></i></div>
+          <h3>Km 9 Carretera a Mantua</h3>
+          <div class="location"><i class="fas fa-map-marker-alt"></i> Guane • Alturas de Pizarras</div>
+          <p>Arenas cuarcíferas blancas únicas del Terciario. Hábitat de 11+ especies de plantas amenazadas según UICN.</p>
+          <a href="km9-mantua.html" class="research-link">Ver ficha completa <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="research-card">
+          <div class="research-icon"><i class="fas fa-mountain"></i></div>
+          <h3>San Andrés - Caiguanabo</h3>
+          <div class="location"><i class="fas fa-map-marker-alt"></i> La Palma • Los Palacios</div>
+          <p>Valle intramontano con geología compleja, aguas mineromedicinales y sitios arqueológicos aborígenes.</p>
+          <a href="san-andres.html" class="research-link">Ver ficha completa <i class="fas fa-arrow-right"></i></a>
+        </div>
+
+        <div class="research-card">
+          <div class="research-icon"><i class="fas fa-dungeon"></i></div>
+          <h3>Sierra Guasasa</h3>
+          <div class="location"><i class="fas fa-map-marker-alt"></i> Viñales • Sierra de los Órganos</div>
+          <p>Sistema subterráneo kárstico con 35 cuevas, 15.3km de galerías y patrimonio paleontológico de desdentados.</p>
+          <a href="sierra-guasasa.html" class="research-link">Ver ficha completa <i class="fas fa-arrow-right"></i></a>
+        </div>
+      </div>
+    </section>
+
+    <!-- PUBLICATIONS -->
+    <section class="publications-section">
+      <div class="publications-content">
+        <h2>Publicaciones y Eventos Científicos</h2>
+        <p>Difusión de resultados en eventos académicos nacionales e internacionales.</p>
+        
+        <ul class="pub-list">
+          <li class="pub-item">
+            <h4>Estudio Integral del Sistema Subterráneo Guasasa, Viñales</h4>
+            <div class="pub-meta"><i class="fas fa-calendar"></i> 20 de febrero de 2018 • <i class="fas fa-university"></i> Taller Científico Estudiantil de Medio Ambiente</div>
+            <p>Caracterización geológica, geomorfológica e hidrológica del sistema kárstico más complejo de la Sierra de los Órganos.</p>
+          </li>
+          <li class="pub-item">
+            <h4>Caracterización Integral del Polígono Guanahacabibes</h4>
+            <div class="pub-meta"><i class="fas fa-calendar"></i> 20 de febrero de 2018 • <i class="fas fa-university"></i> Universidad de Pinar del Río</div>
+            <p>Análisis de la Reserva de la Biosfera UNESCO: biodiversidad, suelos ferralíticos y problemática ambiental.</p>
+          </li>
+          <li class="pub-item">
+            <h4>Informe de Expedición: Km 9 Carretera a Mantua</h4>
+            <div class="pub-meta"><i class="fas fa-calendar"></i> 7-9 de marzo de 2016 • <i class="fas fa-file-alt"></i> Informe técnico GIPPC</div>
+            <p>Documentación de arenas cuarcíferas únicas y especies amenazadas no reportadas para el distrito Sabaloense.</p>
+          </li>
+          <li class="pub-item">
+            <h4>Caracterización del Polígono San Andrés - Caiguanabo</h4>
+            <div class="pub-meta"><i class="fas fa-calendar"></i> 19 de junio de 2019 • <i class="fas fa-file-alt"></i> Informe técnico GIPPC</div>
+            <p>Estudio del valle intramontano: geología compleja, hidrología kárstica y potencialidades turísticas.</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="cta-section">
+      <h2>¿Interesado en colaborar?</h2>
+      <p>El GIPPC está abierto a colaboraciones con instituciones académicas, investigadores y estudiantes interesados en el estudio de los ecosistemas de Pinar del Río.</p>
+      <div class="cta-buttons">
+        <a href="../soporte.html" class="cta-btn cta-btn-primary">
+          <i class="fas fa-envelope"></i> Contactar al equipo
+        </a>
+        <a href="index.html" class="cta-btn cta-btn-secondary">
+          <i class="fas fa-map"></i> Explorar polígonos
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <p class="footer-quote">La ciencia es el camino hacia la comprensión y conservación de nuestro patrimonio natural.</p>
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="../index.html">Conociendo Pinar</a> | <a href="../privacidad.html">Privacidad</a> | <a href="../terminos.html">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
+    document.addEventListener('click', (e) => {
+      if (!mainNav.contains(e.target) && e.target !== menuToggle) mainNav.classList.remove('show');
+    });
+
+    // Header scroll effect
+    window.addEventListener('scroll', () => {
+      const header = document.querySelector('.site-header');
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+  </script>
+  <script src="menu.js" defer></script>
+</body>
+</html>
