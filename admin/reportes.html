@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reportes Biodiversidad • Admin • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    .notes-preview {
+      max-width: 250px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.85rem;
+      color: var(--admin-text-light);
+    }
+
+    .report-row.pending { background: #fef3c7; }
+    .report-row.pending:hover { background: #fde68a; }
+    .report-row.approved { background: #d1fae5; }
+    .report-row.approved:hover { background: #a7f3d0; }
+    .report-row.rejected { background: #fee2e2; opacity: 0.7; }
+    .report-row.rejected:hover { background: #fecaca; opacity: 1; }
+
+    .taxon-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      font-size: 1rem;
+      margin-right: 8px;
+    }
+    .taxon-ave { background: #dbeafe; color: #2563eb; }
+    .taxon-reptil { background: #fef3c7; color: #d97706; }
+    .taxon-anfibio { background: #d1fae5; color: #059669; }
+    .taxon-mamifero { background: #ede9fe; color: #7c3aed; }
+    .taxon-flora { background: #dcfce7; color: #16a34a; }
+    .taxon-invertebrado { background: #fce7f3; color: #db2777; }
+    .taxon-pez { background: #cffafe; color: #0891b2; }
+
+    .polygon-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: var(--admin-bg);
+      color: var(--admin-text);
+    }
+    .polygon-guanahacabibes { background: #dbeafe; color: #1e40af; }
+    .polygon-km9 { background: #fef3c7; color: #92400e; }
+    .polygon-sanandres { background: #dcfce7; color: #166534; }
+    .polygon-guasasa { background: #ede9fe; color: #5b21b6; }
+
+    .report-meta {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .meta-card {
+      padding: 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      border-left: 4px solid var(--admin-primary);
+    }
+
+    .meta-card-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--admin-text-light);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .meta-card-value {
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--admin-text);
+    }
+
+    .notes-full {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+      line-height: 1.7;
+      padding: 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      border-left: 4px solid var(--admin-info);
+      font-size: 0.9rem;
+    }
+
+    /* Modal forzado */
+    .modal-overlay {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: rgba(0, 0, 0, 0.6) !important;
+      z-index: 99999 !important;
+      display: none !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 20px !important;
+      backdrop-filter: blur(4px) !important;
+    }
+    .modal-overlay.active {
+      display: flex !important;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal {
+      background: white !important;
+      border-radius: 12px !important;
+      max-width: 750px !important;
+      width: 100% !important;
+      max-height: 90vh !important;
+      overflow-y: auto !important;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-top: 24px;
+    }
+
+    .filter-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-stat {
+      padding: 8px 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-stat strong { color: var(--admin-primary); }
+    .filter-stat.pending strong { color: #d97706; }
+    .filter-stat.approved strong { color: #059669; }
+    .filter-stat.rejected strong { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <i class="fas fa-leaf"></i>
+          <span>Conociendo Pinar</span>
+        </a>
+        <span class="sidebar-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Principal</div>
+        <a href="index.html" class="sidebar-link">
+          <i class="fas fa-home"></i>
+          <span>Dashboard</span>
+        </a>
+        
+        <div class="sidebar-section-title">Moderación</div>
+        <a href="reportes.html" class="sidebar-link">
+          <i class="fas fa-binoculars"></i>
+          <span>Reportes Biodiversidad</span>
+          <span class="badge-count" data-badge="reports" style="display:none;">0</span>
+        </a>
+        <a href="posts.html" class="sidebar-link">
+          <i class="fas fa-newspaper"></i>
+          <span>Posts del Blog</span>
+          <span class="badge-count" data-badge="posts" style="display:none;">0</span>
+        </a>
+        <a href="galeria.html" class="sidebar-link">
+          <i class="fas fa-images"></i>
+          <span>Galería de Fotos</span>
+          <span class="badge-count" data-badge="gallery" style="display:none;">0</span>
+        </a>
+        <a href="mensajes.html" class="sidebar-link">
+          <i class="fas fa-envelope"></i>
+          <span>Mensajes</span>
+          <span class="badge-count" data-badge="messages" style="display:none;">0</span>
+        </a>
+        
+        <div class="sidebar-section-title">Sitio</div>
+        <a href="../index.html" class="sidebar-link" target="_blank">
+          <i class="fas fa-external-link-alt"></i>
+          <span>Ver sitio público</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="#" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i>
+          <span>Cerrar sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+      
+      <!-- HEADER -->
+      <header class="admin-header">
+        <div class="admin-header-left">
+          <button class="btn-mobile-menu"><i class="fas fa-bars"></i></button>
+          <div>
+            <h1>Reportes de Biodiversidad</h1>
+            <div class="breadcrumb">Admin / Moderación / Reportes</div>
+          </div>
+        </div>
+        <div class="admin-header-right">
+          <div class="admin-user">
+            <div class="admin-user-avatar">AD</div>
+            <div class="admin-user-info">
+              <span class="admin-user-name">Admin</span>
+              <span class="admin-user-role">Administrador</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- CONTENT -->
+      <div class="admin-content">
+        
+        <div class="page-title">
+          <div>
+            <h2><i class="fas fa-binoculars"></i> Avistamientos Ciudadanos</h2>
+            <p>Valida los reportes de biodiversidad enviados por la comunidad</p>
+          </div>
+          <button class="btn btn-secondary" onclick="loadReports()">
+            <i class="fas fa-sync-alt"></i> Actualizar
+          </button>
+        </div>
+
+        <!-- FILTROS -->
+        <div class="filters-bar">
+          <select id="filterStatus" onchange="loadReports()">
+            <option value="all">Todos los estados</option>
+            <option value="pending" selected>Pendientes</option>
+            <option value="approved">Aprobados</option>
+            <option value="rejected">Rechazados</option>
+          </select>
+          <select id="filterPolygon" onchange="loadReports()">
+            <option value="all">Todos los polígonos</option>
+            <option value="guanahacabibes">Guanahacabibes</option>
+            <option value="km9">Km 9 Mantua</option>
+            <option value="sanandres">San Andrés</option>
+            <option value="guasasa">Sierra Guasasa</option>
+          </select>
+          <select id="filterTaxon" onchange="loadReports()">
+            <option value="all">Todos los grupos</option>
+            <option value="ave">Aves</option>
+            <option value="reptil">Reptiles</option>
+            <option value="anfibio">Anfibios</option>
+            <option value="mamifero">Mamíferos</option>
+            <option value="flora">Flora</option>
+            <option value="invertebrado">Invertebrados</option>
+            <option value="pez">Peces</option>
+          </select>
+          <input type="text" id="searchInput" placeholder="Buscar especie..." onkeyup="renderReports()">
+          <div class="filter-spacer"></div>
+        </div>
+
+        <!-- ESTADÍSTICAS -->
+        <div class="filter-stats">
+          <div class="filter-stat">
+            <i class="fas fa-list"></i>
+            <span>Total: <strong id="statTotal">0</strong></span>
+          </div>
+          <div class="filter-stat pending">
+            <i class="fas fa-clock"></i>
+            <span>Pendientes: <strong id="statPending">0</strong></span>
+          </div>
+          <div class="filter-stat approved">
+            <i class="fas fa-check-circle"></i>
+            <span>Aprobados: <strong id="statApproved">0</strong></span>
+          </div>
+          <div class="filter-stat rejected">
+            <i class="fas fa-times-circle"></i>
+            <span>Rechazados: <strong id="statRejected">0</strong></span>
+          </div>
+        </div>
+
+        <!-- TABLA DE REPORTES -->
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div id="reportsContainer">
+              <div class="loading">
+                <div class="spinner"></div>
+                <p>Cargando reportes...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL DE DETALLES -->
+  <div class="modal-overlay" id="reportModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-binoculars"></i> Detalle del Avistamiento</h3>
+        <button class="modal-close" onclick="closeReportModal()">×</button>
+      </div>
+      <div class="modal-body">
+        
+        <div class="report-meta">
+          <div class="meta-card">
+            <div class="meta-card-label">Especie</div>
+            <div class="meta-card-value" id="modalSpecies"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Grupo Taxonómico</div>
+            <div class="meta-card-value" id="modalTaxon"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Polígono</div>
+            <div class="meta-card-value" id="modalPolygon"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Individuos</div>
+            <div class="meta-card-value" id="modalCount"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Reportado por</div>
+            <div class="meta-card-value" id="modalReporter"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Fecha</div>
+            <div class="meta-card-value" id="modalDate"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Estado Actual</div>
+            <div class="meta-card-value" id="modalStatus"></div>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="font-size: 1rem; margin-bottom: 8px; color: var(--admin-text);">
+            <i class="fas fa-sticky-note"></i> Observaciones del reportero:
+          </h4>
+          <div class="notes-full" id="modalNotes"></div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-success" id="btnApprove" onclick="approveCurrentReport()">
+            <i class="fas fa-check"></i> Aprobar
+          </button>
+          <button class="btn btn-danger" id="btnReject" onclick="rejectCurrentReport()">
+            <i class="fas fa-times"></i> Rechazar
+          </button>
+          <button class="btn btn-warning" id="btnPending" onclick="pendingCurrentReport()" style="display:none;">
+            <i class="fas fa-undo"></i> Marcar Pendiente
+          </button>
+          <button class="btn btn-danger" onclick="deleteCurrentReport()">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+  <script>
+    let allReports = [];
+    let currentReportId = null;
+
+    // ===========================
+    // EXPOSICIÓN GLOBAL
+    // ===========================
+    window.loadReports = loadReports;
+    window.renderReports = renderReports;
+    window.viewReport = viewReport;
+    window.closeReportModal = closeReportModal;
+    window.approveCurrentReport = approveCurrentReport;
+    window.rejectCurrentReport = rejectCurrentReport;
+    window.pendingCurrentReport = pendingCurrentReport;
+    window.deleteCurrentReport = deleteCurrentReport;
+    window.approveReport = approveReport;
+    window.rejectReport = rejectReport;
+    window.deleteReport = deleteReport;
+
+    // ===========================
+    // MAPEOS DE TEXTO
+    // ===========================
+    const taxonIcons = {
+      ave: { icon: 'dove', label: 'Ave' },
+      reptil: { icon: 'dragon', label: 'Reptil' },
+      anfibio: { icon: 'frog', label: 'Anfibio' },
+      mamifero: { icon: 'paw', label: 'Mamífero' },
+      flora: { icon: 'seedling', label: 'Flora' },
+      invertebrado: { icon: 'bug', label: 'Invertebrado' },
+      pez: { icon: 'fish', label: 'Pez' }
+    };
+
+    const polygonNames = {
+      guanahacabibes: 'Guanahacabibes',
+      km9: 'Km 9 Mantua',
+      sanandres: 'San Andrés',
+      guasasa: 'Sierra Guasasa'
+    };
+
+    const statusLabels = {
+      pending: '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Pendiente</span>',
+      approved: '<span class="status-badge status-approved"><i class="fas fa-check"></i> Aprobado</span>',
+      rejected: '<span class="status-badge status-rejected"><i class="fas fa-times"></i> Rechazado</span>'
+    };
+
+    // ===========================
+    // CARGAR REPORTES
+    // ===========================
+    async function loadReports() {
+      const container = document.getElementById('reportsContainer');
+      const filterStatus = document.getElementById('filterStatus').value;
+      const filterPolygon = document.getElementById('filterPolygon').value;
+      const filterTaxon = document.getElementById('filterTaxon').value;
+      
+      container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Cargando reportes...</p></div>';
+      
+      try {
+        let query = supabaseClient
+          .from('biodiversity_reports')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (filterStatus !== 'all') {
+          query = query.eq('status', filterStatus);
+        }
+        if (filterPolygon !== 'all') {
+          query = query.eq('polygon', filterPolygon);
+        }
+        if (filterTaxon !== 'all') {
+          query = query.eq('taxon_group', filterTaxon);
+        }
+        
+        const { data, error } = await query;
+        
+        if (error) throw error;
+        
+        allReports = data || [];
+        updateStats();
+        renderReports();
+        
+      } catch (err) {
+        console.error('Error cargando reportes:', err);
+        container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Error: ${err.message}</div>`;
+      }
+    }
+
+    // ===========================
+    // ACTUALIZAR ESTADÍSTICAS
+    // ===========================
+    function updateStats() {
+      const total = allReports.length;
+      const pending = allReports.filter(r => r.status === 'pending').length;
+      const approved = allReports.filter(r => r.status === 'approved').length;
+      const rejected = allReports.filter(r => r.status === 'rejected').length;
+      
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statPending').textContent = pending;
+      document.getElementById('statApproved').textContent = approved;
+      document.getElementById('statRejected').textContent = rejected;
+    }
+
+    // ===========================
+    // RENDERIZAR REPORTES
+    // ===========================
+    function renderReports() {
+      const container = document.getElementById('reportsContainer');
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = allReports.filter(r => {
+        if (!search) return true;
+        return (r.species_name || '').toLowerCase().includes(search);
+      });
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-binoculars"></i>
+            <h3>No hay reportes</h3>
+            <p>No se encontraron reportes con los filtros aplicados</p>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 25%;">Especie</th>
+              <th style="width: 15%;">Polígono</th>
+              <th style="width: 10%;">Individuos</th>
+              <th style="width: 20%;">Observaciones</th>
+              <th style="width: 15%;">Fecha</th>
+              <th style="width: 15%;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      filtered.forEach(report => {
+        const taxon = taxonIcons[report.taxon_group] || { icon: 'paw', label: report.taxon_group };
+        const polygonName = polygonNames[report.polygon] || report.polygon;
+        const notesPreview = (report.notes || '').substring(0, 80) + ((report.notes || '').length > 80 ? '...' : '');
+        
+        html += `
+          <tr class="report-row ${report.status}">
+            <td>
+              <div style="display: flex; align-items: center;">
+                <div class="taxon-icon taxon-${report.taxon_group}">
+                  <i class="fas fa-${taxon.icon}"></i>
+                </div>
+                <div>
+                  <div style="font-weight: 600; color: var(--admin-text);">${report.species_name}</div>
+                  <div style="font-size: 0.8rem; color: var(--admin-text-light);">${taxon.label}</div>
+                </div>
+              </div>
+            </td>
+            <td>
+              <span class="polygon-badge polygon-${report.polygon}">
+                <i class="fas fa-map-pin"></i> ${polygonName}
+              </span>
+            </td>
+            <td style="text-align: center; font-weight: 600;">
+              ${report.individual_count || 1}
+            </td>
+            <td>
+              <div class="notes-preview">${notesPreview || '<em>Sin observaciones</em>'}</div>
+            </td>
+            <td>
+              <div style="font-size: 0.85rem;">${timeAgo(report.created_at)}</div>
+              <div style="font-size: 0.75rem; color: var(--admin-text-light);">${formatDate(report.created_at)}</div>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-info btn-xs" onclick="window.viewReport('${report.id}')" title="Ver detalles">
+                  <i class="fas fa-eye"></i>
+                </button>
+                ${report.status === 'pending' ? `
+                  <button class="btn btn-success btn-xs" onclick="window.approveReport('${report.id}')" title="Aprobar">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-danger btn-xs" onclick="window.rejectReport('${report.id}')" title="Rechazar">
+                    <i class="fas fa-times"></i>
+                  </button>
+                ` : ''}
+                ${report.status === 'rejected' ? `
+                  <button class="btn btn-success btn-xs" onclick="window.approveReport('${report.id}')" title="Aprobar">
+                    <i class="fas fa-check"></i>
+                  </button>
+                ` : ''}
+                ${report.status === 'approved' ? `
+                  <button class="btn btn-danger btn-xs" onclick="window.rejectReport('${report.id}')" title="Rechazar">
+                    <i class="fas fa-times"></i>
+                  </button>
+                ` : ''}
+                <button class="btn btn-secondary btn-xs" onclick="window.deleteReport('${report.id}')" title="Eliminar">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
+    // ===========================
+    // VER REPORTE
+    // ===========================
+    function viewReport(id) {
+      console.log('👁️ Ver reporte ID:', id);
+      
+      const report = allReports.find(r => r.id === id);
+      
+      if (!report) {
+        alert('Error: No se encontró el reporte');
+        return;
+      }
+      
+      currentReportId = id;
+      
+      const taxon = taxonIcons[report.taxon_group] || { icon: 'paw', label: report.taxon_group };
+      const polygonName = polygonNames[report.polygon] || report.polygon;
+      
+      document.getElementById('modalSpecies').innerHTML = `
+        <i class="fas fa-${taxon.icon}" style="color: var(--admin-primary);"></i>
+        ${report.species_name}
+      `;
+      document.getElementById('modalTaxon').textContent = taxon.label;
+      document.getElementById('modalPolygon').textContent = polygonName;
+      document.getElementById('modalCount').textContent = report.individual_count || 1;
+      document.getElementById('modalReporter').textContent = report.reporter_email || 'Anónimo';
+      document.getElementById('modalDate').textContent = formatDate(report.created_at);
+      document.getElementById('modalStatus').innerHTML = statusLabels[report.status];
+      document.getElementById('modalNotes').textContent = report.notes || '(Sin observaciones)';
+      
+      // Configurar botones según estado
+      const btnApprove = document.getElementById('btnApprove');
+      const btnReject = document.getElementById('btnReject');
+      const btnPending = document.getElementById('btnPending');
+      
+      if (report.status === 'approved') {
+        btnApprove.style.display = 'none';
+        btnReject.style.display = 'inline-flex';
+        btnPending.style.display = 'inline-flex';
+      } else if (report.status === 'rejected') {
+        btnApprove.style.display = 'inline-flex';
+        btnReject.style.display = 'none';
+        btnPending.style.display = 'inline-flex';
+      } else {
+        btnApprove.style.display = 'inline-flex';
+        btnReject.style.display = 'inline-flex';
+        btnPending.style.display = 'none';
+      }
+      
+      document.getElementById('reportModal').classList.add('active');
+    }
+
+    // ===========================
+    // CERRAR MODAL
+    // ===========================
+    function closeReportModal() {
+      document.getElementById('reportModal').classList.remove('active');
+      currentReportId = null;
+    }
+
+    // ===========================
+    // CAMBIAR ESTADO
+    // ===========================
+    async function updateStatus(id, newStatus, showMsg = true) {
+      try {
+        const { error } = await supabaseClient
+          .from('biodiversity_reports')
+          .update({ status: newStatus })
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        const report = allReports.find(r => r.id === id);
+        if (report) report.status = newStatus;
+        
+        updateStats();
+        renderReports();
+        
+        if (showMsg) {
+          const labels = {
+            pending: 'marcado como pendiente',
+            approved: 'aprobado',
+            rejected: 'rechazado'
+          };
+          showAlert(`Reporte ${labels[newStatus]} correctamente`, 'success');
+        }
+        
+        if (typeof loadSidebarCounts === 'function') {
+          await loadSidebarCounts();
+        }
+        
+      } catch (err) {
+        showAlert('Error: ' + err.message, 'danger');
+        throw err;
+      }
+    }
+
+    async function approveReport(id) {
+      await updateStatus(id, 'approved');
+    }
+
+    async function rejectReport(id) {
+      if (!confirm('¿Rechazar este reporte? No aparecerá en el dashboard público.')) return;
+      await updateStatus(id, 'rejected');
+    }
+
+    async function approveCurrentReport() {
+      if (!currentReportId) return;
+      await approveReport(currentReportId);
+      viewReport(currentReportId); // refrescar modal
+    }
+
+    async function rejectCurrentReport() {
+      if (!currentReportId) return;
+      if (!confirm('¿Rechazar este reporte?')) return;
+      await rejectReport(currentReportId);
+      viewReport(currentReportId);
+    }
+
+    async function pendingCurrentReport() {
+      if (!currentReportId) return;
+      await updateStatus(currentReportId, 'pending');
+      viewReport(currentReportId);
+    }
+
+    // ===========================
+    // ELIMINAR REPORTE
+    // ===========================
+    async function deleteReport(id) {
+      if (!confirm('¿Eliminar este reporte? Esta acción no se puede deshacer.')) return;
+      
+      try {
+        const { error } = await supabaseClient
+          .from('biodiversity_reports')
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        allReports = allReports.filter(r => r.id !== id);
+        updateStats();
+        renderReports();
+        
+        showAlert('Reporte eliminado', 'success');
+        
+        if (typeof loadSidebarCounts === 'function') {
+          await loadSidebarCounts();
+        }
+        
+      } catch (err) {
+        showAlert('Error: ' + err.message, 'danger');
+      }
+    }
+
+    async function deleteCurrentReport() {
+      if (!currentReportId) return;
+      await deleteReport(currentReportId);
+      closeReportModal();
+    }
+
+    // ===========================
+    // EVENT LISTENERS
+    // ===========================
+    document.getElementById('reportModal').addEventListener('click', (e) => {
+      if (e.target.id === 'reportModal') closeReportModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeReportModal();
+    });
+
+    // ===========================
+    // REALTIME
+    // ===========================
+    function setupRealtime() {
+      if (!supabaseClient) return;
+      
+      supabaseClient
+        .channel('admin_reports')
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'biodiversity_reports' }, 
+          () => {
+            loadReports();
+            if (typeof loadSidebarCounts === 'function') loadSidebarCounts();
+          }
+        )
+        .subscribe();
+    }
+
+    // ===========================
+    // INICIALIZACIÓN
+    // ===========================
+    (async () => {
+      await initSupabase();
+      const isAdmin = await checkAdminAuth();
+      
+      if (isAdmin) {
+        await loadReports();
+        setupRealtime();
+      }
+    })();
+  </script>
+</body>
+</html>

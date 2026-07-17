@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galería de Fotos • Admin • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .gallery-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.3s ease;
+      position: relative;
+      border-top: 4px solid var(--admin-border);
+    }
+
+    .gallery-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    .gallery-card.pending { border-top-color: #d97706; }
+    .gallery-card.approved { border-top-color: #059669; }
+    .gallery-card.rejected { border-top-color: #dc2626; opacity: 0.7; }
+
+    .gallery-image-wrapper {
+      position: relative;
+      width: 100%;
+      padding-top: 75%; /* 4:3 aspect ratio */
+      overflow: hidden;
+      background: var(--admin-bg);
+      cursor: pointer;
+    }
+
+    .gallery-image-wrapper img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .gallery-card:hover .gallery-image-wrapper img {
+      transform: scale(1.05);
+    }
+
+    .gallery-image-wrapper .zoom-icon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.7);
+      color: white;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .gallery-image-wrapper:hover .zoom-icon {
+      opacity: 1;
+    }
+
+    .gallery-status {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      z-index: 2;
+    }
+
+    .gallery-info {
+      padding: 16px;
+    }
+
+    .gallery-caption {
+      font-size: 0.9rem;
+      color: var(--admin-text);
+      margin-bottom: 8px;
+      line-height: 1.5;
+      min-height: 40px;
+    }
+
+    .gallery-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--admin-text-light);
+      margin-bottom: 12px;
+    }
+
+    .gallery-user {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 60%;
+    }
+
+    .gallery-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .gallery-actions button {
+      flex: 1;
+      min-width: 70px;
+    }
+
+    /* Modal de imagen completa */
+    .modal-overlay {
+      position: fixed !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      background: rgba(0, 0, 0, 0.9) !important;
+      z-index: 99999 !important;
+      display: none !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 20px !important;
+      backdrop-filter: blur(8px) !important;
+    }
+
+    .modal-overlay.active {
+      display: flex !important;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .modal-gallery {
+      background: white !important;
+      border-radius: 12px !important;
+      max-width: 1000px !important;
+      width: 100% !important;
+      max-height: 95vh !important;
+      overflow-y: auto !important;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5) !important;
+      display: flex;
+      flex-direction: column;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .modal-image-container {
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 300px;
+      max-height: 60vh;
+      position: relative;
+    }
+
+    .modal-image-container img {
+      max-width: 100%;
+      max-height: 100%;
+      object-fit: contain;
+    }
+
+    .modal-info {
+      padding: 24px;
+    }
+
+    .modal-info-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .modal-meta-card {
+      padding: 12px 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      border-left: 4px solid var(--admin-primary);
+    }
+
+    .modal-meta-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--admin-text-light);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+
+    .modal-meta-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--admin-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .modal-caption {
+      font-size: 1rem;
+      color: var(--admin-text);
+      line-height: 1.7;
+      padding: 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      margin-bottom: 20px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      padding-top: 20px;
+      border-top: 1px solid var(--admin-border);
+    }
+
+    .filter-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-stat {
+      padding: 8px 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-stat strong { color: var(--admin-primary); }
+    .filter-stat.pending strong { color: #d97706; }
+    .filter-stat.approved strong { color: #059669; }
+    .filter-stat.rejected strong { color: #dc2626; }
+
+    .view-toggle {
+      display: flex;
+      gap: 4px;
+      background: var(--admin-bg);
+      padding: 4px;
+      border-radius: var(--admin-radius-sm);
+    }
+
+    .view-toggle button {
+      padding: 6px 12px;
+      background: transparent;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      color: var(--admin-text-light);
+      transition: all 0.2s ease;
+    }
+
+    .view-toggle button.active {
+      background: white;
+      color: var(--admin-primary);
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    /* Vista de lista */
+    .gallery-list {
+      display: none;
+    }
+
+    .gallery-list.active {
+      display: block;
+    }
+
+    .gallery-grid.active {
+      display: grid;
+    }
+
+    .list-row {
+      display: grid;
+      grid-template-columns: 80px 2fr 1fr 1fr auto;
+      gap: 16px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--admin-border);
+      align-items: center;
+      transition: background 0.2s ease;
+    }
+
+    .list-row:hover {
+      background: var(--admin-bg);
+    }
+
+    .list-row.pending { background: #fef3c7; }
+    .list-row.pending:hover { background: #fde68a; }
+    .list-row.approved { background: #d1fae5; }
+    .list-row.approved:hover { background: #a7f3d0; }
+    .list-row.rejected { background: #fee2e2; opacity: 0.7; }
+    .list-row.rejected:hover { background: #fecaca; opacity: 1; }
+
+    .list-thumbnail {
+      width: 80px;
+      height: 60px;
+      border-radius: 6px;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .list-thumbnail img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .list-caption {
+      font-size: 0.9rem;
+      color: var(--admin-text);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .list-meta {
+      font-size: 0.8rem;
+      color: var(--admin-text-light);
+    }
+
+    @media (max-width: 768px) {
+      .gallery-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 12px;
+      }
+
+      .list-row {
+        grid-template-columns: 60px 1fr auto;
+      }
+
+      .list-caption, .list-meta {
+        display: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <i class="fas fa-leaf"></i>
+          <span>Conociendo Pinar</span>
+        </a>
+        <span class="sidebar-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Principal</div>
+        <a href="index.html" class="sidebar-link">
+          <i class="fas fa-home"></i><span>Dashboard</span>
+        </a>
+        
+        <div class="sidebar-section-title">Moderación</div>
+        <a href="reportes.html" class="sidebar-link">
+          <i class="fas fa-binoculars"></i><span>Reportes Biodiversidad</span>
+          <span class="badge-count" data-badge="reports" style="display:none;">0</span>
+        </a>
+        <a href="posts.html" class="sidebar-link">
+          <i class="fas fa-newspaper"></i><span>Posts del Blog</span>
+          <span class="badge-count" data-badge="posts" style="display:none;">0</span>
+        </a>
+        <a href="galeria.html" class="sidebar-link">
+          <i class="fas fa-images"></i><span>Galería de Fotos</span>
+          <span class="badge-count" data-badge="gallery" style="display:none;">0</span>
+        </a>
+        <a href="mensajes.html" class="sidebar-link">
+          <i class="fas fa-envelope"></i><span>Mensajes</span>
+          <span class="badge-count" data-badge="messages" style="display:none;">0</span>
+        </a>
+        
+        <div class="sidebar-section-title">Sitio</div>
+        <a href="../index.html" class="sidebar-link" target="_blank">
+          <i class="fas fa-external-link-alt"></i><span>Ver sitio público</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="#" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i><span>Cerrar sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <div class="admin-header-left">
+          <button class="btn-mobile-menu"><i class="fas fa-bars"></i></button>
+          <div>
+            <h1>Galería de Fotos</h1>
+            <div class="breadcrumb">Admin / Moderación / Galería</div>
+          </div>
+        </div>
+        <div class="admin-header-right">
+          <div class="admin-user">
+            <div class="admin-user-avatar">AD</div>
+            <div class="admin-user-info">
+              <span class="admin-user-name">Admin</span>
+              <span class="admin-user-role">Administrador</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="page-title">
+          <div>
+            <h2><i class="fas fa-images"></i> Moderación de Galería</h2>
+            <p>Revisa y aprueba las fotos enviadas por la comunidad</p>
+          </div>
+          <div style="display: flex; gap: 8px;">
+            <div class="view-toggle">
+              <button id="viewGrid" class="active" onclick="setView('grid')">
+                <i class="fas fa-th-large"></i>
+              </button>
+              <button id="viewList" onclick="setView('list')">
+                <i class="fas fa-list"></i>
+              </button>
+            </div>
+            <button class="btn btn-secondary" onclick="loadGallery()">
+              <i class="fas fa-sync-alt"></i> Actualizar
+            </button>
+          </div>
+        </div>
+
+        <div class="filters-bar">
+          <select id="filterStatus" onchange="loadGallery()">
+            <option value="all">Todos los estados</option>
+            <option value="pending" selected>Pendientes</option>
+            <option value="approved">Aprobadas</option>
+            <option value="rejected">Rechazadas</option>
+          </select>
+          <input type="text" id="searchInput" placeholder="Buscar por descripción o usuario..." onkeyup="renderGallery()">
+          <div class="filter-spacer"></div>
+          <a href="../conociendo-pinar.html#tab-galeria" target="_blank" class="btn btn-info btn-sm">
+            <i class="fas fa-external-link-alt"></i> Ver galería pública
+          </a>
+        </div>
+
+        <div class="filter-stats">
+          <div class="filter-stat">
+            <i class="fas fa-images"></i><span>Total: <strong id="statTotal">0</strong></span>
+          </div>
+          <div class="filter-stat pending">
+            <i class="fas fa-clock"></i><span>Pendientes: <strong id="statPending">0</strong></span>
+          </div>
+          <div class="filter-stat approved">
+            <i class="fas fa-check-circle"></i><span>Aprobadas: <strong id="statApproved">0</strong></span>
+          </div>
+          <div class="filter-stat rejected">
+            <i class="fas fa-times-circle"></i><span>Rechazadas: <strong id="statRejected">0</strong></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div id="galleryContainer">
+              <div class="loading">
+                <div class="spinner"></div>
+                <p>Cargando galería...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL DE IMAGEN COMPLETA -->
+  <div class="modal-overlay" id="galleryModal">
+    <div class="modal-gallery">
+      <div class="modal-header">
+        <h3><i class="fas fa-image"></i> Detalle de Foto</h3>
+        <button class="modal-close" onclick="closeGalleryModal()">×</button>
+      </div>
+      
+      <div class="modal-image-container">
+        <img id="modalImage" src="" alt="Foto completa">
+      </div>
+
+      <div class="modal-info">
+        <div class="modal-info-grid">
+          <div class="modal-meta-card">
+            <div class="modal-meta-label">Subida por</div>
+            <div class="modal-meta-value" id="modalUser"></div>
+          </div>
+          <div class="modal-meta-card">
+            <div class="modal-meta-label">Fecha</div>
+            <div class="modal-meta-value" id="modalDate"></div>
+          </div>
+          <div class="modal-meta-card">
+            <div class="modal-meta-label">Polígono</div>
+            <div class="modal-meta-value" id="modalPolygon"></div>
+          </div>
+          <div class="modal-meta-card">
+            <div class="modal-meta-label">Estado Actual</div>
+            <div class="modal-meta-value" id="modalStatus"></div>
+          </div>
+        </div>
+
+        <div id="modalCaptionContainer">
+          <h4 style="font-size: 0.9rem; margin-bottom: 8px; color: var(--admin-text);">
+            <i class="fas fa-comment"></i> Descripción:
+          </h4>
+          <div class="modal-caption" id="modalCaption"></div>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn btn-success" id="btnApprove">
+            <i class="fas fa-check"></i> Aprobar
+          </button>
+          <button class="btn btn-danger" id="btnReject">
+            <i class="fas fa-times"></i> Rechazar
+          </button>
+          <button class="btn btn-warning" id="btnPending" style="display:none;">
+            <i class="fas fa-undo"></i> Marcar Pendiente
+          </button>
+          <button class="btn btn-danger" id="btnDelete">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+  <script>
+    let allPhotos = [];
+    let currentPhotoId = null;
+    let currentView = 'grid';
+
+    const polygonNames = {
+      guanahacabibes: 'Guanahacabibes',
+      km9: 'Km 9 Mantua',
+      sanandres: 'San Andrés',
+      guasasa: 'Sierra Guasasa'
+    };
+
+    const statusLabels = {
+      pending: '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Pendiente</span>',
+      approved: '<span class="status-badge status-approved"><i class="fas fa-check"></i> Aprobada</span>',
+      rejected: '<span class="status-badge status-rejected"><i class="fas fa-times"></i> Rechazada</span>'
+    };
+
+    // ===========================
+    // CAMBIAR VISTA (GRID/LIST)
+    // ===========================
+    function setView(view) {
+      currentView = view;
+      document.getElementById('viewGrid').classList.toggle('active', view === 'grid');
+      document.getElementById('viewList').classList.toggle('active', view === 'list');
+      renderGallery();
+    }
+
+    // ===========================
+    // CARGAR GALERÍA
+    // ===========================
+    async function loadGallery() {
+      const container = document.getElementById('galleryContainer');
+      const filterStatus = document.getElementById('filterStatus').value;
+      
+      container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Cargando galería...</p></div>';
+      
+      try {
+        let query = supabaseClient
+          .from('gallery')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (filterStatus !== 'all') {
+          query = query.eq('status', filterStatus);
+        }
+        
+        const { data, error } = await query;
+        if (error) throw error;
+        
+        allPhotos = data || [];
+        console.log('✅ Fotos cargadas:', allPhotos.length);
+        updateStats();
+        renderGallery();
+        
+      } catch (err) {
+        console.error('Error cargando galería:', err);
+        container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Error: ${err.message}</div>`;
+      }
+    }
+
+    function updateStats() {
+      const total = allPhotos.length;
+      const pending = allPhotos.filter(p => p.status === 'pending').length;
+      const approved = allPhotos.filter(p => p.status === 'approved').length;
+      const rejected = allPhotos.filter(p => p.status === 'rejected').length;
+      
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statPending').textContent = pending;
+      document.getElementById('statApproved').textContent = approved;
+      document.getElementById('statRejected').textContent = rejected;
+    }
+
+    // ===========================
+    // RENDERIZAR GALERÍA
+    // ===========================
+    function renderGallery() {
+      const container = document.getElementById('galleryContainer');
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = allPhotos.filter(p => {
+        if (!search) return true;
+        return (
+          (p.caption || '').toLowerCase().includes(search) ||
+          (p.user_email || '').toLowerCase().includes(search) ||
+          (p.polygon || '').toLowerCase().includes(search)
+        );
+      });
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-images"></i>
+            <h3>No hay fotos</h3>
+            <p>No se encontraron fotos con los filtros aplicados</p>
+          </div>
+        `;
+        return;
+      }
+      
+      if (currentView === 'grid') {
+        renderGridView(filtered);
+      } else {
+        renderListView(filtered);
+      }
+    }
+
+    function renderGridView(photos) {
+      const container = document.getElementById('galleryContainer');
+      
+      let html = '<div class="gallery-grid active">';
+      
+      photos.forEach(photo => {
+        const userName = photo.user_email ? photo.user_email.split('@')[0] : 'Anónimo';
+        const polygonName = polygonNames[photo.polygon] || photo.polygon || 'Sin polígono';
+        
+        html += `
+          <div class="gallery-card ${photo.status}">
+            <div class="gallery-status">
+              ${statusLabels[photo.status]}
+            </div>
+            <div class="gallery-image-wrapper" data-action="view" data-id="${photo.id}">
+              <img src="${photo.image_url}" alt="${photo.caption || 'Foto'}" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400';">
+              <div class="zoom-icon">
+                <i class="fas fa-search-plus"></i>
+              </div>
+            </div>
+            <div class="gallery-info">
+              <div class="gallery-caption">${photo.caption || '<em>Sin descripción</em>'}</div>
+              <div class="gallery-meta">
+                <div class="gallery-user">
+                  <i class="fas fa-user"></i> ${userName}
+                </div>
+                <div>${timeAgo(photo.created_at)}</div>
+              </div>
+              <div class="gallery-actions">
+                ${photo.status === 'pending' ? `
+                  <button class="btn btn-success btn-xs" data-action="approve" data-id="${photo.id}">
+                    <i class="fas fa-check"></i> Aprobar
+                  </button>
+                  <button class="btn btn-danger btn-xs" data-action="reject" data-id="${photo.id}">
+                    <i class="fas fa-times"></i> Rechazar
+                  </button>
+                ` : ''}
+                ${photo.status === 'rejected' ? `
+                  <button class="btn btn-success btn-xs" data-action="approve" data-id="${photo.id}">
+                    <i class="fas fa-check"></i> Aprobar
+                  </button>
+                ` : ''}
+                ${photo.status === 'approved' ? `
+                  <button class="btn btn-danger btn-xs" data-action="reject" data-id="${photo.id}">
+                    <i class="fas fa-times"></i> Rechazar
+                  </button>
+                ` : ''}
+                <button class="btn btn-secondary btn-xs" data-action="delete" data-id="${photo.id}">
+                  <i class="fas fa-trash"></i> Eliminar
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      container.innerHTML = html;
+      attachListeners();
+    }
+
+    function renderListView(photos) {
+      const container = document.getElementById('galleryContainer');
+      
+      let html = '<div class="gallery-list active">';
+      
+      photos.forEach(photo => {
+        const userName = photo.user_email ? photo.user_email.split('@')[0] : 'Anónimo';
+        const polygonName = polygonNames[photo.polygon] || photo.polygon || 'Sin polígono';
+        
+        html += `
+          <div class="list-row ${photo.status}">
+            <div class="list-thumbnail" data-action="view" data-id="${photo.id}">
+              <img src="${photo.image_url}" alt="${photo.caption || 'Foto'}" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=100';">
+            </div>
+            <div class="list-caption">${photo.caption || '<em>Sin descripción</em>'}</div>
+            <div class="list-meta"><i class="fas fa-user"></i> ${userName}</div>
+            <div class="list-meta">${statusLabels[photo.status]}</div>
+            <div class="gallery-actions">
+              <button class="btn btn-info btn-xs" data-action="view" data-id="${photo.id}">
+                <i class="fas fa-eye"></i>
+              </button>
+              ${photo.status === 'pending' ? `
+                <button class="btn btn-success btn-xs" data-action="approve" data-id="${photo.id}">
+                  <i class="fas fa-check"></i>
+                </button>
+                <button class="btn btn-danger btn-xs" data-action="reject" data-id="${photo.id}">
+                  <i class="fas fa-times"></i>
+                </button>
+              ` : ''}
+              ${photo.status === 'rejected' ? `
+                <button class="btn btn-success btn-xs" data-action="approve" data-id="${photo.id}">
+                  <i class="fas fa-check"></i>
+                </button>
+              ` : ''}
+              ${photo.status === 'approved' ? `
+                <button class="btn btn-danger btn-xs" data-action="reject" data-id="${photo.id}">
+                  <i class="fas fa-times"></i>
+                </button>
+              ` : ''}
+              <button class="btn btn-secondary btn-xs" data-action="delete" data-id="${photo.id}">
+                <i class="fas fa-trash"></i>
+              </button>
+            </div>
+          </div>
+        `;
+      });
+      
+      html += '</div>';
+      container.innerHTML = html;
+      attachListeners();
+    }
+
+    // ===========================
+    // EVENT DELEGATION
+    // ===========================
+    function attachListeners() {
+      document.querySelectorAll('#galleryContainer [data-action]').forEach(el => {
+        el.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const action = this.getAttribute('data-action');
+          const id = this.getAttribute('data-id');
+          
+          console.log(`🔘 Click en ${action} para ID:`, id);
+          
+          switch(action) {
+            case 'view': viewPhoto(id); break;
+            case 'approve': approvePhoto(id); break;
+            case 'reject': rejectPhoto(id); break;
+            case 'delete': deletePhoto(id); break;
+          }
+        });
+      });
+    }
+
+    // ===========================
+    // VER FOTO EN MODAL
+    // ===========================
+    function viewPhoto(id) {
+      console.log('👁️ Buscando foto con ID:', id);
+      
+      const photo = allPhotos.find(p => String(p.id) === String(id));
+      
+      if (!photo) {
+        console.error('❌ No se encontró la foto');
+        alert('Error: No se encontró la foto');
+        return;
+      }
+      
+      console.log('✅ Foto encontrada:', photo);
+      currentPhotoId = id;
+      
+      const userName = photo.user_email ? photo.user_email.split('@')[0] : 'Anónimo';
+      const polygonName = polygonNames[photo.polygon] || photo.polygon || 'Sin polígono';
+      
+      document.getElementById('modalImage').src = photo.image_url;
+      document.getElementById('modalImage').alt = photo.caption || 'Foto';
+      document.getElementById('modalUser').innerHTML = `<i class="fas fa-user"></i> ${photo.user_email || 'Anónimo'}`;
+      document.getElementById('modalDate').textContent = formatDate(photo.created_at);
+      document.getElementById('modalPolygon').textContent = polygonName;
+      document.getElementById('modalStatus').innerHTML = statusLabels[photo.status];
+      
+      const captionContainer = document.getElementById('modalCaptionContainer');
+      const captionEl = document.getElementById('modalCaption');
+      
+      if (photo.caption) {
+        captionContainer.style.display = 'block';
+        captionEl.textContent = photo.caption;
+      } else {
+        captionContainer.style.display = 'none';
+      }
+      
+      // Configurar botones
+      const btnApprove = document.getElementById('btnApprove');
+      const btnReject = document.getElementById('btnReject');
+      const btnPending = document.getElementById('btnPending');
+      
+      if (photo.status === 'approved') {
+        btnApprove.style.display = 'none';
+        btnReject.style.display = 'inline-flex';
+        btnPending.style.display = 'inline-flex';
+      } else if (photo.status === 'rejected') {
+        btnApprove.style.display = 'inline-flex';
+        btnReject.style.display = 'none';
+        btnPending.style.display = 'inline-flex';
+      } else {
+        btnApprove.style.display = 'inline-flex';
+        btnReject.style.display = 'inline-flex';
+        btnPending.style.display = 'none';
+      }
+      
+      document.getElementById('galleryModal').classList.add('active');
+    }
+
+    function closeGalleryModal() {
+      document.getElementById('galleryModal').classList.remove('active');
+      currentPhotoId = null;
+    }
+
+    // ===========================
+    // ACCIONES DE ESTADO
+    // ===========================
+    async function updateStatus(id, newStatus, showMsg = true) {
+      try {
+        const { error } = await supabaseClient
+          .from('gallery')
+          .update({ status: newStatus })
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        const photo = allPhotos.find(p => String(p.id) === String(id));
+        if (photo) photo.status = newStatus;
+        
+        updateStats();
+        renderGallery();
+        
+        if (showMsg) {
+          const labels = {
+            pending: 'marcada como pendiente',
+            approved: 'aprobada y publicada',
+            rejected: 'rechazada'
+          };
+          showAlert(`Foto ${labels[newStatus]} correctamente`, 'success');
+        }
+        
+        if (typeof loadSidebarCounts === 'function') {
+          await loadSidebarCounts();
+        }
+        
+      } catch (err) {
+        showAlert('Error: ' + err.message, 'danger');
+        throw err;
+      }
+    }
+
+    async function approvePhoto(id) {
+      await updateStatus(id, 'approved');
+    }
+
+    async function rejectPhoto(id) {
+      if (!confirm('¿Rechazar esta foto? No aparecerá en la galería pública.')) return;
+      await updateStatus(id, 'rejected');
+    }
+
+    async function deletePhoto(id) {
+      if (!confirm('¿Eliminar esta foto permanentemente? Esta acción también eliminará el archivo del servidor y no se puede deshacer.')) return;
+      
+      try {
+        const photo = allPhotos.find(p => String(p.id) === String(id));
+        
+        // Eliminar registro de la base de datos
+        const { error } = await supabaseClient
+          .from('gallery')
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        // Eliminar archivo del storage si es de Supabase
+        if (photo && photo.image_url && photo.image_url.includes('supabase.co/storage')) {
+          try {
+            const urlParts = photo.image_url.split('/storage/v1/object/public/images/');
+            if (urlParts[1]) {
+              const filePath = urlParts[1];
+              await supabaseClient.storage.from('images').remove([filePath]);
+              console.log('✅ Archivo eliminado del storage');
+            }
+          } catch (storageErr) {
+            console.warn('⚠️ No se pudo eliminar el archivo:', storageErr.message);
+          }
+        }
+        
+        allPhotos = allPhotos.filter(p => String(p.id) !== String(id));
+        updateStats();
+        renderGallery();
+        
+        showAlert('Foto eliminada', 'success');
+        
+        if (typeof loadSidebarCounts === 'function') {
+          await loadSidebarCounts();
+        }
+        
+      } catch (err) {
+        showAlert('Error: ' + err.message, 'danger');
+      }
+    }
+
+    // ===========================
+    // EVENT LISTENERS DEL MODAL
+    // ===========================
+    document.getElementById('btnApprove').addEventListener('click', async () => {
+      if (!currentPhotoId) return;
+      await approvePhoto(currentPhotoId);
+      viewPhoto(currentPhotoId);
+    });
+
+    document.getElementById('btnReject').addEventListener('click', async () => {
+      if (!currentPhotoId) return;
+      if (!confirm('¿Rechazar esta foto?')) return;
+      await rejectPhoto(currentPhotoId);
+      viewPhoto(currentPhotoId);
+    });
+
+    document.getElementById('btnPending').addEventListener('click', async () => {
+      if (!currentPhotoId) return;
+      await updateStatus(currentPhotoId, 'pending');
+      viewPhoto(currentPhotoId);
+    });
+
+    document.getElementById('btnDelete').addEventListener('click', async () => {
+      if (!currentPhotoId) return;
+      await deletePhoto(currentPhotoId);
+      closeGalleryModal();
+    });
+
+    document.getElementById('galleryModal').addEventListener('click', (e) => {
+      if (e.target.id === 'galleryModal') closeGalleryModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closeGalleryModal();
+    });
+
+    // ===========================
+    // EXPOSICIÓN GLOBAL
+    // ===========================
+    window.loadGallery = loadGallery;
+    window.renderGallery = renderGallery;
+    window.closeGalleryModal = closeGalleryModal;
+    window.setView = setView;
+
+    // ===========================
+    // REALTIME
+    // ===========================
+    function setupRealtime() {
+      if (!supabaseClient) return;
+      
+      supabaseClient
+        .channel('admin_gallery')
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'gallery' }, 
+          () => {
+            loadGallery();
+            if (typeof loadSidebarCounts === 'function') loadSidebarCounts();
+          }
+        )
+        .subscribe();
+    }
+
+    // ===========================
+    // INICIALIZACIÓN
+    // ===========================
+    (async () => {
+      await initSupabase();
+      const isAdmin = await checkAdminAuth();
+      
+      if (isAdmin) {
+        await loadGallery();
+        setupRealtime();
+      }
+    })();
+  </script>
+</body>
+</html>

@@ -1,0 +1,942 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Posts del Blog • Admin • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+  <style>
+    .description-preview {
+      max-width: 300px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      font-size: 0.85rem;
+      color: var(--admin-text-light);
+    }
+
+    .post-row.pending { background: #fef3c7; }
+    .post-row.pending:hover { background: #fde68a; }
+    .post-row.approved { background: #d1fae5; }
+    .post-row.approved:hover { background: #a7f3d0; }
+    .post-row.rejected { background: #fee2e2; opacity: 0.7; }
+    .post-row.rejected:hover { background: #fecaca; opacity: 1; }
+
+    .media-preview {
+      width: 80px;
+      height: 60px;
+      border-radius: 6px;
+      overflow: hidden;
+      background: var(--admin-bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+    }
+
+    .media-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .media-preview .play-overlay {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.3);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+    }
+
+    .media-type-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .media-type-img { background: #dbeafe; color: #1e40af; }
+    .media-type-video { background: #fef3c7; color: #92400e; }
+    .media-type-youtube { background: #fee2e2; color: #991b1b; }
+
+    .post-title-cell {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .post-title-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .post-title {
+      font-weight: 600;
+      color: var(--admin-text);
+      margin-bottom: 2px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .post-author {
+      font-size: 0.8rem;
+      color: var(--admin-text-light);
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed !important;
+      top: 0 !important; left: 0 !important;
+      width: 100% !important; height: 100% !important;
+      background: rgba(0, 0, 0, 0.6) !important;
+      z-index: 99999 !important;
+      display: none !important;
+      align-items: center !important;
+      justify-content: center !important;
+      padding: 20px !important;
+      backdrop-filter: blur(4px) !important;
+    }
+    .modal-overlay.active {
+      display: flex !important;
+      animation: fadeIn 0.3s ease;
+    }
+    .modal {
+      background: white !important;
+      border-radius: 12px !important;
+      max-width: 800px !important;
+      width: 100% !important;
+      max-height: 90vh !important;
+      overflow-y: auto !important;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3) !important;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
+    .post-preview-card {
+      background: white;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      margin-bottom: 24px;
+      border-left: 4px solid var(--admin-accent);
+    }
+
+    .post-preview-media {
+      width: 100%;
+      background: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .post-preview-media img {
+      width: 100%;
+      max-height: 450px;
+      object-fit: contain;
+    }
+
+    .post-preview-media video {
+      width: 100%;
+      max-height: 450px;
+    }
+
+    .video-wrapper {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      width: 100%;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    .post-preview-content { padding: 24px; }
+    .post-preview-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--admin-text);
+      margin-bottom: 8px;
+    }
+    .post-preview-meta {
+      font-size: 0.85rem;
+      color: var(--admin-text-light);
+      margin-bottom: 16px;
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .post-preview-description {
+      font-size: 1rem;
+      color: var(--admin-text);
+      line-height: 1.7;
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+
+    .post-meta-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 12px;
+      margin-bottom: 20px;
+    }
+
+    .meta-card {
+      padding: 12px 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      border-left: 4px solid var(--admin-primary);
+    }
+    .meta-card-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--admin-text-light);
+      margin-bottom: 4px;
+      font-weight: 600;
+    }
+    .meta-card-value {
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--admin-text);
+    }
+
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      margin-top: 24px;
+      padding-top: 20px;
+      border-top: 1px solid var(--admin-border);
+    }
+
+    .filter-stats {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-stat {
+      padding: 8px 16px;
+      background: var(--admin-bg);
+      border-radius: var(--admin-radius-sm);
+      font-size: 0.85rem;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .filter-stat strong { color: var(--admin-primary); }
+    .filter-stat.pending strong { color: #d97706; }
+    .filter-stat.approved strong { color: #059669; }
+    .filter-stat.rejected strong { color: #dc2626; }
+  </style>
+</head>
+<body>
+  <div class="admin-layout">
+    
+    <!-- SIDEBAR -->
+    <aside class="admin-sidebar">
+      <div class="sidebar-header">
+        <a href="index.html" class="sidebar-logo">
+          <i class="fas fa-leaf"></i>
+          <span>Conociendo Pinar</span>
+        </a>
+        <span class="sidebar-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+      </div>
+      
+      <nav class="sidebar-nav">
+        <div class="sidebar-section-title">Principal</div>
+        <a href="index.html" class="sidebar-link">
+          <i class="fas fa-home"></i><span>Dashboard</span>
+        </a>
+        
+        <div class="sidebar-section-title">Moderación</div>
+        <a href="reportes.html" class="sidebar-link">
+          <i class="fas fa-binoculars"></i><span>Reportes Biodiversidad</span>
+          <span class="badge-count" data-badge="reports" style="display:none;">0</span>
+        </a>
+        <a href="posts.html" class="sidebar-link">
+          <i class="fas fa-newspaper"></i><span>Posts del Blog</span>
+          <span class="badge-count" data-badge="posts" style="display:none;">0</span>
+        </a>
+        <a href="galeria.html" class="sidebar-link">
+          <i class="fas fa-images"></i><span>Galería de Fotos</span>
+          <span class="badge-count" data-badge="gallery" style="display:none;">0</span>
+        </a>
+        <a href="mensajes.html" class="sidebar-link">
+          <i class="fas fa-envelope"></i><span>Mensajes</span>
+          <span class="badge-count" data-badge="messages" style="display:none;">0</span>
+        </a>
+        
+        <div class="sidebar-section-title">Sitio</div>
+        <a href="../index.html" class="sidebar-link" target="_blank">
+          <i class="fas fa-external-link-alt"></i><span>Ver sitio público</span>
+        </a>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <a href="#" onclick="logout()">
+          <i class="fas fa-sign-out-alt"></i><span>Cerrar sesión</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- MAIN -->
+    <main class="admin-main">
+      <header class="admin-header">
+        <div class="admin-header-left">
+          <button class="btn-mobile-menu"><i class="fas fa-bars"></i></button>
+          <div>
+            <h1>Posts del Blog</h1>
+            <div class="breadcrumb">Admin / Moderación / Blog</div>
+          </div>
+        </div>
+        <div class="admin-header-right">
+          <div class="admin-user">
+            <div class="admin-user-avatar">AD</div>
+            <div class="admin-user-info">
+              <span class="admin-user-name">Admin</span>
+              <span class="admin-user-role">Administrador</span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <div class="admin-content">
+        <div class="page-title">
+          <div>
+            <h2><i class="fas fa-newspaper"></i> Moderación de Artículos</h2>
+            <p>Revisa y aprueba los posts enviados por la comunidad</p>
+          </div>
+          <button class="btn btn-secondary" onclick="loadPosts()">
+            <i class="fas fa-sync-alt"></i> Actualizar
+          </button>
+        </div>
+
+        <div class="filters-bar">
+          <select id="filterStatus" onchange="loadPosts()">
+            <option value="all">Todos los estados</option>
+            <option value="pending" selected>Pendientes</option>
+            <option value="approved">Aprobados</option>
+            <option value="rejected">Rechazados</option>
+          </select>
+          <select id="filterMedia" onchange="loadPosts()">
+            <option value="all">Todo el contenido</option>
+            <option value="img">Solo imágenes</option>
+            <option value="video">Solo videos</option>
+            <option value="youtube">Solo YouTube</option>
+          </select>
+          <input type="text" id="searchInput" placeholder="Buscar por título o autor..." onkeyup="renderPosts()">
+          <div class="filter-spacer"></div>
+          <a href="../conociendo-pinar.html#tab-blog" target="_blank" class="btn btn-info btn-sm">
+            <i class="fas fa-external-link-alt"></i> Ver blog público
+          </a>
+        </div>
+
+        <div class="filter-stats">
+          <div class="filter-stat">
+            <i class="fas fa-list"></i><span>Total: <strong id="statTotal">0</strong></span>
+          </div>
+          <div class="filter-stat pending">
+            <i class="fas fa-clock"></i><span>Pendientes: <strong id="statPending">0</strong></span>
+          </div>
+          <div class="filter-stat approved">
+            <i class="fas fa-check-circle"></i><span>Aprobados: <strong id="statApproved">0</strong></span>
+          </div>
+          <div class="filter-stat rejected">
+            <i class="fas fa-times-circle"></i><span>Rechazados: <strong id="statRejected">0</strong></span>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-body" style="padding: 0;">
+            <div id="postsContainer">
+              <div class="loading">
+                <div class="spinner"></div>
+                <p>Cargando posts...</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal-overlay" id="postModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3><i class="fas fa-newspaper"></i> Detalle del Post</h3>
+        <button class="modal-close" onclick="closePostModal()">×</button>
+      </div>
+      <div class="modal-body">
+        <div class="post-meta-grid">
+          <div class="meta-card">
+            <div class="meta-card-label">Autor</div>
+            <div class="meta-card-value" id="modalAuthor"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Fecha</div>
+            <div class="meta-card-value" id="modalDate"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Tipo de Medio</div>
+            <div class="meta-card-value" id="modalMediaType"></div>
+          </div>
+          <div class="meta-card">
+            <div class="meta-card-label">Estado Actual</div>
+            <div class="meta-card-value" id="modalStatus"></div>
+          </div>
+        </div>
+
+        <div class="post-preview-card">
+          <div class="post-preview-media" id="modalMediaContainer"></div>
+          <div class="post-preview-content">
+            <h2 class="post-preview-title" id="modalTitle"></h2>
+            <div class="post-preview-meta">
+              <span><i class="fas fa-user"></i> <span id="modalAuthorInline"></span></span>
+              <span><i class="fas fa-calendar"></i> <span id="modalDateInline"></span></span>
+            </div>
+            <div class="post-preview-description" id="modalDescription"></div>
+          </div>
+        </div>
+
+        <div class="action-buttons">
+          <button class="btn btn-success" id="btnApprove">
+            <i class="fas fa-check"></i> Aprobar
+          </button>
+          <button class="btn btn-danger" id="btnReject">
+            <i class="fas fa-times"></i> Rechazar
+          </button>
+          <button class="btn btn-warning" id="btnPending" style="display:none;">
+            <i class="fas fa-undo"></i> Marcar Pendiente
+          </button>
+          <button class="btn btn-danger" id="btnDelete">
+            <i class="fas fa-trash"></i> Eliminar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+  <script>
+    let allPosts = [];
+    let currentPostId = null;
+
+    // ===========================
+    // HELPERS
+    // ===========================
+    const mediaLabels = {
+      img: { icon: 'image', label: 'Imagen', class: 'media-type-img' },
+      video: { icon: 'video', label: 'Video', class: 'media-type-video' },
+      youtube: { icon: 'youtube', label: 'YouTube', class: 'media-type-youtube', brand: true }
+    };
+
+    const statusLabels = {
+      pending: '<span class="status-badge status-pending"><i class="fas fa-clock"></i> Pendiente</span>',
+      approved: '<span class="status-badge status-approved"><i class="fas fa-check"></i> Aprobado</span>',
+      rejected: '<span class="status-badge status-rejected"><i class="fas fa-times"></i> Rechazado</span>'
+    };
+
+    // ✅ EXTRAER ID DE YOUTUBE ROBUSTAMENTE
+    function extractYouTubeId(url) {
+      if (!url) return null;
+      
+      // Si es solo el ID (11 caracteres alfanuméricos + guiones)
+      if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+      
+      // Patrones comunes de YouTube
+      const patterns = [
+        /(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/|youtube\.com\/v\/)([a-zA-Z0-9_-]{11})/,
+        /[?&]v=([a-zA-Z0-9_-]{11})/,
+        /\/embed\/([a-zA-Z0-9_-]{11})/
+      ];
+      
+      for (const pattern of patterns) {
+        const match = url.match(pattern);
+        if (match && match[1]) return match[1];
+      }
+      
+      return null;
+    }
+
+    // ✅ OBTENER THUMBNAIL DE YOUTUBE
+    function getYoutubeThumbnail(url) {
+      const videoId = extractYouTubeId(url);
+      if (!videoId) return 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=200';
+      return `https://img.youtube.com/vi/${videoId}/mqdefault.jpg`;
+    }
+
+    // ✅ OBTENER HTML DE PREVIEW
+    function getMediaPreviewHTML(post, size = 'small') {
+      if (!post.media_url) {
+        if (size === 'small') {
+          return '<i class="fas fa-image" style="color: var(--admin-text-light); font-size: 1.5rem;"></i>';
+        }
+        return '<div style="padding: 40px; text-align: center; color: var(--admin-text-light);">Sin contenido multimedia</div>';
+      }
+
+      // YouTube
+      if (post.media_type === 'youtube') {
+        const videoId = extractYouTubeId(post.media_url);
+        const thumbnail = getYoutubeThumbnail(post.media_url);
+        
+        if (size === 'small') {
+          return `
+            <img src="${thumbnail}" alt="YouTube preview">
+            <div class="play-overlay">
+              <i class="fab fa-youtube"></i>
+            </div>
+          `;
+        }
+        
+        if (!videoId) {
+          return '<div style="padding: 40px; text-align: center; color: white;">No se pudo extraer ID de YouTube</div>';
+        }
+        
+        return `
+          <div class="video-wrapper">
+            <iframe 
+              src="https://www.youtube.com/embed/${videoId}?rel=0" 
+              frameborder="0" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+              allowfullscreen>
+            </iframe>
+          </div>
+        `;
+      }
+
+      // Video
+      if (post.media_type === 'video') {
+        if (size === 'small') {
+          return `
+            <video src="${post.media_url}" muted></video>
+            <div class="play-overlay">
+              <i class="fas fa-play"></i>
+            </div>
+          `;
+        }
+        return `<video controls src="${post.media_url}" style="width:100%;"></video>`;
+      }
+
+      // Imagen (default)
+      const fallback = 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=' + (size === 'small' ? '200' : '800');
+      return `<img src="${post.media_url}" onerror="this.src='${fallback}';">`;
+    }
+
+    // ===========================
+    // CARGAR POSTS
+    // ===========================
+    async function loadPosts() {
+      const container = document.getElementById('postsContainer');
+      const filterStatus = document.getElementById('filterStatus').value;
+      const filterMedia = document.getElementById('filterMedia').value;
+      
+      container.innerHTML = '<div class="loading"><div class="spinner"></div><p>Cargando posts...</p></div>';
+      
+      try {
+        let query = supabaseClient
+          .from('posts')
+          .select('*')
+          .order('created_at', { ascending: false });
+        
+        if (filterStatus !== 'all') query = query.eq('status', filterStatus);
+        if (filterMedia !== 'all') query = query.eq('media_type', filterMedia);
+        
+        const { data, error } = await query;
+        if (error) throw error;
+        
+        allPosts = data || [];
+        console.log('✅ Posts cargados:', allPosts.length);
+        updateStats();
+        renderPosts();
+        
+      } catch (err) {
+        console.error('Error cargando posts:', err);
+        container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Error: ${err.message}</div>`;
+      }
+    }
+
+    function updateStats() {
+      const total = allPosts.length;
+      const pending = allPosts.filter(p => p.status === 'pending').length;
+      const approved = allPosts.filter(p => p.status === 'approved').length;
+      const rejected = allPosts.filter(p => p.status === 'rejected').length;
+      
+      document.getElementById('statTotal').textContent = total;
+      document.getElementById('statPending').textContent = pending;
+      document.getElementById('statApproved').textContent = approved;
+      document.getElementById('statRejected').textContent = rejected;
+    }
+
+    // ===========================
+    // RENDERIZAR (USANDO DATA-ATTRIBUTES)
+    // ===========================
+    function renderPosts() {
+      const container = document.getElementById('postsContainer');
+      const search = document.getElementById('searchInput').value.toLowerCase();
+      
+      const filtered = allPosts.filter(p => {
+        if (!search) return true;
+        return (
+          (p.title || '').toLowerCase().includes(search) ||
+          (p.author_email || '').toLowerCase().includes(search) ||
+          (p.description || '').toLowerCase().includes(search)
+        );
+      });
+      
+      if (filtered.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-newspaper"></i>
+            <h3>No hay posts</h3>
+            <p>No se encontraron posts con los filtros aplicados</p>
+          </div>
+        `;
+        return;
+      }
+      
+      let html = `
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th style="width: 40%;">Post</th>
+              <th style="width: 12%;">Estado</th>
+              <th style="width: 23%;">Descripción</th>
+              <th style="width: 15%;">Fecha</th>
+              <th style="width: 10%;">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      filtered.forEach(post => {
+        const media = mediaLabels[post.media_type] || mediaLabels.img;
+        const mediaIcon = media.brand 
+          ? `<i class="fab fa-${media.icon}"></i>`
+          : `<i class="fas fa-${media.icon}"></i>`;
+        
+        const descriptionPreview = (post.description || '').substring(0, 100) + ((post.description || '').length > 100 ? '...' : '');
+        const authorName = post.author_email ? post.author_email.split('@')[0] : 'Anónimo';
+        
+        // ✅ Usar data-id en lugar de onclick inline
+        html += `
+          <tr class="post-row ${post.status}">
+            <td>
+              <div class="post-title-cell">
+                <div class="media-preview">
+                  ${getMediaPreviewHTML(post, 'small')}
+                </div>
+                <div class="post-title-info">
+                  <div class="post-title">${post.title || '(Sin título)'}</div>
+                  <div class="post-author">
+                    <i class="fas fa-user"></i> ${authorName}
+                    <span class="media-type-badge ${media.class}" style="margin-left: 6px;">
+                      ${mediaIcon} ${media.label}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td style="text-align: center;">${statusLabels[post.status]}</td>
+            <td><div class="description-preview">${descriptionPreview || '<em>Sin descripción</em>'}</div></td>
+            <td>
+              <div style="font-size: 0.85rem;">${timeAgo(post.created_at)}</div>
+              <div style="font-size: 0.75rem; color: var(--admin-text-light);">${formatDate(post.created_at)}</div>
+            </td>
+            <td>
+              <div class="btn-group">
+                <button class="btn btn-info btn-xs" data-action="view" data-id="${post.id}" title="Ver detalles">
+                  <i class="fas fa-eye"></i>
+                </button>
+                ${post.status === 'pending' ? `
+                  <button class="btn btn-success btn-xs" data-action="approve" data-id="${post.id}" title="Aprobar">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-danger btn-xs" data-action="reject" data-id="${post.id}" title="Rechazar">
+                    <i class="fas fa-times"></i>
+                  </button>
+                ` : ''}
+                ${post.status === 'rejected' ? `
+                  <button class="btn btn-success btn-xs" data-action="approve" data-id="${post.id}" title="Aprobar">
+                    <i class="fas fa-check"></i>
+                  </button>
+                ` : ''}
+                ${post.status === 'approved' ? `
+                  <button class="btn btn-danger btn-xs" data-action="reject" data-id="${post.id}" title="Rechazar">
+                    <i class="fas fa-times"></i>
+                  </button>
+                ` : ''}
+                <button class="btn btn-secondary btn-xs" data-action="delete" data-id="${post.id}" title="Eliminar">
+                  <i class="fas fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      });
+      
+      html += '</tbody></table>';
+      container.innerHTML = html;
+      
+      // ✅ Adjuntar event listeners después de renderizar
+      attachButtonListeners();
+    }
+
+    // ===========================
+    // ✅ EVENT DELEGATION (LA CLAVE)
+    // ===========================
+    function attachButtonListeners() {
+      document.querySelectorAll('#postsContainer button[data-action]').forEach(btn => {
+        btn.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const action = this.getAttribute('data-action');
+          const id = this.getAttribute('data-id');
+          
+          console.log(`🔘 Click en ${action} para ID:`, id);
+          
+          switch(action) {
+            case 'view': viewPost(id); break;
+            case 'approve': approvePost(id); break;
+            case 'reject': rejectPost(id); break;
+            case 'delete': deletePost(id); break;
+          }
+        });
+      });
+    }
+
+    // ===========================
+    // VER POST
+    // ===========================
+    function viewPost(id) {
+      console.log('👁️ Buscando post con ID:', id);
+      console.log('📊 IDs disponibles:', allPosts.map(p => p.id));
+      
+      const post = allPosts.find(p => String(p.id) === String(id));
+      
+      if (!post) {
+        console.error('❌ No se encontró el post');
+        alert('Error: No se encontró el post. Revisa la consola (F12) para más detalles.');
+        return;
+      }
+      
+      console.log('✅ Post encontrado:', post);
+      currentPostId = id;
+      
+      const media = mediaLabels[post.media_type] || mediaLabels.img;
+      const authorName = post.author_email ? post.author_email.split('@')[0] : 'Anónimo';
+      
+      // Meta
+      document.getElementById('modalAuthor').innerHTML = `<i class="fas fa-user"></i> ${post.author_email || 'Anónimo'}`;
+      document.getElementById('modalDate').textContent = formatDate(post.created_at);
+      document.getElementById('modalMediaType').innerHTML = `<span class="media-type-badge ${media.class}"><i class="${media.brand ? 'fab' : 'fas'} fa-${media.icon}"></i> ${media.label}</span>`;
+      document.getElementById('modalStatus').innerHTML = statusLabels[post.status];
+      
+      // Preview
+      document.getElementById('modalMediaContainer').innerHTML = getMediaPreviewHTML(post, 'large');
+      document.getElementById('modalTitle').textContent = post.title || '(Sin título)';
+      document.getElementById('modalAuthorInline').textContent = authorName;
+      document.getElementById('modalDateInline').textContent = formatDate(post.created_at);
+      document.getElementById('modalDescription').textContent = post.description || '(Sin descripción)';
+      
+      // Configurar botones según estado
+      const btnApprove = document.getElementById('btnApprove');
+      const btnReject = document.getElementById('btnReject');
+      const btnPending = document.getElementById('btnPending');
+      
+      if (post.status === 'approved') {
+        btnApprove.style.display = 'none';
+        btnReject.style.display = 'inline-flex';
+        btnPending.style.display = 'inline-flex';
+      } else if (post.status === 'rejected') {
+        btnApprove.style.display = 'inline-flex';
+        btnReject.style.display = 'none';
+        btnPending.style.display = 'inline-flex';
+      } else {
+        btnApprove.style.display = 'inline-flex';
+        btnReject.style.display = 'inline-flex';
+        btnPending.style.display = 'none';
+      }
+      
+      document.getElementById('postModal').classList.add('active');
+    }
+
+    function closePostModal() {
+      document.getElementById('postModal').classList.remove('active');
+      document.getElementById('modalMediaContainer').innerHTML = '';
+      currentPostId = null;
+    }
+
+    // ===========================
+    // ACCIONES DE ESTADO
+    // ===========================
+    async function updateStatus(id, newStatus, showMsg = true) {
+      try {
+        const { error } = await supabaseClient
+          .from('posts')
+          .update({ status: newStatus })
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        const post = allPosts.find(p => String(p.id) === String(id));
+        if (post) post.status = newStatus;
+        
+        updateStats();
+        renderPosts();
+        
+        if (showMsg) {
+          const labels = {
+            pending: 'marcado como pendiente',
+            approved: 'aprobado y publicado',
+            rejected: 'rechazado'
+          };
+          showAlert(`Post ${labels[newStatus]} correctamente`, 'success');
+        }
+        
+        if (typeof loadSidebarCounts === 'function') {
+          await loadSidebarCounts();
+        }
+        
+      } catch (err) {
+        showAlert('Error: ' + err.message, 'danger');
+        throw err;
+      }
+    }
+
+    async function approvePost(id) {
+      await updateStatus(id, 'approved');
+    }
+
+    async function rejectPost(id) {
+      if (!confirm('¿Rechazar este post? No aparecerá en el blog público.')) return;
+      await updateStatus(id, 'rejected');
+    }
+
+    async function deletePost(id) {
+      if (!confirm('¿Eliminar este post permanentemente? Esta acción no se puede deshacer.')) return;
+      
+      try {
+        const post = allPosts.find(p => String(p.id) === String(id));
+        
+        const { error } = await supabaseClient
+          .from('posts')
+          .delete()
+          .eq('id', id);
+        
+        if (error) throw error;
+        
+        // Eliminar archivo del storage si es de Supabase
+        if (post && post.media_url && post.media_url.includes('supabase.co/storage')) {
+          try {
+            const urlParts = post.media_url.split('/storage/v1/object/public/images/');
+            if (urlParts[1]) {
+              const filePath = urlParts[1];
+              await supabaseClient.storage.from('images').remove([filePath]);
+              console.log('✅ Archivo multimedia eliminado del storage');
+            }
+          } catch (storageErr) {
+            console.warn('⚠️ No se pudo eliminar el archivo:', storageErr.message);
+          }
+        }
+        
+        allPosts = allPosts.filter(p => String(p.id) !== String(id));
+        updateStats();
+        renderPosts();
+        
+        showAlert('Post eliminado', 'success');
+        
+        if (typeof loadSidebarCounts === 'function') {
+          await loadSidebarCounts();
+        }
+        
+      } catch (err) {
+        showAlert('Error: ' + err.message, 'danger');
+      }
+    }
+
+    // ===========================
+    // EVENT LISTENERS DEL MODAL
+    // ===========================
+    document.getElementById('btnApprove').addEventListener('click', async () => {
+      if (!currentPostId) return;
+      await approvePost(currentPostId);
+      viewPost(currentPostId);
+    });
+
+    document.getElementById('btnReject').addEventListener('click', async () => {
+      if (!currentPostId) return;
+      if (!confirm('¿Rechazar este post?')) return;
+      await rejectPost(currentPostId);
+      viewPost(currentPostId);
+    });
+
+    document.getElementById('btnPending').addEventListener('click', async () => {
+      if (!currentPostId) return;
+      await updateStatus(currentPostId, 'pending');
+      viewPost(currentPostId);
+    });
+
+    document.getElementById('btnDelete').addEventListener('click', async () => {
+      if (!currentPostId) return;
+      await deletePost(currentPostId);
+      closePostModal();
+    });
+
+    document.getElementById('postModal').addEventListener('click', (e) => {
+      if (e.target.id === 'postModal') closePostModal();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') closePostModal();
+    });
+
+    // ===========================
+    // REALTIME
+    // ===========================
+    function setupRealtime() {
+      if (!supabaseClient) return;
+      
+      supabaseClient
+        .channel('admin_posts')
+        .on('postgres_changes', 
+          { event: '*', schema: 'public', table: 'posts' }, 
+          () => {
+            loadPosts();
+            if (typeof loadSidebarCounts === 'function') loadSidebarCounts();
+          }
+        )
+        .subscribe();
+    }
+
+    // ===========================
+    // INICIALIZACIÓN
+    // ===========================
+    (async () => {
+      await initSupabase();
+      const isAdmin = await checkAdminAuth();
+      
+      if (isAdmin) {
+        await loadPosts();
+        setupRealtime();
+      }
+    })();
+  </script>
+</body>
+</html>

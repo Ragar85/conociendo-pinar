@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <!-- LOGIN VIEW -->
+  <div id="loginView" class="login-container">
+    <div class="login-card">
+      <h1><i class="fas fa-shield-alt" style="color: #1e4a3b;"></i> Panel Admin</h1>
+      <p>Conociendo Pinar • Acceso Administrador</p>
+      <div id="loginError" class="login-error"></div>
+      <form class="login-form" id="loginForm">
+        <input type="email" id="loginEmail" placeholder="Correo electrónico" required>
+        <input type="password" id="loginPassword" placeholder="Contraseña" required>
+        <button type="submit" id="loginBtn">
+          <i class="fas fa-sign-in-alt"></i> Iniciar Sesión
+        </button>
+      </form>
+      <p style="margin-top: 20px; font-size: 0.85rem;">
+        <a href="../index.html" style="color: #1e4a3b; text-decoration: none;">
+          ← Volver al sitio público
+        </a>
+      </p>
+    </div>
+  </div>
+
+  <!-- DASHBOARD VIEW -->
+  <div id="dashboardView" style="display: none;">
+    <div class="admin-layout">
+      
+      <!-- SIDEBAR -->
+      <aside class="admin-sidebar">
+        <div class="sidebar-header">
+          <a href="index.html" class="sidebar-logo">
+            <i class="fas fa-leaf"></i>
+            <span>Conociendo Pinar</span>
+          </a>
+          <span class="sidebar-badge"><i class="fas fa-shield-alt"></i> Admin</span>
+        </div>
+        
+        <nav class="sidebar-nav">
+          <div class="sidebar-section-title">Principal</div>
+          <a href="index.html" class="sidebar-link active">
+            <i class="fas fa-home"></i>
+            <span>Dashboard</span>
+          </a>
+          
+          <div class="sidebar-section-title">Moderación</div>
+          <a href="reportes.html" class="sidebar-link">
+            <i class="fas fa-binoculars"></i>
+            <span>Reportes Biodiversidad</span>
+            <span class="badge-count" data-badge="reports" style="display:none;">0</span>
+          </a>
+          <a href="posts.html" class="sidebar-link">
+            <i class="fas fa-newspaper"></i>
+            <span>Posts del Blog</span>
+            <span class="badge-count" data-badge="posts" style="display:none;">0</span>
+          </a>
+          <a href="galeria.html" class="sidebar-link">
+            <i class="fas fa-images"></i>
+            <span>Galería de Fotos</span>
+            <span class="badge-count" data-badge="gallery" style="display:none;">0</span>
+          </a>
+          <a href="mensajes.html" class="sidebar-link">
+            <i class="fas fa-envelope"></i>
+            <span>Mensajes</span>
+            <span class="badge-count" data-badge="messages" style="display:none;">0</span>
+          </a>
+          
+          <div class="sidebar-section-title">Sitio</div>
+          <a href="../index.html" class="sidebar-link" target="_blank">
+            <i class="fas fa-external-link-alt"></i>
+            <span>Ver sitio público</span>
+          </a>
+        </nav>
+        
+        <div class="sidebar-footer">
+          <a href="#" onclick="logout()">
+            <i class="fas fa-sign-out-alt"></i>
+            <span>Cerrar sesión</span>
+          </a>
+        </div>
+      </aside>
+
+      <!-- MAIN -->
+      <main class="admin-main">
+        
+        <!-- HEADER -->
+        <header class="admin-header">
+          <div class="admin-header-left">
+            <button class="btn-mobile-menu"><i class="fas fa-bars"></i></button>
+            <div>
+              <h1>Dashboard</h1>
+              <div class="breadcrumb">Inicio / Panel principal</div>
+            </div>
+          </div>
+          <div class="admin-header-right">
+            <div class="admin-user">
+              <div class="admin-user-avatar">AD</div>
+              <div class="admin-user-info">
+                <span class="admin-user-name">Admin</span>
+                <span class="admin-user-role">Administrador</span>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <!-- CONTENT -->
+        <div class="admin-content">
+          
+          <div class="page-title">
+            <div>
+              <h2><i class="fas fa-tachometer-alt"></i> Panel Principal</h2>
+              <p>Resumen en tiempo real de la actividad del sitio</p>
+            </div>
+          </div>
+
+          <!-- KPIs -->
+          <div class="kpi-grid" id="kpiGrid">
+            <div class="kpi-card warning">
+              <div class="kpi-header">
+                <div class="kpi-icon"><i class="fas fa-binoculars"></i></div>
+              </div>
+              <div class="kpi-value" id="kpiReports">-</div>
+              <div class="kpi-label">Reportes pendientes</div>
+            </div>
+            
+            <div class="kpi-card info">
+              <div class="kpi-header">
+                <div class="kpi-icon"><i class="fas fa-newspaper"></i></div>
+              </div>
+              <div class="kpi-value" id="kpiPosts">-</div>
+              <div class="kpi-label">Posts pendientes</div>
+            </div>
+            
+            <div class="kpi-card danger">
+              <div class="kpi-header">
+                <div class="kpi-icon"><i class="fas fa-images"></i></div>
+              </div>
+              <div class="kpi-value" id="kpiGallery">-</div>
+              <div class="kpi-label">Fotos pendientes</div>
+            </div>
+            
+            <div class="kpi-card success">
+              <div class="kpi-header">
+                <div class="kpi-icon"><i class="fas fa-envelope"></i></div>
+              </div>
+              <div class="kpi-value" id="kpiMessages">-</div>
+              <div class="kpi-label">Mensajes sin leer</div>
+            </div>
+          </div>
+
+          <!-- ACTIVIDAD RECIENTE -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-history"></i> Actividad Reciente</h3>
+              <button class="btn btn-secondary btn-sm" onclick="loadRecentActivity()">
+                <i class="fas fa-sync-alt"></i> Actualizar
+              </button>
+            </div>
+            <div class="card-body" id="recentActivity">
+              <div class="loading">
+                <div class="spinner"></div>
+                <p>Cargando actividad...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- ACCESOS RÁPIDOS -->
+          <div class="card">
+            <div class="card-header">
+              <h3><i class="fas fa-bolt"></i> Accesos Rápidos</h3>
+            </div>
+            <div class="card-body" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px;">
+              <a href="reportes.html" class="btn btn-success" style="padding: 16px; text-decoration: none;">
+                <i class="fas fa-check-circle"></i> Moderar Reportes
+              </a>
+              <a href="posts.html" class="btn btn-info" style="padding: 16px; text-decoration: none;">
+                <i class="fas fa-edit"></i> Moderar Posts
+              </a>
+              <a href="galeria.html" class="btn btn-warning" style="padding: 16px; text-decoration: none;">
+                <i class="fas fa-camera"></i> Moderar Galería
+              </a>
+              <a href="mensajes.html" class="btn btn-secondary" style="padding: 16px; text-decoration: none;">
+                <i class="fas fa-envelope-open"></i> Ver Mensajes
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+  <script>
+    // ===========================
+    // LOGIN
+    // ===========================
+    document.getElementById('loginForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errorEl = document.getElementById('loginError');
+      const btn = document.getElementById('loginBtn');
+      
+      btn.disabled = true;
+      btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Verificando...';
+      errorEl.classList.remove('show');
+      
+      try {
+        await initSupabase();
+        const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+        
+        if (error) throw error;
+        
+        // Verificar rol admin
+        const { data: roleData } = await supabaseClient
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', data.user.id)
+          .single();
+        
+        if (!roleData || roleData.role !== 'admin') {
+          await supabaseClient.auth.signOut();
+          throw new Error('No tienes permisos de administrador');
+        }
+        
+        // Login exitoso
+        showDashboard();
+        
+      } catch (err) {
+        errorEl.textContent = '❌ ' + err.message;
+        errorEl.classList.add('show');
+        btn.disabled = false;
+        btn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Iniciar Sesión';
+      }
+    });
+
+    // ===========================
+    // MOSTRAR DASHBOARD
+    // ===========================
+    async function showDashboard() {
+      document.getElementById('loginView').style.display = 'none';
+      document.getElementById('dashboardView').style.display = 'block';
+      
+      // Actualizar info de usuario
+      if (currentUser) {
+        updateUserInfo();
+      }
+      
+      await loadDashboardData();
+      setupRealtimeSubscriptions();
+    }
+
+    // ===========================
+    // CARGAR DATOS DEL DASHBOARD
+    // ===========================
+    async function loadDashboardData() {
+      const counts = await loadSidebarCounts();
+      
+      document.getElementById('kpiReports').textContent = counts.reports;
+      document.getElementById('kpiPosts').textContent = counts.posts;
+      document.getElementById('kpiGallery').textContent = counts.gallery;
+      document.getElementById('kpiMessages').textContent = counts.messages;
+      
+      await loadRecentActivity();
+    }
+
+    // ===========================
+    // ACTIVIDAD RECIENTE
+    // ===========================
+    async function loadRecentActivity() {
+      const container = document.getElementById('recentActivity');
+      
+      try {
+        const [reports, posts, gallery, messages] = await Promise.all([
+          supabaseClient.from('biodiversity_reports')
+            .select('id, species_name, taxon_group, polygon, reporter_email, created_at, status')
+            .order('created_at', { ascending: false })
+            .limit(5),
+          supabaseClient.from('posts')
+            .select('id, title, author_email, created_at, status')
+            .order('created_at', { ascending: false })
+            .limit(5),
+          supabaseClient.from('gallery')
+            .select('id, user_email, created_at, status')
+            .order('created_at', { ascending: false })
+            .limit(5),
+          supabaseClient.from('messages')
+            .select('id, name, email, created_at, is_read')
+            .order('created_at', { ascending: false })
+            .limit(5)
+        ]);
+        
+        // Combinar y ordenar todo por fecha
+        const allActivity = [
+          ...(reports.data || []).map(r => ({ type: 'report', ...r, date: r.created_at })),
+          ...(posts.data || []).map(p => ({ type: 'post', ...p, date: p.created_at })),
+          ...(gallery.data || []).map(g => ({ type: 'gallery', ...g, date: g.created_at })),
+          ...(messages.data || []).map(m => ({ type: 'message', ...m, date: m.created_at }))
+        ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 10);
+        
+        if (allActivity.length === 0) {
+          container.innerHTML = '<div class="empty-state"><i class="fas fa-inbox"></i><h3>No hay actividad reciente</h3></div>';
+          return;
+        }
+        
+        const iconMap = {
+          report: { icon: 'binoculars', color: 'warning' },
+          post: { icon: 'newspaper', color: 'info' },
+          gallery: { icon: 'camera', color: 'danger' },
+          message: { icon: 'envelope', color: 'success' }
+        };
+        
+        let html = '<div style="display: flex; flex-direction: column; gap: 8px;">';
+        allActivity.forEach(item => {
+          const icon = iconMap[item.type];
+          let description = '';
+          
+          if (item.type === 'report') description = `Reporte de <strong>${item.species_name}</strong> en ${item.polygon}`;
+          else if (item.type === 'post') description = `Post: <strong>${item.title}</strong>`;
+          else if (item.type === 'gallery') description = `Nueva foto en galería por <strong>${item.user_email || 'anónimo'}</strong>`;
+          else if (item.type === 'message') description = `Mensaje de <strong>${item.name}</strong> (${item.email})`;
+          
+          const statusBadge = item.status 
+            ? `<span class="status-badge status-${item.status}">${item.status}</span>`
+            : (item.is_read === false ? '<span class="status-badge status-unread">Sin leer</span>' : '');
+          
+          html += `
+            <div style="display: flex; align-items: center; gap: 12px; padding: 12px; background: var(--admin-bg); border-radius: var(--admin-radius-sm); border-left: 4px solid var(--admin-${icon.color});">
+              <i class="fas fa-${icon.icon}" style="color: var(--admin-${icon.color}); font-size: 1.2rem; width: 24px; text-align: center;"></i>
+              <div style="flex: 1; min-width: 0;">
+                <div style="font-size: 0.9rem;">${description}</div>
+                <div style="font-size: 0.75rem; color: var(--admin-text-light); margin-top: 2px;">${timeAgo(item.date)}</div>
+              </div>
+              ${statusBadge}
+            </div>
+          `;
+        });
+        html += '</div>';
+        
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Error: ${err.message}</div>`;
+      }
+    }
+
+    // ===========================
+    // REALTIME
+    // ===========================
+    function setupRealtimeSubscriptions() {
+      if (!supabaseClient) return;
+      
+      ['biodiversity_reports', 'posts', 'gallery', 'messages'].forEach(table => {
+        supabaseClient
+          .channel(`admin_${table}`)
+          .on('postgres_changes', 
+            { event: '*', schema: 'public', table: table }, 
+            () => {
+              loadDashboardData();
+            }
+          )
+          .subscribe();
+      });
+    }
+
+    // ===========================
+    // INICIALIZACIÓN
+    // ===========================
+    (async () => {
+      await initSupabase();
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      
+      if (session) {
+        currentUser = session.user;
+        // Verificar rol admin
+        const { data: roleData } = await supabaseClient
+          .from('user_roles')
+          .select('role')
+          .eq('user_id', currentUser.id)
+          .single();
+        
+        if (roleData && roleData.role === 'admin') {
+          showDashboard();
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
