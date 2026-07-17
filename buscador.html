@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Buscar • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a; --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+
+    /* HEADER */
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+    
+    /* SEARCH BAR IN HEADER */
+    .header-search-form { display: flex; align-items: center; background: rgba(255,255,255,0.15); border-radius: var(--radius-xl); padding: 6px 16px; border: 1px solid rgba(255,255,255,0.2); transition: var(--transition); }
+    .header-search-form:focus-within { background: rgba(255,255,255,0.25); border-color: var(--secondary); }
+    .header-search-form i { color: rgba(255,255,255,0.8); margin-right: 8px; font-size: 0.9rem; }
+    .header-search-form input { background: transparent; border: none; outline: none; color: white; font-size: 0.9rem; width: 180px; font-family: inherit; }
+    .header-search-form input::placeholder { color: rgba(255,255,255,0.6); }
+
+    /* MAIN CONTENT */
+    .container { max-width: 1000px; margin: 0 auto; padding: 60px 24px 80px; }
+    .search-hero { text-align: center; margin-bottom: 40px; }
+    .search-hero h1 { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 20px; }
+    .search-hero h1 span { color: var(--primary-light); }
+    
+    .main-search-box { display: flex; gap: 12px; max-width: 600px; margin: 0 auto; background: var(--surface); padding: 8px; border-radius: var(--radius-xl); box-shadow: var(--shadow-md); border: 2px solid var(--border); }
+    .main-search-box input { flex: 1; border: none; outline: none; padding: 12px 20px; font-size: 1.1rem; font-family: inherit; background: transparent; color: var(--text-primary); }
+    .main-search-box button { background: var(--primary); color: white; border: none; padding: 12px 24px; border-radius: var(--radius-xl); font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit; }
+    .main-search-box button:hover { background: var(--primary-light); }
+
+    /* RESULTS */
+    .results-meta { margin: 30px 0 20px; font-size: 0.95rem; color: var(--text-secondary); font-weight: 600; }
+    .results-meta span { color: var(--primary); }
+    .results-grid { display: flex; flex-direction: column; gap: 16px; }
+    
+    .result-card { background: var(--surface); border-radius: var(--radius-md); padding: 24px; box-shadow: var(--shadow-sm); border-left: 4px solid var(--border); transition: var(--transition); text-decoration: none; display: block; color: inherit; }
+    .result-card:hover { transform: translateX(8px); box-shadow: var(--shadow-md); border-left-color: var(--secondary); }
+    .result-card .type-badge { display: inline-block; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 4px 10px; border-radius: var(--radius-xl); margin-bottom: 10px; }
+    .badge-poligono { background: #dbeafe; color: #1e40af; }
+    .badge-especie { background: #d1fae5; color: #065f46; }
+    .badge-protocolo { background: #fef3c7; color: #92400e; }
+    .badge-concepto { background: #f3e8ff; color: #6b21a8; }
+    .badge-historia { background: #ffe4e6; color: #9f1239; }
+    
+    .result-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+    .result-card p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+    .result-card .url-path { font-size: 0.8rem; color: var(--text-muted); font-family: monospace; }
+
+    .empty-state { text-align: center; padding: 60px 20px; background: var(--surface); border-radius: var(--radius-lg); box-shadow: var(--shadow-sm); }
+    .empty-state i { font-size: 4rem; color: var(--border); margin-bottom: 20px; }
+    .empty-state h3 { font-size: 1.3rem; color: var(--text-primary); margin-bottom: 10px; }
+    .empty-state p { color: var(--text-secondary); margin-bottom: 20px; }
+    .suggestions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
+    .suggestions a { background: var(--surface-alt); color: var(--primary); padding: 6px 14px; border-radius: var(--radius-xl); text-decoration: none; font-size: 0.85rem; font-weight: 600; transition: var(--transition); }
+    .suggestions a:hover { background: var(--primary); color: white; }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 40px 24px 30px; text-align: center; font-size: 0.85rem; color: var(--text-muted); }
+    .site-footer a { color: var(--secondary); text-decoration: none; }
+
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--primary-dark); flex-direction: column; padding: 24px; gap: 8px; min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); box-shadow: var(--shadow-md); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .header-search-form input { width: 120px; }
+      .search-hero h1 { font-size: 2rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        <form action="buscador.html" method="GET" class="header-search-form">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" placeholder="Buscar especies, cuevas..." id="headerSearchInput">
+        </form>
+        <nav class="main-nav" id="mainNav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="investigacion/index.html" class="nav-link">Investigación</a>
+          <a href="conociendo-pinar.html" class="nav-link">Guía</a>
+          <a href="soporte.html" class="nav-link">Soporte</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <div class="search-hero">
+      <h1>Explora el <span>Conocimiento</span></h1>
+      <form action="buscador.html" method="GET" class="main-search-box">
+        <input type="text" name="q" placeholder="Ej: Palma Barrigona, Cueva del Indio, Munsell..." id="mainSearchInput" autofocus>
+        <button type="submit"><i class="fas fa-search"></i> Buscar</button>
+      </form>
+    </div>
+
+    <div id="resultsContainer"></div>
+  </main>
+
+  <footer class="site-footer">
+    <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="index.html">Conociendo Pinar</a> | <a href="privacidad.html">Privacidad</a> | <a href="terminos.html">Términos</a> | <a href="admin/" style="opacity: 0.3; font-size: 0.7rem;">Admin</a></p>
+  </footer>
+
+  <script>
+    // ==========================================
+    // 🧠 ÍNDICE DE BÚSQUEDA (BASE DE DATOS LOCAL)
+    // ==========================================
+    const searchIndex = [
+      // POLÍGONOS
+      { title: "Guanahacabibes", type: "Polígono", badge: "badge-poligono", excerpt: "Reserva de la Biosfera UNESCO (1987). Península kárstica con farallones, lagunas tectónicas y 172 especies de aves. Hogar del Zunzuncito.", url: "investigacion/guanahacabibes.html", keywords: ["reserva", "biosfera", "unesco", "peninsula", "sandino", "manuel lazo", "farallon", "laguna"] },
+      { title: "Km 9 Carretera a Mantua", type: "Polígono", badge: "badge-poligono", excerpt: "Alturas de Pizarras del Norte. Famoso por sus arenas cuarcíferas blancas únicas del Terciario y flora amenazada como la Palma Barrigona.", url: "investigacion/km9-mantua.html", keywords: ["guane", "macurije", "arenas blancas", "cuarzo", "pizarras", "flora amenazada"] },
+      { title: "San Andrés y Caiguanabo", type: "Polígono", badge: "badge-poligono", excerpt: "Valle intramontano con geología compleja, aguas mineromedicinales en Baños de Bermejales y la histórica Cueva de los Portales (Che Guevara).", url: "investigacion/san-andres.html", keywords: ["la palma", "los palacios", "valle intramontano", "caiguanabo", "bermejales", "che guevara", "toponimia", "arqueologia"] },
+      { title: "Sierra Guasasa", type: "Polígono", badge: "badge-poligono", excerpt: "Sistema subterráneo kárstico en Viñales con 35 cuevas, 15.3km de galerías en 12 niveles evolutivos y fósiles de desdentados.", url: "investigacion/sierra-guasasa.html", keywords: ["viñales", "carso", "espeleologia", "cueva del indio", "arroyo zacarias", "fosiles", "geda"] },
+      
+      // ESPECIES EMBLEMÁTICAS
+      { title: "Palma Barrigona (Colpothrinax wrightii)", type: "Especie", badge: "badge-especie", excerpt: "Palma corpulenta endémica de Cuba occidental en Peligro (EN). Habita en suelos arenoso-cuarcíticos. Amenazada por sobreexplotación de su guano.", url: "investigacion/especies-emblematicas.html", keywords: ["flora", "botanica", "km9", "guane", "endemica", "amenazada", "guano"] },
+      { title: "Zunzuncito (Mellisuga helenae)", type: "Especie", badge: "badge-especie", excerpt: "El ave más pequeña del mundo (pájaro mosca). Habita en los bosques y matorrales de la península de Guanahacabibes.", url: "investigacion/especies-emblematicas.html", keywords: ["fauna", "ave", "guanahacabibes", "pajaro mosca", "endemica"] },
+      { title: "Miraguano (Coccothrinax yuraguana)", type: "Especie", badge: "badge-especie", excerpt: "Palma de hasta 8m en Peligro Crítico (CR). Endémica de Pinar del Río. Explotada históricamente para cujes de techo.", url: "investigacion/especies-emblematicas.html", keywords: ["flora", "botanica", "km9", "critico", "techo"] },
+      { title: "Flor de San Pedro (Encyclia grisebachiana)", type: "Especie", badge: "badge-especie", excerpt: "Orquídea epífita en Peligro Crítico (CR). Habita sobre la palma Copernicia glabrescens en bosques de pinos cerca del litoral.", url: "investigacion/especies-emblematicas.html", keywords: ["flora", "orquidea", "botanica", "km9", "epifita"] },
+      { title: "Drosera Carnívora (Drosera capillaris)", type: "Especie", badge: "badge-especie", excerpt: "Hierba insectívora neotropical (VU). Forma rosetas densas con pelos rojos glandulares en suelos arenoso-cuarcíticos.", url: "investigacion/especies-emblematicas.html", keywords: ["flora", "carnivora", "insectivora", "km9", "vulnerable"] },
+      { title: "Trilogía de los Mogotes", type: "Concepto Botánico", badge: "badge-concepto", excerpt: "Spathelia brittonii, Gaussia princeps y Bombacopsis cubensis. Tres especies endémicas adaptadas a la sequedad extrema en paredones calizos.", url: "investigacion/sierra-guasasa.html#vegetacion", keywords: ["flora", "botanica", "guasasa", "viñales", "rupicola", "sequedad"] },
+      { title: "Camarón Reculón (Procambarus cubensis)", type: "Especie", badge: "badge-especie", excerpt: "Bioindicador por excelencia de la pureza del agua y ausencia de contaminación en los arroyos de las Alturas de Pizarras (Km 9).", url: "investigacion/km9-mantua.html", keywords: ["fauna", "bioindicador", "km9", "arroyo", "pureza", "contaminacion"] },
+      { title: "Iguana de Guanahacabibes (Cyclura carinata)", type: "Especie", badge: "badge-especie", excerpt: "El lagarto más grande de Cuba y el mayor del género Cyclura en el mundo. Parte de las leyendas de la península.", url: "investigacion/guanahacabibes.html", keywords: ["fauna", "reptil", "lagarto", "guanahacabibes", "leyenda"] },
+
+      // GEOLOGÍA Y SUELOS
+      { title: "Arenas Cuarcíferas Blancas", type: "Concepto Geológico", badge: "badge-concepto", excerpt: "Depósitos paleohidrográficos de SiO2 (dióxido de silicio) en el Km 9. Acumuladas hace millones de años por el río Cuyaguateje.", url: "investigacion/km9-mantua.html#geologia", keywords: ["geologia", "km9", "cuarzo", "sio2", "cuyaguateje", "terciario"] },
+      { title: "Suelos Ferralíticos Rojos", type: "Concepto Edafológico", badge: "badge-concepto", excerpt: "Suelos con horizonte B rico en óxidos de hierro (Fe libre >60%). Predominio de minerales arcillosos 1:1. Típicos de Guanahacabibes y San Andrés.", url: "investigacion/guanahacabibes.html#suelos", keywords: ["edafologia", "suelos", "hierro", "arcilla", "ferralitizacion", "lixiviado"] },
+      { title: "Estratos Plegados y Rupturas", type: "Concepto Geológico", badge: "badge-concepto", excerpt: "Formaciones calizas del Jurásico Superior en Sierra Guasasa con plegamientos intensos y líneas de fractura NNO-SSE.", url: "investigacion/sierra-guasasa.html#geologia", keywords: ["geologia", "guasasa", "jurasico", "plegamiento", "fractura", "caliza"] },
+      { title: "Concreciones de Hierro (Perdigones)", type: "Concepto Edafológico", badge: "badge-concepto", excerpt: "Acumulaciones de óxidos de hierro encontradas en la zona de Ojo de Agua, San Andrés, resultado de la ferralitización.", url: "investigacion/san-andres.html#suelos", keywords: ["edafologia", "san andres", "ojo de agua", "hierro", "perdigones"] },
+
+      // HIDROLOGÍA Y CUEVAS
+      { title: "Cueva de los Portales", type: "Sitio Histórico/Natural", badge: "badge-historia", excerpt: "Comandancia del Che Guevara (1962). Cueva horizontal de origen fluvial por donde el río Caiguanabo realiza un paso subterráneo.", url: "investigacion/san-andres.html#arqueologia", keywords: ["historia", "san andres", "caiguanabo", "che guevara", "rio subterraneo", "crisis de octubre"] },
+      { title: "Cueva del Indio", type: "Sitio Espeleológico", badge: "badge-concepto", excerpt: "Atravesada por el Arroyo Zacarías (977.70m de navegación). Presenta formaciones secundarias y fósiles marinos.", url: "investigacion/sierra-guasasa.html", keywords: ["espeleologia", "guasasa", "viñales", "arroyo zacarias", "navegacion"] },
+      { title: "Sistema Ojo de Agua (Resolladeros)", type: "Concepto Hidrológico", badge: "badge-concepto", excerpt: "Red kárstica en San Andrés donde las alturas cársicas drenan mediante resolladeros hacia un sumidero que alimenta el río Jagua.", url: "investigacion/san-andres.html#hidrografia", keywords: ["hidrologia", "san andres", "kars", "resolladero", "sumidero", "rio jagua"] },
+      { title: "Casimbas (Dolinas Inundadas)", type: "Concepto Hidrológico", badge: "badge-concepto", excerpt: "Dolinas costeras de agua dulce originadas por el desplome de antiguas cavernas con circulación subterránea en Guanahacabibes.", url: "investigacion/guanahacabibes.html#hidrografia", keywords: ["hidrologia", "guanahacabibes", "dolina", "cenote", "subterranea"] },
+      { title: "Fósiles de Desdentados", type: "Hallazgo Paleontológico", badge: "badge-concepto", excerpt: "Los niveles superiores fosilizados de Sierra Guasasa contienen uno de los mayores recintos paleontológicos de megafauna (perezosos gigantes) del país.", url: "investigacion/sierra-guasasa.html", keywords: ["paleontologia", "guasasa", "fosiles", "desdentados", "megafauna", "pleistoceno"] },
+
+      // CULTURA Y TOPONIMIA
+      { title: "Toponimia de Canalete", type: "Cultura Local", badge: "badge-historia", excerpt: "Origen del nombre Canalete (San Andrés): tierras del terrateniente Fidel Canalete. Otros topónimos: Mogote de Pío, Hoyo de Nieve, Río La Pimienta.", url: "investigacion/san-andres.html#toponimia", keywords: ["cultura", "san andres", "toponimia", "canalete", "historia local", "pio", "nieve"] },
+      { title: "Faro Roncali", type: "Sitio Histórico", badge: "badge-historia", excerpt: "Ubicado en Cabo San Antonio (1850). Testigo de naufragios, refugio de piratas y punto estratégico en el Estrecho de Yucatán.", url: "investigacion/guanahacabibes.html#historia", keywords: ["historia", "guanahacabibes", "faro", "naufragios", "piratas", "cabo san antonio"] },
+      { title: "Efecto Bandera", type: "Concepto Ecológico", badge: "badge-concepto", excerpt: "Deformación morfológica de la vegetación costera en Uvero Quemado por la acción constante de los vientos alisios del noreste.", url: "investigacion/guanahacabibes.html#vegetacion", keywords: ["ecologia", "botanica", "guanahacabibes", "viento", "alisios", "costa"] },
+
+      // PROTOCOLOS
+      { title: "Protocolo: Tabla Munsell", type: "Protocolo de Campo", badge: "badge-protocolo", excerpt: "Metodología para determinar el color del suelo (Hue, Value, Chroma) y clasificar horizontes ferralíticos y fersialíticos.", url: "investigacion/protocolos.html#edafologia", keywords: ["protocolo", "suelos", "edafologia", "color", "munsell", "calicata"] },
+      { title: "Protocolo: Ácido HCl al 10%", type: "Protocolo de Campo", badge: "badge-protocolo", excerpt: "Uso de ácido clorhídrico para diferenciar rocas carbonatadas (calizas que efervescen) de rocas silíceas (areniscas cuarcíferas).", url: "investigacion/protocolos.html#geologia", keywords: ["protocolo", "geologia", "rocas", "hcl", "acido", "caliza", "cuarzo"] },
+      { title: "Arqueología Aborigen (San Andrés)", type: "Sitio Arqueológico", badge: "badge-historia", excerpt: "Cuevas funerarias y paraderos (Cojo, Malangal, Coloradas) con estratos cenizosos, majadores de roca y piezas dentales humanas.", url: "investigacion/san-andres.html#arqueologia", keywords: ["arqueologia", "san andres", "aborigen", "funeraria", "majador", "cojo", "malangal"] }
+    ];
+
+    // ==========================================
+    // ⚙️ LÓGICA DE BÚSQUEDA
+    // ==========================================
+    const urlParams = new URLSearchParams(window.location.search);
+    const query = urlParams.get('q') ? urlParams.get('q').trim().toLowerCase() : '';
+    
+    // Pre-fill inputs
+    document.getElementById('headerSearchInput').value = query;
+    document.getElementById('mainSearchInput').value = query;
+
+    function performSearch(searchTerm) {
+      const container = document.getElementById('resultsContainer');
+      
+      if (!searchTerm) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-compass"></i>
+            <h3>¿Qué estás buscando?</h3>
+            <p>Escribe una palabra clave para explorar los informes del GIPPC.</p>
+            <div class="suggestions">
+              <a href="buscador.html?q=Palma+Barrigona">Palma Barrigona</a>
+              <a href="buscador.html?q=Cueva+de+los+Portales">Cueva de los Portales</a>
+              <a href="buscador.html?q=Ferralítico">Suelos Ferralíticos</a>
+              <a href="buscador.html?q=Zunzuncito">Zunzuncito</a>
+              <a href="buscador.html?q=Toponimia">Toponimia</a>
+            </div>
+          </div>`;
+        return;
+      }
+
+      const terms = searchTerm.split(' ').filter(t => t.length > 2);
+      
+      const results = searchIndex.filter(item => {
+        const searchString = `${item.title} ${item.excerpt} ${item.keywords.join(' ')} ${item.type}`.toLowerCase();
+        return terms.some(term => searchString.includes(term));
+      });
+
+      // Sort by relevance (title match first)
+      results.sort((a, b) => {
+        const aTitle = a.title.toLowerCase().includes(searchTerm) ? 1 : 0;
+        const bTitle = b.title.toLowerCase().includes(searchTerm) ? 1 : 0;
+        return bTitle - aTitle;
+      });
+
+      if (results.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <i class="fas fa-search"></i>
+            <h3>No encontramos resultados para "${searchTerm}"</h3>
+            <p>Intenta con otros términos relacionados o explora nuestras sugerencias.</p>
+            <div class="suggestions">
+              <a href="buscador.html?q=Guanahacabibes">Guanahacabibes</a>
+              <a href="buscador.html?q=Viñales">Viñales</a>
+              <a href="buscador.html?q=Protocolos">Protocolos</a>
+            </div>
+          </div>`;
+        return;
+      }
+
+      let html = `<div class="results-meta">Se encontraron <span>${results.length}</span> resultados para "<span>${searchTerm}</span>"</div><div class="results-grid">`;
+      
+      results.forEach(item => {
+        // Highlight matching text in excerpt
+        let highlightedExcerpt = item.excerpt;
+        terms.forEach(term => {
+          const regex = new RegExp(`(${term})`, 'gi');
+          highlightedExcerpt = highlightedExcerpt.replace(regex, '<mark style="background:var(--secondary); color:var(--primary-dark); padding:0 2px; border-radius:4px;">$1</mark>');
+        });
+
+        html += `
+          <a href="${item.url}" class="result-card">
+            <span class="type-badge ${item.badge}">${item.type}</span>
+            <h3>${item.title}</h3>
+            <p>${highlightedExcerpt}</p>
+            <div class="url-path"><i class="fas fa-link"></i> ${item.url}</div>
+          </a>
+        `;
+      });
+      
+      html += `</div>`;
+      container.innerHTML = html;
+    }
+
+    // Execute on load
+    performSearch(query);
+
+    // Menu Toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
+    document.addEventListener('click', (e) => { if (!mainNav.contains(e.target) && e.target !== menuToggle) mainNav.classList.remove('show'); });
+  </script>
+</body>
+</html>

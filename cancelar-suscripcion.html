@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Cancelar Suscripción • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,600;14..32,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: #eef5e8; color: #1e3a2f; min-height: 100vh; display: flex; flex-direction: column; }
+    .site-header { background: linear-gradient(135deg, #1e4a3b, #0e2c22); color: white; padding: 0.8rem 0; box-shadow: 0 4px 15px rgba(0,0,0,0.15); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 20px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: white; font-weight: 700; font-size: 1.3rem; }
+    .logo i { color: #f4c542; font-size: 1.6rem; }
+    .main-container { flex: 1; display: flex; align-items: center; justify-content: center; padding: 40px 20px; }
+    .cancel-card { background: white; border-radius: 24px; padding: 40px; max-width: 500px; width: 100%; box-shadow: 0 15px 40px rgba(0,0,0,0.1); text-align: center; }
+    .cancel-icon { width: 80px; height: 80px; border-radius: 50%; background: #fef3cd; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+    .cancel-icon i { font-size: 2.5rem; color: #856404; }
+    .cancel-card h1 { font-size: 1.8rem; color: #1a3c2b; margin-bottom: 15px; }
+    .cancel-card p { color: #4a6b59; line-height: 1.6; margin-bottom: 25px; }
+    .form-group { margin-bottom: 20px; text-align: left; }
+    .form-group label { display: block; font-weight: 600; color: #1a4c3b; margin-bottom: 8px; font-size: 0.9rem; }
+    .form-group input { width: 100%; padding: 14px 18px; border: 2px solid #e0e8da; border-radius: 12px; font-size: 1rem; font-family: inherit; transition: border-color 0.3s; }
+    .form-group input:focus { outline: none; border-color: #1e4a3b; }
+    .btn-group { display: flex; gap: 12px; margin-top: 25px; }
+    .btn { flex: 1; padding: 14px 24px; border-radius: 12px; font-weight: 600; font-size: 1rem; cursor: pointer; border: none; transition: all 0.3s; font-family: inherit; }
+    .btn-cancel { background: #dc2626; color: white; }
+    .btn-cancel:hover:not(:disabled) { background: #b91c1c; transform: translateY(-2px); }
+    .btn-back { background: #e0e8da; color: #1e3a2f; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; }
+    .btn-back:hover { background: #d0daca; }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .result-message { margin-top: 25px; padding: 16px; border-radius: 12px; display: none; }
+    .result-message.success { background: #d1fae5; color: #065f46; border: 1px solid #6ee7b7; }
+    .result-message.error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+    .result-message.info { background: #dbeafe; color: #1e40af; border: 1px solid #93c5fd; }
+    .result-message i { margin-right: 8px; }
+    .warning-box { background: #fef3cd; border: 1px solid #ffe69c; border-radius: 12px; padding: 16px; margin: 20px 0; text-align: left; }
+    .warning-box h3 { color: #856404; font-size: 1rem; margin-bottom: 8px; display: flex; align-items: center; gap: 8px; }
+    .warning-box ul { color: #856404; font-size: 0.9rem; line-height: 1.6; margin-left: 20px; }
+    .site-footer { background: #0e2c22; color: #cfe6db; padding: 30px 20px; text-align: center; font-size: 0.85rem; }
+    .site-footer a { color: #f4c542; text-decoration: none; }
+    @media (max-width: 600px) {
+      .cancel-card { padding: 30px 20px; }
+      .btn-group { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <i class="fas fa-leaf"></i>
+        <span>Conociendo Pinar</span>
+      </a>
+    </div>
+  </header>
+
+  <main class="main-container">
+    <div class="cancel-card">
+      <div class="cancel-icon">
+        <i class="fas fa-envelope-open-text"></i>
+      </div>
+      <h1>Cancelar Suscripción</h1>
+      <p>Lamentamos que quieras irte. Ingresa tu correo electrónico para darte de baja de nuestro newsletter.</p>
+      
+      <div class="warning-box">
+        <h3><i class="fas fa-exclamation-triangle"></i> Antes de cancelar...</h3>
+        <ul>
+          <li>Dejarás de recibir noticias sobre Pinar del Río</li>
+          <li>No recibirás actualizaciones del blog</li>
+          <li>Podrás volver a suscribirte cuando quieras</li>
+        </ul>
+      </div>
+
+      <form id="cancelForm">
+        <div class="form-group">
+          <label for="cancelEmail">Correo electrónico</label>
+          <input type="email" id="cancelEmail" placeholder="tucorreo@ejemplo.com" required>
+        </div>
+        
+        <div class="btn-group">
+          <a href="index.html" class="btn btn-back">
+            <i class="fas fa-arrow-left"></i> Volver
+          </a>
+          <button type="submit" class="btn btn-cancel" id="submitBtn">
+            <i class="fas fa-times-circle"></i> Cancelar Suscripción
+          </button>
+        </div>
+      </form>
+
+      <div id="resultMessage" class="result-message"></div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="index.html">Conociendo Pinar</a></p>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://mixfzeuzhooujqzaexpp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peGZ6ZXV6aG9vdWpxemFleHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODk2NjYsImV4cCI6MjA5NzM2NTY2Nn0.re-BvpmaB3vMXIBwbOY_88PE0q9Hw1L9xsyL6JurvaI';
+
+    let supabaseClient = null;
+
+    function iniciarApp() {
+      if (typeof window.supabase === 'undefined') {
+        setTimeout(iniciarApp, 500);
+        return;
+      }
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      
+      // Pre-llenar email si viene por URL
+      const urlParams = new URLSearchParams(window.location.search);
+      const emailParam = urlParams.get('email');
+      if (emailParam) {
+        document.getElementById('cancelEmail').value = emailParam;
+      }
+    }
+
+    document.getElementById('cancelForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const emailInput = document.getElementById('cancelEmail');
+      const email = emailInput.value.trim().toLowerCase();
+      const submitBtn = document.getElementById('submitBtn');
+      const resultMessage = document.getElementById('resultMessage');
+      
+      // Validación
+      const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+      if (!emailRegex.test(email)) {
+        mostrarMensaje('⚠️ Por favor ingresa un correo electrónico válido', 'error');
+        return;
+      }
+      
+      // Confirmación
+      if (!confirm(`¿Estás seguro de que quieres cancelar la suscripción de ${email}?\n\nPodrás volver a suscribirte cuando quieras.`)) {
+        return;
+      }
+      
+      // Estado de carga
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+      
+      try {
+        const { data, error } = await supabaseClient.rpc('darse_baja_newsletter', {
+          p_email: email
+        });
+        
+        if (error) throw error;
+        
+        if (data.success) {
+          mostrarMensaje('✅ Te has dado de baja correctamente. ¡Gracias por haber sido parte de nuestra comunidad!', 'success');
+          document.getElementById('cancelForm').reset();
+        } else {
+          mostrarMensaje('ℹ️ ' + data.message, 'info');
+        }
+      } catch (err) {
+        console.error('Error:', err);
+        mostrarMensaje('❌ Error al procesar la cancelación: ' + err.message, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.innerHTML = '<i class="fas fa-times-circle"></i> Cancelar Suscripción';
+      }
+    });
+
+    function mostrarMensaje(mensaje, tipo) {
+      const resultMessage = document.getElementById('resultMessage');
+      resultMessage.className = 'result-message ' + tipo;
+      
+      let icono = '';
+      if (tipo === 'success') icono = '<i class="fas fa-check-circle"></i>';
+      else if (tipo === 'error') icono = '<i class="fas fa-exclamation-circle"></i>';
+      else icono = '<i class="fas fa-info-circle"></i>';
+      
+      resultMessage.innerHTML = icono + mensaje;
+      resultMessage.style.display = 'block';
+      resultMessage.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    iniciarApp();
+  </script>
+</body>
+</html>

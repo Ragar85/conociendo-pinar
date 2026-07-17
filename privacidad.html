@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Política de Privacidad • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --secondary-light: #f9e2b7;
+      --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); transition: var(--transition); }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+    .legal-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); color: white; padding: 100px 24px 80px; overflow: hidden; text-align: center; }
+    .legal-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.1; }
+    .hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+    .hero-content h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .hero-content h1 span { color: var(--secondary); }
+    .hero-content p { font-size: 1.1rem; opacity: 0.9; }
+    .container { max-width: 900px; margin: 0 auto; padding: 60px 24px 80px; }
+    .legal-content { background: var(--surface); border-radius: var(--radius-lg); padding: 50px; box-shadow: var(--shadow-md); }
+    .legal-content h2 { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 40px 0 16px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.01em; }
+    .legal-content h2:first-child { margin-top: 0; }
+    .legal-content h2 i { color: var(--secondary); font-size: 1.3rem; }
+    .legal-content p { color: var(--text-secondary); font-size: 1rem; line-height: 1.8; margin-bottom: 16px; }
+    .legal-content ul { margin: 12px 0 20px 24px; color: var(--text-secondary); }
+    .legal-content ul li { margin-bottom: 10px; line-height: 1.6; }
+    .legal-content ul li strong { color: var(--text-primary); }
+    .legal-content a { color: var(--primary); font-weight: 600; text-decoration: none; border-bottom: 1px dashed var(--primary); }
+    .legal-content a:hover { color: var(--primary-light); }
+    .service-table { width: 100%; border-collapse: collapse; margin: 20px 0; background: var(--surface); border-radius: var(--radius-sm); overflow: hidden; border: 1px solid var(--border); }
+    .service-table th { background: var(--primary); color: white; padding: 12px 16px; text-align: left; font-size: 0.85rem; font-weight: 700; }
+    .service-table td { padding: 12px 16px; border-bottom: 1px solid var(--border); font-size: 0.9rem; color: var(--text-secondary); }
+    .service-table tr:last-child td { border-bottom: none; }
+    .service-table tr:hover td { background: var(--surface-alt); }
+    .service-table td:first-child { font-weight: 600; color: var(--text-primary); }
+    .alert-box { background: #eff6ff; border-left: 4px solid #3b82f6; padding: 16px 20px; border-radius: var(--radius-sm); margin: 20px 0; }
+    .alert-box p { color: #1e40af; margin: 0; font-size: 0.95rem; }
+    .update-badge { display: inline-block; background: var(--surface-alt); color: var(--text-muted); padding: 4px 14px; border-radius: var(--radius-xl); font-size: 0.8rem; font-weight: 600; margin-bottom: 30px; border: 1px solid var(--border); }
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 40px 24px 30px; text-align: center; }
+    .footer-bottom { font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--primary-dark); flex-direction: column; padding: 24px; gap: 8px; min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); box-shadow: var(--shadow-lg); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .hero-content h1 { font-size: 2.2rem; }
+      .legal-content { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+	    
+		
+		<form action="buscador.html" method="GET" class="header-search-form" style="display:flex; align-items:center; background:rgba(255,255,255,0.15); border-radius:40px; padding:6px 16px; border:1px solid rgba(255,255,255,0.2); margin-right:8px;">
+          <i class="fas fa-search" style="color:rgba(255,255,255,0.8); margin-right:8px; font-size:0.9rem;"></i>
+          <input type="text" name="q" placeholder="Buscar..." style="background:transparent; border:none; outline:none; color:white; font-size:0.9rem; width:140px; font-family:inherit;">
+        </form>
+		
+		
+        <nav class="main-nav" id="mainNav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="investigacion/index.html" class="nav-link">Investigación</a>
+          <a href="conociendo-pinar.html#tab-blog" class="nav-link">Blog</a>
+          <a href="soporte.html" class="nav-link">Soporte</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="legal-hero">
+    <div class="hero-content">
+      <h1>Política de <span>Privacidad</span></h1>
+      <p>Cómo recopilamos, usamos y protegemos tu información personal en Conociendo Pinar.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="legal-content">
+      <span class="update-badge"><i class="fas fa-calendar-alt"></i> Última actualización: Julio 2026</span>
+
+      <h2><i class="fas fa-info-circle"></i> 1. Introducción</h2>
+      <p><strong>Conociendo Pinar</strong> es una plataforma digital desarrollada por el Departamento de Geografía de la Facultad de Educación Media de la Universidad de Pinar del Río "Hermanos Saíz Montes de Oca". Esta política describe cómo recopilamos, almacenamos y protegemos tu información personal cuando utilizas nuestro sitio web.</p>
+
+      <h2><i class="fas fa-database"></i> 2. Datos que Recopilamos</h2>
+      <p>Recopilamos únicamente la información necesaria para ofrecer nuestros servicios:</p>
+      <ul>
+        <li><strong>Cuenta de usuario:</strong> Correo electrónico y contraseña (almacenada de forma cifrada con bcrypt) cuando te registras en la plataforma.</li>
+        <li><strong>Publicaciones del blog:</strong> Título, descripción, imágenes o videos que subas voluntariamente, asociados a tu cuenta.</li>
+        <li><strong>Galería de fotos:</strong> Imágenes y videos que subas a la galería comunitaria, asociados a tu cuenta.</li>
+        <li><strong>Mensajes de contacto:</strong> Nombre, correo electrónico y mensaje que envíes a través del formulario de soporte.</li>
+        <li><strong>Newsletter:</strong> Correo electrónico cuando te suscribes voluntariamente a nuestro boletín informativo.</li>
+        <li><strong>Preferencia de idioma:</strong> Almacenada localmente en tu navegador (localStorage) para recordar tu idioma preferido.</li>
+      </ul>
+
+      <h2><i class="fas fa-server"></i> 3. Dónde se Almacenan tus Datos</h2>
+      <p>Utilizamos <strong>Supabase</strong> como infraestructura de base de datos y autenticación. Tus datos se almacenan en servidores en la nube gestionados por Supabase Inc. Esto incluye:</p>
+      <ul>
+        <li>Cuentas de usuario y credenciales de autenticación</li>
+        <li>Publicaciones del blog y metadatos asociados</li>
+        <li>Imágenes y videos subidos a la galería y al blog</li>
+        <li>Mensajes del formulario de contacto</li>
+        <li>Suscripciones al newsletter</li>
+      </ul>
+      <div class="alert-box">
+        <p><strong>Nota importante:</strong> Los servidores de Supabase se encuentran ubicados fuera de Cuba. Al utilizar nuestros servicios, aceptas que tus datos puedan ser transferidos y almacenados en servidores internacionales.</p>
+      </div>
+
+      <h2><i class="fas fa-cogs"></i> 4. Servicios de Terceros</h2>
+      <p>Nuestro sitio utiliza los siguientes servicios externos:</p>
+      <table class="service-table">
+        <thead>
+          <tr>
+            <th>Servicio</th>
+            <th>Propósito</th>
+            <th>Datos compartidos</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Supabase</td>
+            <td>Base de datos, autenticación y almacenamiento de archivos</td>
+            <td>Email, contraseña cifrada, publicaciones, fotos, mensajes</td>
+          </tr>
+          <tr>
+            <td>Gravatar (Automattic)</td>
+            <td>Avatares de usuario</td>
+            <td>Hash MD5 del email (no el email en texto plano)</td>
+          </tr>
+          <tr>
+            <td>OpenStreetMap</td>
+            <td>Mapas interactivos</td>
+            <td>Coordenadas de visualización, dirección IP</td>
+          </tr>
+          <tr>
+            <td>Leaflet</td>
+            <td>Biblioteca de mapas</td>
+            <td>Datos de navegación del mapa</td>
+          </tr>
+          <tr>
+            <td>Google Fonts</td>
+            <td>Tipografía (Inter)</td>
+            <td>Dirección IP, datos de carga de fuente</td>
+          </tr>
+          <tr>
+            <td>Font Awesome</td>
+            <td>Iconos</td>
+            <td>Dirección IP, datos de carga de CDN</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h2><i class="fas fa-cookie-bite"></i> 5. Cookies y Almacenamiento Local</h2>
+      <p><strong>No utilizamos cookies de seguimiento ni publicidad.</strong> Nuestro sitio solo utiliza:</p>
+      <ul>
+        <li><strong>localStorage:</strong> Para guardar tu preferencia de idioma y mantener tu sesión de autenticación activa.</li>
+        <li><strong>Cookies de sesión:</strong> Gestionadas automáticamente por Supabase para mantener tu autenticación mientras navegas.</li>
+      </ul>
+
+      <h2><i class="fas fa-shield-alt"></i> 6. Seguridad</h2>
+      <p>Implementamos las siguientes medidas de seguridad:</p>
+      <ul>
+        <li><strong>Cifrado en tránsito:</strong> Toda la comunicación se realiza mediante HTTPS/TLS.</li>
+        <li><strong>Contraseñas cifradas:</strong> Almacenadas con algoritmo bcrypt, nunca en texto plano.</li>
+        <li><strong>Políticas de acceso (RLS):</strong> Supabase Row Level Security garantiza que solo tú puedas editar o eliminar tus publicaciones y fotos.</li>
+        <li><strong>Acceso administrativo limitado:</strong> Solo el administrador puede leer mensajes de contacto y gestionar suscriptores.</li>
+      </ul>
+
+      <h2><i class="fas fa-user-shield"></i> 7. Tus Derechos</h2>
+      <p>Tienes derecho a:</p>
+      <ul>
+        <li><strong>Acceso:</strong> Solicitar una copia de todos los datos que tenemos sobre ti.</li>
+        <li><strong>Rectificación:</strong> Corregir cualquier dato inexacto o incompleto.</li>
+        <li><strong>Eliminación:</strong> Solicitar que eliminemos todos tus datos de nuestra plataforma.</li>
+        <li><strong>Portabilidad:</strong> Recibir tus datos en un formato estructurado y legible.</li>
+        <li><strong>Cancelación de suscripción:</strong> Darte de baja del newsletter en cualquier momento desde la página de <a href="cancelar-suscripcion.html">cancelación de suscripción</a>.</li>
+      </ul>
+      <p>Para ejercer cualquiera de estos derechos, contáctanos en <a href="mailto:rg5514478@gmail.com">rg5514478@gmail.com</a>. Responderemos en un plazo máximo de 30 días.</p>
+
+      <h2><i class="fas fa-child"></i> 8. Menores de Edad</h2>
+      <p>No recopilamos conscientemente información personal de menores de 18 años sin el consentimiento verificable de sus padres o tutores. Si eres padre o tutor y descubres que tu hijo nos ha proporcionado datos personales, contáctanos inmediatamente.</p>
+
+      <h2><i class="fas fa-sync-alt"></i> 9. Cambios en esta Política</h2>
+      <p>Nos reservamos el derecho de actualizar esta política en cualquier momento. Los cambios se publicarán en esta página con la fecha de actualización correspondiente. Para cambios significativos, te notificaremos por correo electrónico o mediante un aviso destacado en el sitio.</p>
+
+      <h2><i class="fas fa-envelope"></i> 10. Contacto</h2>
+      <p>Si tienes preguntas sobre esta política de privacidad o el tratamiento de tus datos personales:</p>
+      <ul>
+        <li><strong>Email:</strong> <a href="mailto:rg5514478@gmail.com">rg5514478@gmail.com</a></li>
+        <li><strong>WhatsApp:</strong> <a href="https://wa.me/5356258910">+53 56258910</a></li>
+        <li><strong>Formulario:</strong> <a href="soporte.html">Centro de Soporte</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="index.html">Conociendo Pinar</a> | <a href="privacidad.html">Privacidad</a> | <a href="terminos.html">Términos</a> | <a href="admin/" style="opacity: 0.3; font-size: 0.7rem;">Admin</a></p>
+    <p style="margin-top:8px;"><a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p></div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
+    document.addEventListener('click', (e) => { if (!mainNav.contains(e.target) && e.target !== menuToggle) mainNav.classList.remove('show'); });
+    window.addEventListener('scroll', () => { const h = document.querySelector('.site-header'); if (window.scrollY > 50) h.classList.add('scrolled'); else h.classList.remove('scrolled'); });
+  </script>
+</body>
+</html>

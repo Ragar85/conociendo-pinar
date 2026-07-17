@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  <title>Términos de Uso • Conociendo Pinar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --secondary-light: #f9e2b7;
+      --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow-md); transition: var(--transition); }
+    .site-header.scrolled { padding: 0.6rem 0; backdrop-filter: blur(20px); background: rgba(14,44,34,0.92); }
+    .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.4rem; }
+    .logo i { color: var(--secondary); font-size: 1.8rem; }
+    .header-right { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 10px 20px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.95rem; transition: var(--transition); }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.5rem; padding: 10px 14px; border-radius: var(--radius-sm); cursor: pointer; }
+    .legal-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); color: white; padding: 100px 24px 80px; overflow: hidden; text-align: center; }
+    .legal-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.1; }
+    .hero-content { position: relative; z-index: 2; max-width: 800px; margin: 0 auto; }
+    .hero-content h1 { font-size: 3rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 16px; }
+    .hero-content h1 span { color: var(--secondary); }
+    .hero-content p { font-size: 1.1rem; opacity: 0.9; }
+    .container { max-width: 900px; margin: 0 auto; padding: 60px 24px 80px; }
+    .legal-content { background: var(--surface); border-radius: var(--radius-lg); padding: 50px; box-shadow: var(--shadow-md); }
+    .legal-content h2 { font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin: 40px 0 16px; display: flex; align-items: center; gap: 10px; letter-spacing: -0.01em; }
+    .legal-content h2:first-child { margin-top: 0; }
+    .legal-content h2 i { color: var(--secondary); font-size: 1.3rem; }
+    .legal-content p { color: var(--text-secondary); font-size: 1rem; line-height: 1.8; margin-bottom: 16px; }
+    .legal-content ul { margin: 12px 0 20px 24px; color: var(--text-secondary); }
+    .legal-content ul li { margin-bottom: 10px; line-height: 1.6; }
+    .legal-content ul li strong { color: var(--text-primary); }
+    .legal-content a { color: var(--primary); font-weight: 600; text-decoration: none; border-bottom: 1px dashed var(--primary); }
+    .legal-content a:hover { color: var(--primary-light); }
+    .alert-box { background: #fef3cd; border-left: 4px solid #f59e0b; padding: 16px 20px; border-radius: var(--radius-sm); margin: 20px 0; }
+    .alert-box p { color: #854d0e; margin: 0; font-size: 0.95rem; }
+    .alert-danger { background: #fee2e2; border-left-color: #dc2626; }
+    .alert-danger p { color: #991b1b; }
+    .update-badge { display: inline-block; background: var(--surface-alt); color: var(--text-muted); padding: 4px 14px; border-radius: var(--radius-xl); font-size: 0.8rem; font-weight: 600; margin-bottom: 30px; border: 1px solid var(--border); }
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 40px 24px 30px; text-align: center; }
+    .footer-bottom { font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: var(--primary-dark); flex-direction: column; padding: 24px; gap: 8px; min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); box-shadow: var(--shadow-lg); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .hero-content h1 { font-size: 2.2rem; }
+      .legal-content { padding: 30px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+	  
+	  
+	    <form action="buscador.html" method="GET" class="header-search-form" style="display:flex; align-items:center; background:rgba(255,255,255,0.15); border-radius:40px; padding:6px 16px; border:1px solid rgba(255,255,255,0.2); margin-right:8px;">
+          <i class="fas fa-search" style="color:rgba(255,255,255,0.8); margin-right:8px; font-size:0.9rem;"></i>
+          <input type="text" name="q" placeholder="Buscar..." style="background:transparent; border:none; outline:none; color:white; font-size:0.9rem; width:140px; font-family:inherit;">
+        </form>
+		
+		
+        <nav class="main-nav" id="mainNav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="investigacion/index.html" class="nav-link">Investigación</a>
+          <a href="conociendo-pinar.html#tab-blog" class="nav-link">Blog</a>
+          <a href="soporte.html" class="nav-link">Soporte</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <section class="legal-hero">
+    <div class="hero-content">
+      <h1>Términos de <span>Uso</span></h1>
+      <p>Condiciones que rigen el uso de la plataforma Conociendo Pinar.</p>
+    </div>
+  </section>
+
+  <main class="container">
+    <div class="legal-content">
+      <span class="update-badge"><i class="fas fa-calendar-alt"></i> Última actualización: Julio 2026</span>
+
+      <h2><i class="fas fa-handshake"></i> 1. Aceptación de los Términos</h2>
+      <p>Al acceder y utilizar el sitio web <strong>Conociendo Pinar</strong> (en adelante, "el Sitio"), usted acepta quedar vinculado por estos Términos de Uso. Si no está de acuerdo con alguna parte, no debe utilizar el Sitio.</p>
+      <p>El Sitio es operado por el <strong>Departamento de Geografía de la Facultad de Educación Media de la Universidad de Pinar del Río "Hermanos Saíz Montes de Oca"</strong>, a través del Grupo de Investigaciones de Polígonos de Prácticas de Campo (GIPPC).</p>
+
+      <h2><i class="fas fa-info-circle"></i> 2. Descripción del Servicio</h2>
+      <p>Conociendo Pinar es una guía interactiva de ecoturismo y plataforma académica que ofrece:</p>
+      <ul>
+        <li>Información geográfica y turística sobre la provincia de Pinar del Río</li>
+        <li>Mapas interactivos de lugares de interés</li>
+        <li>Galería de fotos comunitaria</li>
+        <li>Blog con artículos, noticias y experiencias</li>
+        <li>Recursos científicos y educativos sobre los polígonos de estudio del GIPPC</li>
+        <li>Newsletter con actualizaciones periódicas</li>
+      </ul>
+
+      <h2><i class="fas fa-user-circle"></i> 3. Cuentas de Usuario</h2>
+      <p>Para acceder a ciertas funcionalidades (publicar en el blog, subir fotos), es necesario crear una cuenta. Al hacerlo, usted se compromete a:</p>
+      <ul>
+        <li>Proporcionar información veraz y completa durante el registro</li>
+        <li>Mantener la seguridad de su contraseña</li>
+        <li>Aceptar la responsabilidad por las actividades realizadas bajo su cuenta</li>
+        <li>Notificarnos ante cualquier uso no autorizado</li>
+      </ul>
+      <p>Nos reservamos el derecho de suspender o eliminar cuentas que violen estos Términos.</p>
+
+      <h2><i class="fas fa-gavel"></i> 4. Uso Aceptable</h2>
+      <p>Está <strong>estrictamente prohibido</strong>:</p>
+      <ul>
+        <li>Publicar contenido que viole leyes locales, nacionales o internacionales</li>
+        <li>Publicar contenido que infrinja derechos de autor, marcas o privacidad de terceros</li>
+        <li>Publicar material discriminatorio, difamatorio, obsceno o amenazante</li>
+        <li>Intentar acceder a áreas restringidas, cargar malware o realizar ataques informáticos</li>
+        <li>Enviar spam, usar bots o realizar scraping sin autorización</li>
+        <li>Transmitir contenido que explote o dañe a menores de edad</li>
+        <li>Subir imágenes o contenido del cual no posea los derechos necesarios</li>
+      </ul>
+
+      <h2><i class="fas fa-images"></i> 5. Contenido del Usuario</h2>
+      <p>Al publicar contenido en el Sitio (blog, galería), usted:</p>
+      <ul>
+        <li><strong>Mantiene la propiedad</strong> de su contenido original</li>
+        <li><strong>Otorga una licencia</strong> mundial, no exclusiva y gratuita para mostrar y distribuir su contenido en el Sitio</li>
+        <li><strong>Garantiza</strong> que tiene los derechos necesarios y que no infringe derechos de terceros</li>
+        <li><strong>Acepta</strong> que el contenido publicado será visible públicamente</li>
+        <li><strong>Acepta la moderación:</strong> Nos reservamos el derecho de eliminar contenido que viole estos Términos sin previo aviso</li>
+      </ul>
+      <p>Solo el autor de una publicación o foto puede editarla o eliminarla, salvo en casos de violación de estos Términos.</p>
+
+      <h2><i class="fas fa-copyright"></i> 6. Propiedad Intelectual</h2>
+      <p>El contenido original del Sitio (diseño, textos, gráficos, logos, código fuente, estructura y organización) es propiedad del Departamento de Geografía de la Universidad de Pinar del Río y está protegido por las leyes de propiedad intelectual.</p>
+      <p><strong>Uso permitido:</strong> Puede visualizar, imprimir y descargar contenido para uso personal, educativo y no comercial.</p>
+      <p><strong>Uso prohibido:</strong> No puede reproducir, distribuir, modificar o explotar comercialmente contenido del Sitio sin autorización previa por escrito.</p>
+
+      <h2><i class="fas fa-map-marked-alt"></i> 7. Información Geográfica y Científica</h2>
+      <div class="alert-box">
+        <p><strong>Aviso:</strong> La información geográfica, científica y turística proporcionada en el Sitio es de carácter educativo y divulgativo. No sustituye la consulta con guías profesionales ni garantiza condiciones seguras para actividades al aire libre. Usted asume todos los riesgos asociados con el uso de esta información para actividades de campo.</p>
+      </div>
+      <p>Los datos científicos han sido recopilados y validados por el GIPPC mediante expediciones de campo entre 2016 y 2019. Sin embargo, las condiciones naturales pueden cambiar y no garantizamos la exactitud absoluta de toda la información en tiempo real.</p>
+
+      <h2><i class="fas fa-shield-alt"></i> 8. Limitación de Responsabilidad</h2>
+      <p>El Sitio se proporciona "tal cual" y "según disponibilidad", sin garantías de ningún tipo. No garantizamos que el Sitio sea ininterrumpido, seguro o libre de errores.</p>
+      <p>No nos hacemos responsables por daños directos, indirectos, incidentales o consecuentes que resulten del uso o la imposibilidad de usar el Sitio, incluyendo pero no limitado a la pérdida de datos o contenido subido.</p>
+
+      <h2><i class="fas fa-power-off"></i> 9. Terminación</h2>
+      <p>Podemos suspender o terminar su acceso al Sitio inmediatamente por incumplimiento de estos Términos. Usted puede dejar de usar el Sitio en cualquier momento.</p>
+      <p>Para eliminar su cuenta y todos los datos asociados, contáctenos en <a href="mailto:rg5514478@gmail.com">rg5514478@gmail.com</a>.</p>
+
+      <h2><i class="fas fa-sync-alt"></i> 10. Cambios en los Términos</h2>
+      <p>Nos reservamos el derecho de modificar estos Términos en cualquier momento. Los cambios se publicarán en esta página. Su uso continuado del Sitio después de la publicación de cambios constituye su aceptación de los Términos modificados.</p>
+
+      <h2><i class="fas fa-envelope"></i> 11. Contacto</h2>
+      <p>Para preguntas sobre estos Términos:</p>
+      <ul>
+        <li><strong>Email:</strong> <a href="mailto:rg5514478@gmail.com">rg5514478@gmail.com</a></li>
+        <li><strong>WhatsApp:</strong> <a href="https://wa.me/5356258910">+53 56258910</a></li>
+        <li><strong>Formulario:</strong> <a href="soporte.html">Centro de Soporte</a></li>
+      </ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="index.html">Conociendo Pinar</a> | <a href="privacidad.html">Privacidad</a> | <a href="terminos.html">Términos</a> | <a href="admin/" style="opacity: 0.3; font-size: 0.7rem;">Admin</a></p>
+    <p style="margin-top:8px;"><a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p></div>
+  </footer>
+
+  <script>
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', (e) => { e.stopPropagation(); mainNav.classList.toggle('show'); });
+    document.addEventListener('click', (e) => { if (!mainNav.contains(e.target) && e.target !== menuToggle) mainNav.classList.remove('show'); });
+    window.addEventListener('scroll', () => { const h = document.querySelector('.site-header'); if (window.scrollY > 50) h.classList.add('scrolled'); else h.classList.remove('scrolled'); });
+  </script>
+</body>
+</html>
