@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+  <meta name="theme-color" content="#1e4a3b">
+  
+  <!-- SEO OPTIMIZADO -->
+  <title>Conociendo Pinar | Laboratorio Natural - Departamento de Geografía UPR</title>
+  <meta name="description" content="Plataforma educativa del Departamento de Geografía de la Universidad de Pinar del Río. Descubre 4 polígonos de investigación científica, 350+ especies documentadas, 17 especies emblemáticas amenazadas y 15.3 km de galerías subterráneas.">
+  <meta name="keywords" content="Pinar del Río, geografía, universidad, ecoturismo, Viñales, biodiversidad, investigación científica, GIPPC, prácticas de campo, Cuba">
+  <meta name="author" content="Departamento de Geografía - Universidad de Pinar del Río">
+  <meta name="robots" content="index, follow">
+  <link rel="canonical" href="https://ragar85.github.io/conociendo-pinar/">
+  
+  <!-- Open Graph / Facebook / WhatsApp -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ragar85.github.io/conociendo-pinar/">
+  <meta property="og:title" content="Conociendo Pinar | Laboratorio Natural UPR">
+  <meta property="og:description" content="Plataforma educativa con 4 polígonos de investigación, 350+ especies y datos científicos reales del Departamento de Geografía de la UPR.">
+  <meta property="og:image" content="https://ragar85.github.io/conociendo-pinar/img/hero.jpg">
+  <meta property="og:locale" content="es_CU">
+  <meta property="og:site_name" content="Conociendo Pinar">
+  
+  <!-- Twitter -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Conociendo Pinar | Laboratorio Natural UPR">
+  <meta name="twitter:description" content="4 polígonos de investigación, 350+ especies documentadas, 17 emblemáticas amenazadas.">
+  <meta name="twitter:image" content="https://ragar85.github.io/conociendo-pinar/img/hero.jpg">
+  
+  <!-- Schema.org JSON-LD -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "EducationalOrganization",
+    "name": "Conociendo Pinar",
+    "alternateName": "Departamento de Geografía UPR",
+    "url": "https://ragar85.github.io/conociendo-pinar/",
+    "description": "Plataforma educativa del Departamento de Geografía de la Universidad de Pinar del Río para prácticas de campo e investigación científica.",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Pinar del Río",
+      "addressCountry": "CU"
+    },
+    "parentOrganization": {
+      "@type": "CollegeOrUniversity",
+      "name": "Universidad de Pinar del Río Hermanos Saíz Montes de Oca"
+    },
+    "areaServed": "Pinar del Río, Cuba",
+    "knowsAbout": ["Geografía", "Ecología", "Geología", "Espeleología", "Biodiversidad"]
+  }
+  </script>
+
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,300;14..32,400;14..32,500;14..32,600;14..32,700;14..32,800;14..32,900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --secondary-light: #f9e2b7;
+      --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12); --shadow-xl: 0 30px 60px rgba(30,74,59,0.16);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; overflow-x: hidden; }
+
+    /* REVEAL ANIMATIONS */
+    .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal.active { opacity: 1; transform: translateY(0); }
+    .reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal-left.active { opacity: 1; transform: translateX(0); }
+    .reveal-right { opacity: 0; transform: translateX(40px); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal-right.active { opacity: 1; transform: translateX(0); }
+    .reveal-scale { opacity: 0; transform: scale(0.9); transition: opacity 0.8s ease, transform 0.8s ease; }
+    .reveal-scale.active { opacity: 1; transform: scale(1); }
+
+    /* ===========================
+       HEADER OPTIMIZADO
+       =========================== */
+    .site-header { 
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark)); 
+      color: white; 
+      padding: 1rem 0; 
+      position: sticky; 
+      top: 0; 
+      z-index: 100; 
+      box-shadow: var(--shadow-md); 
+      transition: var(--transition); 
+    }
+    .site-header.scrolled { 
+      padding: 0.6rem 0; 
+      backdrop-filter: blur(20px); 
+      background: rgba(14,44,34,0.92); 
+      box-shadow: 0 4px 30px rgba(0,0,0,0.3); 
+    }
+    .header-container { 
+      max-width: 1400px; 
+      margin: 0 auto; 
+      padding: 0 24px; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      gap: 20px;
+    }
+    .logo { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      text-decoration: none; 
+      color: white; 
+      font-weight: 700; 
+      font-size: 1.4rem; 
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+    .logo i { color: var(--secondary); font-size: 1.8rem; transition: var(--transition); }
+    .logo:hover i { transform: rotate(15deg) scale(1.1); }
+
+    .header-right { 
+      display: flex; 
+      align-items: center; 
+      gap: 16px;
+      flex: 1;
+      justify-content: flex-end;
+    }
+
+    .header-search-form { 
+      display: flex; 
+      align-items: center; 
+      background: rgba(255,255,255,0.15); 
+      border-radius: var(--radius-xl); 
+      padding: 8px 16px; 
+      border: 1px solid rgba(255,255,255,0.2); 
+      transition: var(--transition);
+      max-width: 250px;
+      flex: 0 1 250px;
+    }
+    .header-search-form:focus-within { 
+      background: rgba(255,255,255,0.25); 
+      border-color: var(--secondary);
+      max-width: 300px;
+    }
+    .header-search-form i { color: rgba(255,255,255,0.8); margin-right: 8px; font-size: 0.9rem; flex-shrink: 0; }
+    .header-search-form input { 
+      background: transparent; 
+      border: none; 
+      outline: none; 
+      color: white; 
+      font-size: 0.9rem; 
+      width: 100%;
+      font-family: inherit;
+    }
+    .header-search-form input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .main-nav { display: flex; align-items: center; gap: 8px; }
+    .nav-link { 
+      color: rgba(255,255,255,0.85); 
+      text-decoration: none; 
+      padding: 10px 20px; 
+      border-radius: var(--radius-xl); 
+      font-weight: 500; 
+      font-size: 0.95rem; 
+      transition: var(--transition); 
+      white-space: nowrap; 
+      position: relative;
+    }
+    .nav-link::after { 
+      content: ''; 
+      position: absolute; 
+      bottom: 6px; 
+      left: 50%; 
+      width: 0; 
+      height: 2px; 
+      background: var(--secondary); 
+      transition: var(--transition); 
+      transform: translateX(-50%); 
+    }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link:hover::after { width: 60%; }
+    .nav-link.active { background: rgba(244,197,66,0.15); color: var(--secondary); font-weight: 600; }
+    .nav-link.active::after { width: 60%; }
+
+    .language-dropdown { 
+      background: rgba(255,255,240,0.15); 
+      border-radius: var(--radius-xl); 
+      padding: 6px 14px; 
+      border: 1px solid rgba(255,215,150,0.4);
+      flex-shrink: 0;
+    }
+    .lang-select { 
+      background: transparent; 
+      border: none; 
+      color: var(--secondary-light); 
+      font-weight: 600; 
+      padding: 8px 12px; 
+      cursor: pointer; 
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+    .lang-select option { background: var(--primary); color: white; }
+
+    .account-btn { 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center; 
+      width: 42px; 
+      height: 42px; 
+      border-radius: 50%; 
+      background: rgba(255,255,255,0.15); 
+      border: 1px solid rgba(255,255,255,0.2); 
+      color: white; 
+      cursor: pointer; 
+      transition: var(--transition); 
+      position: relative; 
+      font-size: 1rem; 
+      font-family: inherit;
+      flex-shrink: 0;
+    }
+    .account-btn:hover { 
+      background: rgba(255,255,255,0.25); 
+      transform: scale(1.08); 
+      box-shadow: 0 0 0 3px rgba(244,197,66,0.3); 
+    }
+    .account-btn .tooltip { 
+      position: absolute; 
+      top: calc(100% + 8px); 
+      left: 50%; 
+      transform: translateX(-50%) translateY(-4px); 
+      background: var(--primary-dark); 
+      color: white; 
+      padding: 4px 10px; 
+      border-radius: 6px; 
+      font-size: 0.75rem; 
+      white-space: nowrap; 
+      opacity: 0; 
+      visibility: hidden; 
+      transition: all 0.2s ease; 
+      pointer-events: none; 
+      font-weight: 500;
+      z-index: 1000;
+    }
+    .account-btn .tooltip::before { 
+      content: ''; 
+      position: absolute; 
+      bottom: 100%; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      border: 4px solid transparent; 
+      border-bottom-color: var(--primary-dark); 
+    }
+    .account-btn:hover .tooltip { 
+      opacity: 1; 
+      visibility: visible; 
+      transform: translateX(-50%) translateY(0); 
+    }
+
+    .menu-toggle { 
+      display: none; 
+      background: rgba(255,255,255,0.12); 
+      border: 1px solid rgba(255,255,255,0.25); 
+      color: white; 
+      font-size: 1.5rem; 
+      padding: 10px 14px; 
+      border-radius: var(--radius-sm); 
+      cursor: pointer; 
+      transition: var(--transition); 
+      line-height: 1;
+      flex-shrink: 0;
+    }
+    .menu-toggle:hover { background: rgba(255,255,255,0.25); transform: scale(1.05); }
+
+    .mobile-search-form { 
+      display: none; 
+      width: 100%; 
+      padding: 12px 16px; 
+      background: rgba(255,255,255,0.1); 
+      border-radius: var(--radius-sm); 
+      margin-bottom: 12px; 
+      align-items: center; 
+      gap: 10px;
+    }
+    .mobile-search-form i { color: rgba(255,255,255,0.7); flex-shrink: 0; }
+    .mobile-search-form input { 
+      background: transparent; 
+      border: none; 
+      outline: none; 
+      color: white; 
+      width: 100%; 
+      font-family: inherit; 
+      font-size: 0.95rem;
+    }
+    .mobile-search-form input::placeholder { color: rgba(255,255,255,0.6); }
+
+    .avatar-container { position: relative; display: inline-block; cursor: pointer; flex-shrink: 0; }
+    .avatar { 
+      width: 42px; 
+      height: 42px; 
+      border-radius: 50%; 
+      background: var(--secondary); 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      color: var(--primary); 
+      font-weight: 700; 
+      font-size: 1rem; 
+      border: 2px solid rgba(255,255,255,0.3); 
+      transition: var(--transition); 
+      overflow: hidden; 
+    }
+    .avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .avatar:hover { border-color: white; transform: scale(1.1); box-shadow: 0 0 20px rgba(244,197,66,0.4); }
+    .dropdown-menu { 
+      display: none; 
+      position: absolute; 
+      right: 0; 
+      top: calc(100% + 10px); 
+      background: white; 
+      min-width: 220px; 
+      border-radius: var(--radius-md); 
+      box-shadow: var(--shadow-lg); 
+      padding: 10px 0; 
+      z-index: 200; 
+      animation: dropdownSlide 0.3s ease;
+    }
+    @keyframes dropdownSlide { 
+      from { opacity: 0; transform: translateY(-10px); } 
+      to { opacity: 1; transform: translateY(0); } 
+    }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu a, .dropdown-menu button { 
+      display: flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 12px 20px; 
+      color: var(--text-primary); 
+      text-decoration: none; 
+      font-size: 0.9rem; 
+      background: none; 
+      border: none; 
+      width: 100%; 
+      text-align: left; 
+      cursor: pointer; 
+      transition: var(--transition); 
+      font-family: inherit; 
+    }
+    .dropdown-menu a:hover, .dropdown-menu button:hover { background: var(--surface-alt); color: var(--primary); }
+    .dropdown-menu .divider { height: 1px; background: var(--border); margin: 8px 0; }
+    .dropdown-menu .user-email { 
+      padding: 12px 20px; 
+      font-weight: 600; 
+      color: var(--primary); 
+      border-bottom: 1px solid var(--border); 
+      cursor: default; 
+      font-size: 0.85rem; 
+      word-break: break-all;
+    }
+
+    /* AUTH MODAL */
+    .auth-modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center; backdrop-filter: blur(8px); }
+    .auth-modal.active { display: flex; animation: fadeIn 0.3s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .auth-modal-content { background: var(--surface); max-width: 420px; width: 90%; padding: 40px; border-radius: var(--radius-lg); box-shadow: var(--shadow-xl); animation: modalSlide 0.4s ease; }
+    @keyframes modalSlide { from { opacity: 0; transform: translateY(-30px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
+    .auth-modal-content h2 { margin-bottom: 24px; color: var(--text-primary); font-size: 1.6rem; font-weight: 700; }
+    .auth-modal-content input { width: 100%; padding: 14px 18px; margin: 10px 0; border-radius: var(--radius-sm); border: 2px solid var(--border); font-size: 1rem; transition: var(--transition); font-family: inherit; }
+    .auth-modal-content input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,74,59,0.1); }
+    .auth-modal-content .btn-auth { width: 100%; padding: 14px; background: var(--primary); color: white; border: none; border-radius: var(--radius-sm); font-weight: 700; cursor: pointer; font-size: 1rem; transition: var(--transition); margin-top: 16px; font-family: inherit; }
+    .auth-modal-content .btn-auth:hover { background: var(--primary-light); transform: translateY(-2px); box-shadow: var(--shadow-md); }
+    .auth-modal-content .toggle-link { display: block; margin-top: 16px; text-align: center; color: var(--primary); cursor: pointer; font-weight: 500; transition: var(--transition); }
+    .auth-modal-content .toggle-link:hover { color: var(--secondary); }
+    .auth-modal-content .close-btn { margin-top: 16px; background: var(--surface-alt); border: none; padding: 10px 20px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); font-weight: 500; font-family: inherit; }
+    .auth-modal-content .close-btn:hover { background: var(--border); }
+
+    /* 🎯 HERO REDISEÑADO */
+    .hero { position: relative; width: 100%; min-height: 90vh; background-image: url('img/hero.jpg'); background-size: cover; background-position: center; background-attachment: fixed; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .hero-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, rgba(14,44,34,0.88) 0%, rgba(30,74,59,0.75) 50%, rgba(45,107,84,0.65) 100%); z-index: 1; }
+    .hero-content { position: relative; z-index: 2; text-align: center; color: white; max-width: 900px; padding: 40px 24px; }
+    
+    .institutional-badge { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 10px; 
+      background: rgba(255,255,255,0.12); 
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.25);
+      padding: 8px 20px; 
+      border-radius: var(--radius-xl); 
+      font-size: 0.85rem; 
+      font-weight: 600; 
+      margin-bottom: 24px;
+      color: white;
+    }
+    .institutional-badge i { color: var(--secondary); }
+    
+    .hero-logo { width: 120px; height: 120px; border-radius: 50%; background: rgba(255,255,255,0.08); backdrop-filter: blur(15px); display: flex; align-items: center; justify-content: center; margin: 0 auto 35px; animation: float 4s ease-in-out infinite; border: 2px solid rgba(244,197,66,0.3); box-shadow: 0 0 40px rgba(244,197,66,0.2); }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-15px); } }
+    .hero-logo i { font-size: 3.2rem; color: var(--secondary); filter: drop-shadow(0 2px 8px rgba(244,197,66,0.4)); }
+    
+    .hero h1 { font-size: 4rem; font-weight: 900; margin-bottom: 16px; line-height: 1.1; letter-spacing: -0.03em; text-shadow: 2px 4px 20px rgba(0,0,0,0.4); }
+    .hero h1 span { color: var(--secondary); position: relative; }
+    .hero h1 span::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 100%; height: 4px; background: var(--secondary); border-radius: 2px; opacity: 0.6; }
+    
+    .hero-subtitle { font-size: 1.5rem; font-weight: 300; opacity: 0.95; margin-bottom: 12px; font-style: italic; }
+    .hero-description { font-size: 1.15rem; font-weight: 400; opacity: 0.9; max-width: 700px; margin: 0 auto 20px; line-height: 1.6; }
+
+    .hero-cta-group { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-top: 30px; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 12px; background: var(--secondary); color: var(--primary-dark); padding: 16px 36px; border-radius: var(--radius-xl); text-decoration: none; font-weight: 700; font-size: 1.1rem; transition: var(--transition); box-shadow: 0 8px 24px rgba(244,197,66,0.35); }
+    .hero-cta:hover { transform: translateY(-3px) scale(1.03); box-shadow: 0 12px 32px rgba(244,197,66,0.5); background: #f7d154; }
+    .hero-cta i { transition: transform 0.3s ease; }
+    .hero-cta:hover i { transform: translateX(5px); }
+    .hero-cta-secondary { background: rgba(255,255,255,0.15); color: white; border: 2px solid var(--secondary); backdrop-filter: blur(8px); box-shadow: none; }
+    .hero-cta-secondary:hover { background: rgba(244,197,66,0.2); color: white; box-shadow: 0 12px 32px rgba(244,197,66,0.3); }
+
+    /* 📊 SECCIÓN DE IMPACTO */
+    .impact-section { 
+      background: linear-gradient(135deg, var(--primary-dark), var(--primary)); 
+      padding: 80px 24px; 
+      position: relative; 
+      overflow: hidden;
+    }
+    .impact-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle at 20% 50%, rgba(244,197,66,0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(45,107,84,0.2) 0%, transparent 50%);
+    }
+    .impact-container { max-width: 1200px; margin: 0 auto; position: relative; z-index: 2; }
+    .impact-title { text-align: center; color: white; font-size: 2.2rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .impact-subtitle { text-align: center; color: rgba(255,255,255,0.85); font-size: 1.1rem; margin-bottom: 50px; max-width: 700px; margin-left: auto; margin-right: auto; }
+    .impact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 24px; }
+    .impact-card { 
+      background: rgba(255,255,255,0.08); 
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: var(--radius-md); 
+      padding: 32px 24px; 
+      text-align: center; 
+      transition: var(--transition);
+      color: white;
+    }
+    .impact-card:hover { 
+      transform: translateY(-8px); 
+      background: rgba(255,255,255,0.12); 
+      border-color: var(--secondary);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    }
+    .impact-icon { 
+      width: 60px; 
+      height: 60px; 
+      border-radius: 50%; 
+      background: linear-gradient(135deg, var(--secondary), var(--secondary-light));
+      color: var(--primary-dark);
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 1.8rem; 
+      margin: 0 auto 20px;
+      box-shadow: 0 8px 20px rgba(244,197,66,0.3);
+    }
+    .impact-number { 
+      font-size: 3rem; 
+      font-weight: 900; 
+      color: var(--secondary); 
+      line-height: 1; 
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .impact-label { 
+      font-size: 0.9rem; 
+      font-weight: 600; 
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      opacity: 0.9;
+    }
+    .impact-description { font-size: 0.85rem; opacity: 0.75; margin-top: 8px; line-height: 1.4; }
+
+    /* ZONAS DE PRÁCTICAS */
+    .zonas-section { padding: 100px 24px; background: var(--surface-alt-2); }
+    .zonas-wrapper { display: flex; gap: 50px; max-width: 1200px; margin: 0 auto; align-items: center; }
+    .zonas-intro { flex: 1 1 35%; }
+    .zonas-intro h2 { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 24px; letter-spacing: -0.02em; line-height: 1.2; }
+    .zonas-intro h2 i { color: var(--primary); margin-right: 10px; }
+    .zonas-intro p { font-size: 1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 18px; }
+    .zonas-grid { flex: 1 1 65%; display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 24px; }
+    .zona-card { background: var(--surface); border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); position: relative; cursor: pointer; text-decoration: none; color: inherit; display: block; }
+    .zona-card:hover { transform: translateY(-8px); box-shadow: var(--shadow-lg); }
+    .zona-card-img-wrapper { position: relative; overflow: hidden; }
+    .zona-card img { width: 100%; height: 220px; object-fit: cover; transition: transform 0.5s ease; }
+    .zona-card:hover img { transform: scale(1.08); }
+    .zona-card-img-wrapper::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 50%; background: linear-gradient(to top, rgba(14,44,34,0.6), transparent); pointer-events: none; }
+    .zona-badge { position: absolute; top: 16px; left: 16px; background: rgba(30,74,59,0.9); backdrop-filter: blur(8px); color: white; padding: 6px 14px; border-radius: var(--radius-xl); font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; z-index: 2; border: 1px solid rgba(255,255,255,0.2); }
+    .zona-info { padding: 24px; }
+    .zona-info h3 { font-size: 1.25rem; color: var(--text-primary); margin-bottom: 12px; font-weight: 700; }
+    .zona-info p { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; }
+    .zona-link { display: inline-flex; align-items: center; gap: 8px; margin-top: 12px; color: var(--primary); font-weight: 600; font-size: 0.9rem; }
+    .zona-link i { transition: transform 0.3s ease; }
+    .zona-card:hover .zona-link i { transform: translateX(5px); }
+
+    /* QUIÉNES SOMOS */
+    .quienes-somos-section { padding: 100px 24px; background: var(--surface-alt); }
+    .quienes-somos-container { max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 60px; flex-wrap: wrap; }
+    .quienes-somos-img { flex: 1 1 420px; border-radius: var(--radius-lg); overflow: hidden; box-shadow: var(--shadow-lg); max-height: 350px; position: relative; }
+    .quienes-somos-img::after { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; border: 3px solid var(--secondary); border-radius: var(--radius-lg); opacity: 0.3; pointer-events: none; }
+    .quienes-somos-img img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .quienes-somos-text { flex: 1 1 350px; }
+    .quienes-somos-text h2 { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 24px; letter-spacing: -0.02em; }
+    .quienes-somos-text p { font-size: 1rem; color: var(--text-secondary); line-height: 1.7; margin-bottom: 24px; }
+    .btn-secundario { display: inline-flex; align-items: center; gap: 12px; background: transparent; color: var(--primary); text-decoration: none; padding: 14px 32px; border-radius: var(--radius-xl); font-size: 1rem; font-weight: 600; border: 2px solid var(--primary); transition: var(--transition); }
+    .btn-secundario:hover { background: var(--primary); color: white; transform: translateY(-3px); box-shadow: var(--shadow-md); }
+
+    /* TESTIMONIOS */
+    .testimonios-section { padding: 100px 24px; background: var(--surface-alt-2); position: relative; }
+    .testimonios-wrapper { display: flex; gap: 50px; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+    .testimonios-intro { flex: 1 1 35%; position: sticky; top: 120px; }
+    .testimonios-intro h2 { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; letter-spacing: -0.02em; }
+    .testimonios-intro .section-subtitle { margin-bottom: 30px; font-size: 1rem; color: var(--text-secondary); }
+    .testimonios-grid { flex: 1 1 65%; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .testimonio-card { background: var(--surface); border-radius: var(--radius-md); padding: 28px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; align-items: center; text-align: center; transition: var(--transition); position: relative; overflow: hidden; }
+    .testimonio-card::before { content: '"'; position: absolute; top: -10px; left: 20px; font-size: 6rem; color: var(--secondary); opacity: 0.15; font-family: Georgia, serif; line-height: 1; }
+    .testimonio-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-md); }
+    .testimonio-img { width: 75px; height: 75px; border-radius: 50%; object-fit: cover; margin-bottom: 18px; border: 4px solid var(--secondary); box-shadow: 0 4px 12px rgba(244,197,66,0.3); }
+    .testimonio-text { font-size: 0.95rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; font-style: italic; position: relative; z-index: 1; }
+    .testimonio-nombre { font-weight: 700; color: var(--text-primary); margin-bottom: 4px; font-size: 0.95rem; }
+    .testimonio-rol { font-size: 0.8rem; color: var(--text-muted); }
+    .testimonio-stars { color: var(--secondary); margin-top: 8px; font-size: 0.9rem; }
+
+    /* BLOG */
+    .blog-section { padding: 100px 24px; background: var(--surface-alt); }
+    .blog-wrapper { display: flex; gap: 50px; max-width: 1200px; margin: 0 auto; align-items: flex-start; }
+    .blog-intro { flex: 1 1 35%; position: sticky; top: 120px; }
+    .blog-intro h2 { font-size: 2.2rem; font-weight: 800; color: var(--text-primary); margin-bottom: 16px; letter-spacing: -0.02em; }
+    .blog-intro .section-subtitle { margin-bottom: 30px; font-size: 1rem; color: var(--text-secondary); }
+    .blog-grid { flex: 1 1 65%; display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .blog-post { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); position: relative; border-left: 4px solid var(--secondary); }
+    .blog-post:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .blog-post img, .blog-post video { width: 100%; height: 200px; object-fit: cover; }
+    .video-wrapper { position: relative; padding-bottom: 56.25%; height: 0; }
+    .video-wrapper iframe { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+    .blog-content { padding: 20px; }
+    .blog-content h3 { font-size: 1.15rem; color: var(--text-primary); margin-bottom: 10px; font-weight: 700; }
+    .blog-meta { display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; color: var(--text-muted); margin-top: 12px; }
+    .blog-meta .author { font-weight: 500; }
+    .likes i { color: var(--secondary); margin-right: 4px; }
+
+    .empty-state { text-align: center; padding: 60px 24px; grid-column: 1 / -1; }
+    .empty-state-icon { width: 100px; height: 100px; margin: 0 auto 24px; background: var(--surface-alt); border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+    .empty-state-icon i { font-size: 2.5rem; color: var(--text-muted); }
+    .empty-state h3 { font-size: 1.3rem; color: var(--text-primary); margin-bottom: 12px; font-weight: 600; }
+    .empty-state p { color: var(--text-secondary); margin-bottom: 24px; }
+
+    /* 🎯 CTA FINAL */
+    .cta-final-section { 
+      padding: 80px 24px; 
+      background: linear-gradient(135deg, var(--primary), var(--primary-light)); 
+      color: white; 
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .cta-final-section::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-image: radial-gradient(circle at 30% 50%, rgba(244,197,66,0.15) 0%, transparent 60%);
+    }
+    .cta-final-container { max-width: 800px; margin: 0 auto; position: relative; z-index: 2; }
+    .cta-final-container h2 { font-size: 2.5rem; font-weight: 800; margin-bottom: 16px; letter-spacing: -0.02em; }
+    .cta-final-container p { font-size: 1.15rem; opacity: 0.95; margin-bottom: 32px; line-height: 1.6; }
+    .cta-final-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .cta-final-btn { 
+      display: inline-flex; 
+      align-items: center; 
+      gap: 12px; 
+      padding: 16px 36px; 
+      border-radius: var(--radius-xl); 
+      font-weight: 700; 
+      font-size: 1.05rem; 
+      text-decoration: none; 
+      transition: var(--transition);
+    }
+    .cta-final-btn-primary { background: var(--secondary); color: var(--primary-dark); box-shadow: 0 8px 24px rgba(244,197,66,0.35); }
+    .cta-final-btn-primary:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(244,197,66,0.5); }
+    .cta-final-btn-secondary { background: rgba(255,255,255,0.15); color: white; border: 2px solid white; }
+    .cta-final-btn-secondary:hover { background: rgba(255,255,255,0.25); transform: translateY(-3px); }
+
+    /* FOOTER */
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 80px 24px 30px; font-size: 0.9rem; position: relative; overflow: hidden; }
+    .site-footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--secondary), transparent); }
+    .footer-quote { text-align: center; max-width: 700px; margin: 0 auto 60px; padding: 0 24px; }
+    .footer-quote p { font-size: 1.4rem; font-style: italic; color: rgba(255,255,255,0.7); line-height: 1.6; font-weight: 300; }
+    .footer-quote p::before, .footer-quote p::after { content: '"'; color: var(--secondary); font-size: 1.8rem; font-weight: 700; }
+    .footer-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 40px; margin-bottom: 50px; }
+    .footer-column h3 { font-size: 1.2rem; color: white; margin-bottom: 24px; border-bottom: 2px solid var(--secondary); display: inline-block; padding-bottom: 8px; font-weight: 700; }
+    .footer-column ul { list-style: none; }
+    .footer-column ul li { margin-bottom: 12px; }
+    .footer-column ul li a { color: rgba(207,230,219,0.8); text-decoration: none; transition: var(--transition); display: inline-flex; align-items: center; gap: 8px; }
+    .footer-column ul li a:hover { color: var(--secondary); transform: translateX(4px); }
+    .social-icons { display: flex; gap: 16px; margin-top: 12px; }
+    .social-icons a { color: white; background: rgba(255,255,255,0.08); width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: var(--transition); font-size: 1.1rem; }
+    .social-icons a:hover { background: var(--secondary); color: var(--primary-dark); transform: translateY(-4px) scale(1.1); box-shadow: 0 8px 16px rgba(244,197,66,0.3); }
+    .newsletter-form { display: flex; gap: 12px; flex-wrap: wrap; }
+    .newsletter-form input[type="email"] { flex: 1 1 200px; padding: 12px 18px; border-radius: var(--radius-xl); border: 2px solid rgba(255,255,255,0.15); outline: none; font-family: inherit; background: rgba(255,255,255,0.05); color: white; transition: var(--transition); }
+    .newsletter-form input[type="email"]::placeholder { color: rgba(255,255,255,0.5); }
+    .newsletter-form input[type="email"]:focus { border-color: var(--secondary); background: rgba(255,255,255,0.08); }
+    .newsletter-form button { background: var(--secondary); color: var(--primary-dark); border: none; padding: 12px 24px; border-radius: var(--radius-xl); font-weight: 700; cursor: pointer; transition: var(--transition); font-size: 0.95rem; font-family: inherit; }
+    .newsletter-form button:hover { background: #f7d154; transform: translateY(-2px); box-shadow: 0 4px 12px rgba(244,197,66,0.4); }
+    .footer-contact { margin-top: 20px; font-size: 0.85rem; }
+    .footer-contact p { margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .footer-contact p i { color: var(--secondary); width: 20px; text-align: center; }
+    .footer-contact a { color: rgba(207,230,219,0.8); text-decoration: none; transition: var(--transition); }
+    .footer-contact a:hover { color: var(--secondary); }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; text-align: center; font-size: 0.8rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; transition: var(--transition); }
+    .footer-bottom a:hover { text-decoration: underline; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1200px) {
+      .header-search-form { max-width: 200px; flex: 0 1 200px; }
+      .nav-link { padding: 10px 16px; font-size: 0.9rem; }
+    }
+
+    @media (max-width: 968px) {
+      .header-container { gap: 12px; }
+      .logo { font-size: 1.2rem; }
+      .logo i { font-size: 1.6rem; }
+      .header-right { gap: 12px; position: relative; }
+      .header-search-form { display: none; }
+      .menu-toggle { display: block; }
+      .main-nav {
+        display: none;
+        position: absolute;
+        top: calc(100% + 16px);
+        right: 0;
+        background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+        flex-direction: column;
+        padding: 24px;
+        gap: 8px;
+        box-shadow: var(--shadow-lg);
+        min-width: 280px;
+        max-width: calc(100vw - 48px);
+        border-radius: var(--radius-md);
+        animation: dropdownSlide 0.3s ease;
+        align-items: stretch;
+      }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 14px 24px; border-radius: var(--radius-sm); }
+      .nav-link::after { display: none; }
+      .mobile-search-form { display: flex; }
+      .language-dropdown { padding: 6px 10px; }
+      .lang-select { padding: 6px 10px; font-size: 0.85rem; }
+      .account-btn, .avatar { width: 38px; height: 38px; }
+      
+      .zonas-wrapper, .testimonios-wrapper, .blog-wrapper { flex-direction: column; }
+      .testimonios-intro, .blog-intro { position: static; }
+      .impact-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+
+    @media (max-width: 600px) {
+      .header-container { padding: 0 16px; gap: 8px; }
+      .logo { font-size: 1.1rem; }
+      .logo i { font-size: 1.4rem; }
+      .header-right { gap: 8px; }
+      .menu-toggle { padding: 8px 12px; font-size: 1.3rem; }
+      .language-dropdown { padding: 4px 8px; }
+      .lang-select { padding: 4px 8px; font-size: 0.8rem; }
+      .account-btn, .avatar { width: 36px; height: 36px; font-size: 0.9rem; }
+      .main-nav { min-width: 250px; right: -8px; }
+      
+      .hero { min-height: 80vh; }
+      .hero h1 { font-size: 2.5rem; }
+      .hero-subtitle { font-size: 1.2rem; }
+      .hero-description { font-size: 1rem; }
+      .hero-logo { width: 90px; height: 90px; }
+      .hero-logo i { font-size: 2.4rem; }
+      .hero-cta { padding: 14px 28px; font-size: 1rem; }
+      .quienes-somos-container { flex-direction: column; }
+      .quienes-somos-img { max-height: 280px; }
+      .zonas-grid, .testimonios-grid, .blog-grid { grid-template-columns: 1fr; }
+      .impact-grid { grid-template-columns: 1fr; }
+      .impact-number { font-size: 2.5rem; }
+      .impact-title { font-size: 1.8rem; }
+      .cta-final-container h2 { font-size: 1.8rem; }
+      .footer-quote p { font-size: 1.1rem; }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header" id="siteHeader">
+    <div class="header-container">
+      <a href="index.html" class="logo">
+        <i class="fas fa-leaf"></i>
+        <span>Conociendo Pinar</span>
+      </a>
+
+      <div class="header-right">
+        <form action="buscador.html" method="GET" class="header-search-form">
+          <i class="fas fa-search"></i>
+          <input type="text" name="q" placeholder="Buscar especies, cuevas...">
+        </form>
+
+        <nav class="main-nav" id="mainNav">
+          <form action="buscador.html" method="GET" class="mobile-search-form">
+            <i class="fas fa-search"></i>
+            <input type="text" name="q" placeholder="Buscar en el sitio...">
+          </form>
+          <a href="index.html" class="nav-link active" data-i18n="nav-home">Inicio</a>
+          <a href="#quienes-somos" class="nav-link" data-i18n="nav-about">Quiénes somos</a>
+          <a href="investigacion/index.html" class="nav-link" data-i18n="nav-research">Investigación</a>
+          <a href="conociendo-pinar.html#tab-blog" class="nav-link" data-i18n="nav-blog">Blog</a>
+          <a href="soporte.html" class="nav-link" data-i18n="nav-support">Soporte</a>
+        </nav>
+
+        <div class="language-dropdown">
+          <select id="languageSelect" class="lang-select">
+            <option value="es">ES</option>
+            <option value="en">EN</option>
+          </select>
+        </div>
+
+        <button class="menu-toggle" id="menuToggle" aria-label="Abrir menú">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <div id="authContainer">
+          <button id="loginBtn" class="account-btn">
+            <i class="fas fa-user"></i>
+            <span class="tooltip">Cuenta</span>
+          </button>
+          <div id="avatarContainer" style="display:none;" class="avatar-container">
+            <div class="avatar" id="avatarBtn">
+              <span id="avatarText">U</span>
+              <img id="avatarImg" style="display:none;" alt="Avatar">
+            </div>
+            <div class="dropdown-menu" id="dropdownMenu">
+              <div class="user-email" id="userEmailDisplay">usuario@email.com</div>
+              <div class="divider"></div>
+              <button id="profileBtn"><i class="fas fa-user"></i> Mi perfil</button>
+              <button id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div id="authModal" class="auth-modal">
+    <div class="auth-modal-content">
+      <h2 id="authModalTitle">Iniciar Sesión</h2>
+      <input type="email" id="authEmail" placeholder="Correo electrónico">
+      <input type="password" id="authPassword" placeholder="Contraseña">
+      <button class="btn-auth" id="authSubmitBtn">Iniciar Sesión</button>
+      <span class="toggle-link" id="authToggleLink">¿No tienes cuenta? Regístrate</span>
+      <button class="close-btn" id="authCloseBtn">Cerrar</button>
+    </div>
+  </div>
+
+  <!-- 🎯 HERO -->
+  <section class="hero">
+    <div class="hero-overlay"></div>
+    <div class="hero-content">
+      <div class="institutional-badge reveal">
+        <i class="fas fa-university"></i>
+        <span>Departamento de Geografía • Universidad de Pinar del Río</span>
+      </div>
+      <div class="hero-logo reveal-scale"><i class="fas fa-mountain"></i></div>
+      <h1 class="reveal" data-i18n="hero-title">Conociendo <span>Pinar</span></h1>
+      <p class="hero-subtitle reveal" data-i18n="hero-subtitle">Laboratorio Natural para Estudiantes de Geografía</p>
+      <p class="hero-description reveal" data-i18n="hero-description">
+        Plataforma educativa con datos científicos reales de 4 polígonos de investigación. 
+        Descubre la biodiversidad de Pinar del Río a través de prácticas de campo rigurosas 
+        y documentadas por el GIPPC.
+      </p>
+      <div class="hero-cta-group reveal">
+        <a href="investigacion/index.html" class="hero-cta">
+          <span data-i18n="hero-cta-research">🔬 Explorar Investigación</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="conociendo-pinar.html" class="hero-cta hero-cta-secondary">
+          <span data-i18n="hero-cta-map">🗺️ Mapa Interactivo</span>
+          <i class="fas fa-map-marked-alt"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- 📊 IMPACTO -->
+  <section class="impact-section">
+    <div class="impact-container">
+      <h2 class="impact-title reveal">📊 Números que Hablan</h2>
+      <p class="impact-subtitle reveal" data-i18n="impact-subtitle">
+        Datos científicos reales recopilados por el Grupo de Investigaciones de Polígonos de Prácticas de Campo
+      </p>
+      <div class="impact-grid">
+        <div class="impact-card reveal-scale">
+          <div class="impact-icon"><i class="fas fa-map-marked-alt"></i></div>
+          <div class="impact-number">4</div>
+          <div class="impact-label">Polígonos de Investigación</div>
+          <div class="impact-description">Guanahacabibes, Km 9 Mantua, San Andrés, Sierra Guasasa</div>
+        </div>
+        <div class="impact-card reveal-scale">
+          <div class="impact-icon"><i class="fas fa-paw"></i></div>
+          <div class="impact-number">350+</div>
+          <div class="impact-label">Especies Documentadas</div>
+          <div class="impact-description">Fauna y flora con datos taxonómicos completos</div>
+        </div>
+        <div class="impact-card reveal-scale">
+          <div class="impact-icon"><i class="fas fa-exclamation-triangle"></i></div>
+          <div class="impact-number">17</div>
+          <div class="impact-label">Especies Emblemáticas</div>
+          <div class="impact-description">5 en peligro crítico, 3 en peligro, 4 vulnerables</div>
+        </div>
+        <div class="impact-card reveal-scale">
+          <div class="impact-icon"><i class="fas fa-dungeon"></i></div>
+          <div class="impact-number">15.3 km</div>
+          <div class="impact-label">Galerías Subterráneas</div>
+          <div class="impact-description">35 cuevas estudiadas en 12 niveles evolutivos</div>
+        </div>
+        <div class="impact-card reveal-scale">
+          <div class="impact-icon"><i class="fas fa-fish"></i></div>
+          <div class="impact-number">576</div>
+          <div class="impact-label">Moluscos Marinos</div>
+          <div class="impact-description">En los arrecifes de Guanahacabibes</div>
+        </div>
+        <div class="impact-card reveal-scale">
+          <div class="impact-icon"><i class="fas fa-dove"></i></div>
+          <div class="impact-number">193</div>
+          <div class="impact-label">Aves Registradas</div>
+          <div class="impact-description">Incluyendo el zunzuncito, ave más pequeña del mundo</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ZONAS -->
+  <section class="zonas-section">
+    <div class="zonas-wrapper">
+      <div class="zonas-intro reveal-left">
+        <h2><i class="fas fa-map-marked-alt"></i> <span data-i18n="practicas-title">Laboratorios Naturales</span></h2>
+        <p data-i18n="practicas-text-1">La provincia de Pinar del Río es un laboratorio natural excepcional para la enseñanza y la investigación geográfica. Sus paisajes kársticos, sus bosques de pinos, sus sistemas cavernarios y sus ecosistemas costeros ofrecen una diversidad única que permite estudiar procesos geológicos, biológicos y sociales en un mismo territorio.</p>
+        <p data-i18n="practicas-text-2">A través de estas salidas de campo, los estudiantes de Geografía de la Universidad de Pinar del Río aplican técnicas de muestreo, cartografía, análisis de suelos y evaluación de impactos ambientales, combinando el rigor científico con el contacto directo con la naturaleza.</p>
+      </div>
+      <div class="zonas-grid">
+        <a href="conociendo-pinar.html" class="zona-card reveal-right">
+          <div class="zona-card-img-wrapper">
+            <span class="zona-badge" data-i18n="badge-geologia">Geología</span>
+            <img src="img/valle-principal.jpg" alt="Valle de Viñales" width="400" height="220" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1599275603379-1c0e5c5b9b2d?w=400';">
+          </div>
+          <div class="zona-info">
+            <h3 data-i18n="zona-1-title">Valle de Viñales</h3>
+            <p data-i18n="zona-1-desc">Paisaje kárstico de mogotes. Estudio de procesos geológicos, evolución del relieve y suelos.</p>
+            <span class="zona-link">Explorar zona <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+        <a href="conociendo-pinar.html" class="zona-card reveal-right">
+          <div class="zona-card-img-wrapper">
+            <span class="zona-badge" data-i18n="badge-espeleologia">Espeleología</span>
+            <img src="img/cueva-principal.jpg" alt="Cueva del Indio" width="400" height="220" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1599275603379-1c0e5c5b9b2d?w=400';">
+          </div>
+          <div class="zona-info">
+            <h3 data-i18n="zona-2-title">Cueva del Indio</h3>
+            <p data-i18n="zona-2-desc">Sistema cavernario y río subterráneo. Espeleología y análisis de la dinámica fluvial subterránea.</p>
+            <span class="zona-link">Explorar zona <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+        <a href="conociendo-pinar.html" class="zona-card reveal-right">
+          <div class="zona-card-img-wrapper">
+            <span class="zona-badge" data-i18n="badge-ecologia">Ecología</span>
+            <img src="img/vegetacion-acuatica.jpg" alt="Bosques de pino" width="400" height="220" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=400';">
+          </div>
+          <div class="zona-info">
+            <h3 data-i18n="zona-3-title">Bosques de pino y suelos</h3>
+            <p data-i18n="zona-3-desc">Ecosistemas de Pinus tropicalis. Evaluación de suelos, vegetación y manejo forestal sostenible.</p>
+            <span class="zona-link">Explorar zona <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+        <a href="conociendo-pinar.html" class="zona-card reveal-right">
+          <div class="zona-card-img-wrapper">
+            <span class="zona-badge" data-i18n="badge-costero">Costero</span>
+            <img src="img/vegetacion-acuatica.jpg" alt="Costa y manglares" width="400" height="220" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400';">
+          </div>
+          <div class="zona-info">
+            <h3 data-i18n="zona-4-title">Costa y manglares</h3>
+            <p data-i18n="zona-4-desc">Dinámica litoral, manglares y biodiversidad costera. Impacto del cambio climático en la línea de costa.</p>
+            <span class="zona-link">Explorar zona <i class="fas fa-arrow-right"></i></span>
+          </div>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- QUIÉNES SOMOS -->
+  <section class="quienes-somos-section" id="quienes-somos">
+    <div class="quienes-somos-container">
+      <div class="quienes-somos-img reveal-left">
+        <img src="img/departamento.jpg" alt="Departamento de Geografía" width="600" height="400" loading="lazy" onerror="this.style.display='none';">
+      </div>
+      <div class="quienes-somos-text reveal-right">
+        <h2 data-i18n="about-title">Quiénes somos</h2>
+        <p data-i18n="about-text">Somos el <strong>Departamento de Geografía de la Facultad de Enseñanza Media de la Universidad de Pinar del Río</strong>. Nuestra misión es fomentar el conocimiento y la conservación del patrimonio natural y cultural de la provincia, impulsando proyectos como esta guía interactiva de ecoturismo.</p>
+        <a href="mailto:rg5514478@gmail.com" class="btn-secundario"><i class="fas fa-envelope"></i> <span data-i18n="contact-us">Contáctanos</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIOS -->
+  <section class="testimonios-section">
+    <div class="testimonios-wrapper">
+      <div class="testimonios-intro reveal-left">
+        <h2 data-i18n="testimonios-title">Lo que dicen nuestros usuarios</h2>
+        <p class="section-subtitle" data-i18n="testimonios-subtitle">Testimonios reales de la comunidad académica</p>
+      </div>
+      <div class="testimonios-grid">
+        <div class="testimonio-card reveal">
+          <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100" alt="María G." width="100" height="100" loading="lazy" class="testimonio-img">
+          <p class="testimonio-text" data-i18n="testimonio-1">"Gracias a Conociendo Pinar descubrí lugares que no sabía que existían. La guía es súper completa y fácil de usar. ¡Recomendadísima!"</p>
+          <p class="testimonio-nombre">María G.</p>
+          <p class="testimonio-rol" data-i18n="testimonio-rol-1">Viajera frecuente</p>
+          <div class="testimonio-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+        </div>
+        <div class="testimonio-card reveal">
+          <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100" alt="Carlos L." width="100" height="100" loading="lazy" class="testimonio-img">
+          <p class="testimonio-text" data-i18n="testimonio-2">"El mapa interactivo es lo mejor. Pude planificar mi viaje a Viñales con todos los puntos de interés marcados. Una herramienta indispensable."</p>
+          <p class="testimonio-nombre">Carlos L.</p>
+          <p class="testimonio-rol" data-i18n="testimonio-rol-2">Aventurero</p>
+          <div class="testimonio-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i>
+          </div>
+        </div>
+        <div class="testimonio-card reveal">
+          <img src="https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100" alt="Ana R." width="100" height="100" loading="lazy" class="testimonio-img">
+          <p class="testimonio-text" data-i18n="testimonio-3">"Compartí mis fotos en la galería y la comunidad me dio un feedback increíble. Es un espacio genial para los amantes del ecoturismo."</p>
+          <p class="testimonio-nombre">Ana R.</p>
+          <p class="testimonio-rol" data-i18n="testimonio-rol-3">Fotógrafa aficionada</p>
+          <div class="testimonio-stars">
+            <i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star"></i><i class="fas fa-star-half-alt"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="blog-section">
+    <div class="blog-wrapper">
+      <div class="blog-intro reveal-left">
+        <h2 data-i18n="blog-title">Últimos artículos del blog</h2>
+        <p class="section-subtitle" data-i18n="blog-subtitle">Historias, consejos y experiencias de viaje</p>
+      </div>
+      <div class="blog-grid" id="blogContainer"></div>
+    </div>
+  </section>
+
+  <!-- 🎯 CTA FINAL -->
+  <section class="cta-final-section">
+    <div class="cta-final-container">
+      <h2 class="reveal">¿Listo para explorar?</h2>
+      <p class="reveal" data-i18n="cta-final-text">
+        Únete a la comunidad de estudiantes, investigadores y amantes de la naturaleza que están descubriendo 
+        los tesoros de Pinar del Río con datos científicos reales.
+      </p>
+      <div class="cta-final-buttons reveal">
+        <a href="investigacion/index.html" class="cta-final-btn cta-final-btn-primary">
+          <i class="fas fa-flask"></i>
+          <span>Comenzar investigación</span>
+        </a>
+        <a href="soporte.html" class="cta-final-btn cta-final-btn-secondary">
+          <i class="fas fa-question-circle"></i>
+          <span>¿Tienes dudas?</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="footer-quote reveal">
+      <p data-i18n="footer-quote">Cada paisaje cuenta una historia. Descubre la tuya en Pinar del Río.</p>
+    </div>
+    <div class="footer-container">
+      <div class="footer-column reveal">
+        <h3 data-i18n="footer-links">Enlaces rápidos</h3>
+        <ul>
+          <li><a href="conociendo-pinar.html#tab-blog" data-i18n="footer-blog"><i class="fas fa-chevron-right" style="font-size:0.7rem;"></i> Blog</a></li>
+          <li><a href="investigacion/index.html" data-i18n="footer-research"><i class="fas fa-chevron-right" style="font-size:0.7rem;"></i> Investigación</a></li>
+          <li><a href="soporte.html" data-i18n="footer-support"><i class="fas fa-chevron-right" style="font-size:0.7rem;"></i> Soporte</a></li>
+          <li><a href="cancelar-suscripcion.html"><i class="fas fa-chevron-right" style="font-size:0.7rem;"></i> Cancelar Suscripción</a></li>
+        </ul>
+      </div>
+      <div class="footer-column reveal">
+        <h3 data-i18n="footer-social">Redes sociales</h3>
+        <div class="social-icons">
+          <a href="https://www.facebook.com/geopracticas" target="_blank" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+          <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+          <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+          <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+        </div>
+      </div>
+      <div class="footer-column reveal">
+        <h3 data-i18n="footer-newsletter">Newsletter</h3>
+        <form class="newsletter-form" id="newsletterFormIndex">
+          <input type="email" id="newsletterEmailIndex" placeholder="Tu correo electrónico" required>
+          <button type="submit" data-i18n="footer-send">Enviar</button>
+        </form>
+        <div class="footer-contact">
+          <p><i class="fas fa-envelope"></i> <a href="mailto:rg5514478@gmail.com">rg5514478@gmail.com</a></p>
+          <p><i class="fab fa-whatsapp"></i> <a href="https://wa.me/5356258910" target="_blank">+53 56258910</a></p>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>🌴 <span data-i18n="footer-rights">Defendamos el paisaje pinareño • © 2026</span> <a href="index.html">Conociendo Pinar</a> | <a href="privacidad.html" data-i18n="footer-privacy">Privacidad</a> | <a href="terminos.html" data-i18n="footer-terms">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    const SUPABASE_URL = 'https://mixfzeuzhooujqzaexpp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peGZ6ZXV6aG9vdWpxemFleHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODk2NjYsImV4cCI6MjA5NzM2NTY2Nn0.re-BvpmaB3vMXIBwbOY_88PE0q9Hw1L9xsyL6JurvaI';
+
+    (function() {
+      let supabaseClient = null;
+
+      function initScrollReveal() {
+        const revealElements = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-scale');
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('active'); observer.unobserve(entry.target); } });
+        }, { threshold: 0.05, rootMargin: '0px 0px -20px 0px' });
+        revealElements.forEach(el => observer.observe(el));
+        setTimeout(() => { revealElements.forEach(el => { const rect = el.getBoundingClientRect(); if (rect.top < window.innerHeight && rect.bottom > 0) el.classList.add('active'); }); }, 100);
+      }
+
+      function initHeaderScroll() {
+        const header = document.getElementById('siteHeader');
+        window.addEventListener('scroll', () => { if (window.scrollY > 50) header.classList.add('scrolled'); else header.classList.remove('scrolled'); });
+      }
+
+      function md5(string) {
+        function md5cycle(x, k) { var a = x[0], b = x[1], c = x[2], d = x[3]; a = ff(a, b, c, d, k[0], 7, -680876936); d = ff(d, a, b, c, k[1], 12, -389564586); c = ff(c, d, a, b, k[2], 17, 606105819); b = ff(b, c, d, a, k[3], 22, -1044525330); a = ff(a, b, c, d, k[4], 7, -176418897); d = ff(d, a, b, c, k[5], 12, 1200080426); c = ff(c, d, a, b, k[6], 17, -1473231341); b = ff(b, c, d, a, k[7], 22, -45705983); a = ff(a, b, c, d, k[8], 7, 1770035416); d = ff(d, a, b, c, k[9], 12, -1958414417); c = ff(c, d, a, b, k[10], 17, -42063); b = ff(b, c, d, a, k[11], 22, -1990404162); a = ff(a, b, c, d, k[12], 7, 1804603682); d = ff(d, a, b, c, k[13], 12, -40341101); c = ff(c, d, a, b, k[14], 17, -1502002290); b = ff(b, c, d, a, k[15], 22, 1236535329); a = gg(a, b, c, d, k[1], 5, -165796510); d = gg(d, a, b, c, k[6], 9, -1069501632); c = gg(c, d, a, b, k[11], 14, 643717713); b = gg(b, c, d, a, k[0], 20, -373897302); a = gg(a, b, c, d, k[5], 5, -701558691); d = gg(d, a, b, c, k[10], 9, 38016083); c = gg(c, d, a, b, k[15], 14, -660478335); b = gg(b, c, d, a, k[4], 20, -405537848); a = gg(a, b, c, d, k[9], 5, 568446438); d = gg(d, a, b, c, k[14], 9, -1019803690); c = gg(c, d, a, b, k[3], 14, -187363961); b = gg(b, c, d, a, k[8], 20, 1163531501); a = gg(a, b, c, d, k[13], 5, -1444681467); d = gg(d, a, b, c, k[2], 9, -51403784); c = gg(c, d, a, b, k[7], 14, 1735328473); b = gg(b, c, d, a, k[12], 20, -1926607734); a = hh(a, b, c, d, k[5], 4, -378558); d = hh(d, a, b, c, k[8], 11, -2022574463); c = hh(c, d, a, b, k[11], 16, 1839030562); b = hh(b, c, d, a, k[14], 23, -35309556); a = hh(a, b, c, d, k[1], 4, -1530992060); d = hh(d, a, b, c, k[4], 11, 1272893353); c = hh(c, d, a, b, k[7], 16, -155497632); b = hh(b, c, d, a, k[10], 23, -1094730640); a = hh(a, b, c, d, k[13], 4, 681279174); d = hh(d, a, b, c, k[0], 11, -358537222); c = hh(c, d, a, b, k[3], 16, -722521979); b = hh(b, c, d, a, k[6], 23, 76029189); a = hh(a, b, c, d, k[9], 4, -640364487); d = hh(d, a, b, c, k[12], 11, -421815835); c = hh(c, d, a, b, k[15], 16, 530742520); b = hh(b, c, d, a, k[2], 23, -995338651); a = ii(a, b, c, d, k[0], 6, -198630844); d = ii(d, a, b, c, k[7], 10, 1126891415); c = ii(c, d, a, b, k[14], 15, -1416354905); b = ii(b, c, d, a, k[5], 21, -57434055); a = ii(a, b, c, d, k[12], 6, 1700485571); d = ii(d, a, b, c, k[3], 10, -1894986606); c = ii(c, d, a, b, k[10], 15, -1051523); b = ii(b, c, d, a, k[1], 21, -2054922799); a = ii(a, b, c, d, k[8], 6, 1873313359); d = ii(d, a, b, c, k[15], 10, -30611744); c = ii(c, d, a, b, k[6], 15, -1560198380); b = ii(b, c, d, a, k[13], 21, 1309151649); a = ii(a, b, c, d, k[4], 6, -145523070); d = ii(d, a, b, c, k[11], 10, -1120210379); c = ii(c, d, a, b, k[2], 15, 718787259); b = ii(b, c, d, a, k[9], 21, -343485551); x[0] = add32(a, x[0]); x[1] = add32(b, x[1]); x[2] = add32(c, x[2]); x[3] = add32(d, x[3]); }
+        function cmn(q, a, b, x, s, t) { a = add32(add32(a, q), add32(x, t)); return add32((a << s) | (a >>> (32 - s)), b); }
+        function ff(a, b, c, d, x, s, t) { return cmn((b & c) | ((~b) & d), a, b, x, s, t); }
+        function gg(a, b, c, d, x, s, t) { return cmn((b & d) | (c & (~d)), a, b, x, s, t); }
+        function hh(a, b, c, d, x, s, t) { return cmn(b ^ c ^ d, a, b, x, s, t); }
+        function ii(a, b, c, d, x, s, t) { return cmn(c ^ (b | (~d)), a, b, x, s, t); }
+        function add32(a, b) { var lsw = (a & 0xFFFF) + (b & 0xFFFF); var msw = (a >> 16) + (b >> 16) + (lsw >> 16); return (msw << 16) | (lsw & 0xFFFF); }
+        function str2binl(str) { var n = str.length; var bin = Array((n + 7) >> 2); for (var i = 0; i < n; i++) { bin[i >> 2] |= str.charCodeAt(i) << ((i % 4) * 8); } return bin; }
+        function binl2hex(binarray) { var hex_tab = "0123456789abcdef"; var str = ""; for (var i = 0; i < binarray.length * 4; i++) { str += hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8 + 4)) & 0xF) + hex_tab.charAt((binarray[i >> 2] >> ((i % 4) * 8)) & 0xF); } return str; }
+        var x = str2binl(string); var a = 1732584193, b = -271733879, c = -1732584194, d = 271733878;
+        for (var i = 0; i < x.length; i += 16) { var olda = a, oldb = b, oldc = c, oldd = d; md5cycle([a, b, c, d], x.slice(i, i + 16)); a = add32(a, olda); b = add32(b, oldb); c = add32(c, oldc); d = add32(d, oldd); }
+        return binl2hex([a, b, c, d]);
+      }
+
+      function iniciarApp() {
+        if (typeof window.supabase === 'undefined') { cargarSDKDinamicamente(); return; }
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+        ejecutarApp();
+      }
+
+      function cargarSDKDinamicamente() {
+        if (document.querySelector('script[src*="supabase"]')) {
+          const checkInterval = setInterval(() => { if (typeof window.supabase !== 'undefined') { clearInterval(checkInterval); iniciarApp(); } }, 500);
+          setTimeout(() => { clearInterval(checkInterval); if (typeof window.supabase === 'undefined') mostrarErrorCarga(); }, 10000);
+          return;
+        }
+        const script = document.createElement('script');
+        script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
+        script.onload = function() { iniciarApp(); };
+        script.onerror = mostrarErrorCarga;
+        document.head.appendChild(script);
+      }
+
+      function mostrarErrorCarga() {
+        alert('❌ No se pudo cargar Supabase. Verifica tu conexión a Internet o usa una VPN.');
+      }
+
+      function ejecutarApp() {
+        let currentUser = null;
+        let isLoginMode = true;
+        let currentLanguage = localStorage.getItem('preferred-language') || 'es';
+
+        async function registrarUsuario(email, password) {
+          try {
+            const { data, error } = await supabaseClient.auth.signUp({ email, password });
+            if (error) { alert('❌ Error al registrar: ' + error.message); return null; }
+            if (data.user) { alert('✅ ¡Registro exitoso! ' + (data.user.confirmation_sent_at ? 'Revisa tu correo.' : 'Ya puedes iniciar sesión.')); return data.user; }
+            return null;
+          } catch (error) { alert('❌ Error: ' + error.message); return null; }
+        }
+
+        async function iniciarSesion(email, password) {
+          try {
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+            if (error) { alert('❌ Error al iniciar sesión: ' + error.message); return null; }
+            alert('✅ ¡Bienvenido!');
+            return data.user;
+          } catch (error) { alert('❌ Error: ' + error.message); return null; }
+        }
+
+        async function cerrarSesion() {
+          const { error } = await supabaseClient.auth.signOut();
+          if (error) alert('❌ Error al cerrar sesión: ' + error.message);
+          else { alert('👋 Sesión cerrada'); currentUser = null; actualizarUIUsuario(null); }
+        }
+
+        function abrirModalAuth() {
+          document.getElementById('authModal').classList.add('active');
+          isLoginMode = true;
+          document.getElementById('authModalTitle').textContent = 'Iniciar Sesión';
+          document.getElementById('authSubmitBtn').textContent = 'Iniciar Sesión';
+          document.getElementById('authToggleLink').textContent = '¿No tienes cuenta? Regístrate';
+        }
+
+        function cerrarModalAuth() {
+          document.getElementById('authModal').classList.remove('active');
+        }
+
+        function generarAvatar(email) {
+          const avatarContainer = document.getElementById('avatarContainer');
+          const loginBtn = document.getElementById('loginBtn');
+          const avatarImg = document.getElementById('avatarImg');
+          const avatarText = document.getElementById('avatarText');
+          const userEmailDisplay = document.getElementById('userEmailDisplay');
+          if (!email) { loginBtn.style.display = 'inline-flex'; avatarContainer.style.display = 'none'; return; }
+          loginBtn.style.display = 'none';
+          avatarContainer.style.display = 'inline-block';
+          userEmailDisplay.textContent = email;
+          const hash = md5(email.trim().toLowerCase());
+          const gravatarUrl = `https://www.gravatar.com/avatar/${hash}?d=404&s=100`;
+          const img = new Image();
+          img.onload = function() { avatarImg.src = gravatarUrl; avatarImg.style.display = 'block'; avatarText.style.display = 'none'; };
+          img.onerror = function() {
+            avatarImg.style.display = 'none'; avatarText.style.display = 'flex';
+            const parts = email.split('@')[0].split('.');
+            const initials = parts.map(p => p[0]).join('').toUpperCase().slice(0, 2);
+            avatarText.textContent = initials || 'U';
+          };
+          img.src = gravatarUrl;
+        }
+
+        function actualizarUIUsuario(user) {
+          if (user) { currentUser = user; generarAvatar(user.email); }
+          else {
+            currentUser = null;
+            document.getElementById('loginBtn').style.display = 'inline-flex';
+            document.getElementById('avatarContainer').style.display = 'none';
+          }
+        }
+
+        function asignarEventos() {
+          document.getElementById('loginBtn').addEventListener('click', abrirModalAuth);
+          document.getElementById('authCloseBtn').addEventListener('click', cerrarModalAuth);
+          document.getElementById('authToggleLink').addEventListener('click', function(e) {
+            e.preventDefault();
+            isLoginMode = !isLoginMode;
+            document.getElementById('authModalTitle').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse';
+            document.getElementById('authSubmitBtn').textContent = isLoginMode ? 'Iniciar Sesión' : 'Registrarse';
+            document.getElementById('authToggleLink').textContent = isLoginMode ? '¿No tienes cuenta? Regístrate' : '¿Ya tienes cuenta? Inicia sesión';
+          });
+          document.getElementById('authSubmitBtn').addEventListener('click', async function() {
+            const email = document.getElementById('authEmail').value.trim();
+            const password = document.getElementById('authPassword').value.trim();
+            if (!email || !password) { alert('Completa todos los campos'); return; }
+            const user = isLoginMode ? await iniciarSesion(email, password) : await registrarUsuario(email, password);
+            if (user) { currentUser = user; actualizarUIUsuario(user); cerrarModalAuth(); }
+          });
+
+          const avatarBtn = document.getElementById('avatarBtn');
+          const dropdown = document.getElementById('dropdownMenu');
+          avatarBtn.addEventListener('click', function(e) { e.stopPropagation(); dropdown.classList.toggle('show'); });
+          document.addEventListener('click', function() { dropdown.classList.remove('show'); });
+          document.getElementById('logoutBtn').addEventListener('click', function(e) { e.stopPropagation(); cerrarSesion(); dropdown.classList.remove('show'); });
+          document.getElementById('profileBtn').addEventListener('click', function(e) { e.stopPropagation(); alert('🔧 Función de perfil en desarrollo.'); dropdown.classList.remove('show'); });
+
+          document.getElementById('newsletterFormIndex').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const emailInput = document.getElementById('newsletterEmailIndex');
+            const email = emailInput.value.trim().toLowerCase();
+            const btn = this.querySelector('button');
+            const textoOriginal = btn.textContent;
+            if (!email) { alert('⚠️ Por favor ingresa tu correo electrónico'); return; }
+            const emailRegex = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/;
+            if (!emailRegex.test(email)) { alert('⚠️ Por favor ingresa un correo electrónico válido'); return; }
+            btn.textContent = '...'; btn.disabled = true; btn.style.opacity = '0.6';
+            try {
+              const { data, error } = await supabaseClient.rpc('suscribirse_newsletter', { p_email: email, p_source: 'index_footer' });
+              if (error) throw error;
+              if (data.success) {
+                if (data.reactivated) alert('✅ ¡Bienvenido de vuelta! Tu suscripción ha sido reactivada');
+                else if (data.already_subscribed) alert('ℹ️ Ya estás suscrito a nuestro newsletter');
+                else alert('✅ ¡Te has suscrito correctamente!');
+                this.reset();
+              } else { alert('❌ ' + (data.message || 'Error al procesar la suscripción')); }
+            } catch (err) { console.error('Error newsletter:', err); alert('❌ Error al suscribirte: ' + err.message); }
+            finally { btn.textContent = textoOriginal; btn.disabled = false; btn.style.opacity = '1'; }
+          });
+
+          const menuToggle = document.getElementById('menuToggle');
+          const mainNav = document.getElementById('mainNav');
+          if (menuToggle && mainNav) {
+            menuToggle.addEventListener('click', function(e) { e.stopPropagation(); mainNav.classList.toggle('show'); });
+            mainNav.addEventListener('click', function(e) { if (e.target.classList.contains('nav-link') && window.innerWidth <= 968) mainNav.classList.remove('show'); });
+            document.addEventListener('click', function(e) { if (!mainNav.contains(e.target) && e.target !== menuToggle && !menuToggle.contains(e.target)) mainNav.classList.remove('show'); });
+            window.addEventListener('resize', function() { if (window.innerWidth > 968) mainNav.classList.remove('show'); });
+          }
+        }
+
+        supabaseClient.auth.onAuthStateChange((event, session) => {
+          if (session) { currentUser = session.user; actualizarUIUsuario(session.user); }
+          else { currentUser = null; actualizarUIUsuario(null); }
+        });
+        (async function checkSession() {
+          const { data: { session } } = await supabaseClient.auth.getSession();
+          if (session) { currentUser = session.user; actualizarUIUsuario(session.user); }
+        })();
+
+        const translations = {
+          es: {
+            "site-name": "Conociendo Pinar",
+            "nav-home": "Inicio", "nav-about": "Quiénes somos", "nav-research": "Investigación", "nav-blog": "Blog", "nav-support": "Soporte",
+            "hero-title": "Conociendo <span>Pinar</span>",
+            "hero-subtitle": "Laboratorio Natural para Estudiantes de Geografía",
+            "hero-description": "Plataforma educativa con datos científicos reales de 4 polígonos de investigación. Descubre la biodiversidad de Pinar del Río a través de prácticas de campo rigurosas y documentadas por el GIPPC.",
+            "hero-cta-research": "🔬 Explorar Investigación",
+            "hero-cta-map": "🗺️ Mapa Interactivo",
+            "impact-subtitle": "Datos científicos reales recopilados por el Grupo de Investigaciones de Polígonos de Prácticas de Campo",
+            "practicas-title": "Laboratorios Naturales",
+            "practicas-text-1": "La provincia de Pinar del Río es un laboratorio natural excepcional para la enseñanza y la investigación geográfica. Sus paisajes kársticos, sus bosques de pinos, sus sistemas cavernarios y sus ecosistemas costeros ofrecen una diversidad única que permite estudiar procesos geológicos, biológicos y sociales en un mismo territorio.",
+            "practicas-text-2": "A través de estas salidas de campo, los estudiantes de Geografía de la Universidad de Pinar del Río aplican técnicas de muestreo, cartografía, análisis de suelos y evaluación de impactos ambientales, combinando el rigor científico con el contacto directo con la naturaleza.",
+            "badge-geologia": "Geología", "badge-espeleologia": "Espeleología", "badge-ecologia": "Ecología", "badge-costero": "Costero",
+            "zona-1-title": "Valle de Viñales", "zona-1-desc": "Paisaje kárstico de mogotes. Estudio de procesos geológicos, evolución del relieve y suelos.",
+            "zona-2-title": "Cueva del Indio", "zona-2-desc": "Sistema cavernario y río subterráneo. Espeleología y análisis de la dinámica fluvial subterránea.",
+            "zona-3-title": "Bosques de pino y suelos", "zona-3-desc": "Ecosistemas de Pinus tropicalis. Evaluación de suelos, vegetación y manejo forestal sostenible.",
+            "zona-4-title": "Costa y manglares", "zona-4-desc": "Dinámica litoral, manglares y biodiversidad costera. Impacto del cambio climático en la línea de costa.",
+            "about-title": "Quiénes somos",
+            "about-text": "Somos el <strong>Departamento de Geografía de la Facultad de Enseñanza Media de la Universidad de Pinar del Río</strong>. Nuestra misión es fomentar el conocimiento y la conservación del patrimonio natural y cultural de la provincia, impulsando proyectos como esta guía interactiva de ecoturismo.",
+            "contact-us": "Contáctanos",
+            "testimonios-title": "Lo que dicen nuestros usuarios", "testimonios-subtitle": "Testimonios reales de la comunidad académica",
+            "testimonio-1": "\"Gracias a Conociendo Pinar descubrí lugares que no sabía que existían. La guía es súper completa y fácil de usar. ¡Recomendadísima!\"", "testimonio-rol-1": "Viajera frecuente",
+            "testimonio-2": "\"El mapa interactivo es lo mejor. Pude planificar mi viaje a Viñales con todos los puntos de interés marcados. Una herramienta indispensable.\"", "testimonio-rol-2": "Aventurero",
+            "testimonio-3": "\"Compartí mis fotos en la galería y la comunidad me dio un feedback increíble. Es un espacio genial para los amantes del ecoturismo.\"", "testimonio-rol-3": "Fotógrafa aficionada",
+            "blog-title": "Últimos artículos del blog", "blog-subtitle": "Historias, consejos y experiencias de viaje",
+            "cta-final-text": "Únete a la comunidad de estudiantes, investigadores y amantes de la naturaleza que están descubriendo los tesoros de Pinar del Río con datos científicos reales.",
+            "footer-quote": "Cada paisaje cuenta una historia. Descubre la tuya en Pinar del Río.",
+            "footer-links": "Enlaces rápidos", "footer-blog": "Blog", "footer-research": "Investigación", "footer-support": "Soporte",
+            "footer-social": "Redes sociales", "footer-newsletter": "Newsletter", "footer-send": "Enviar",
+            "footer-rights": "Defendamos el paisaje pinareño • © 2026", "footer-privacy": "Privacidad", "footer-terms": "Términos",
+            "empty-blog-title": "Aún no hay publicaciones",
+            "empty-blog-desc": "¡Sé el primero en compartir tu experiencia en Pinar!"
+          },
+          en: {
+            "site-name": "Discovering Pinar",
+            "nav-home": "Home", "nav-about": "About us", "nav-research": "Research", "nav-blog": "Blog", "nav-support": "Support",
+            "hero-title": "Discovering <span>Pinar</span>",
+            "hero-subtitle": "Natural Laboratory for Geography Students",
+            "hero-description": "Educational platform with real scientific data from 4 research polygons. Discover the biodiversity of Pinar del Río through rigorous field practices documented by the GIPPC.",
+            "hero-cta-research": "🔬 Explore Research",
+            "hero-cta-map": "🗺️ Interactive Map",
+            "impact-subtitle": "Real scientific data collected by the Research Group of Field Practice Polygons",
+            "practicas-title": "Natural Laboratories",
+            "practicas-text-1": "The province of Pinar del Río is an exceptional natural laboratory for geographic teaching and research. Its karst landscapes, pine forests, cave systems, and coastal ecosystems offer a unique diversity that allows studying geological, biological, and social processes in the same territory.",
+            "practicas-text-2": "Through these field trips, Geography students at the University of Pinar del Río apply sampling techniques, cartography, soil analysis, and environmental impact assessment, combining scientific rigor with direct contact with nature.",
+            "badge-geologia": "Geology", "badge-espeleologia": "Speleology", "badge-ecologia": "Ecology", "badge-costero": "Coastal",
+            "zona-1-title": "Viñales Valley", "zona-1-desc": "Karst landscape of mogotes. Study of geological processes, relief evolution, and soils.",
+            "zona-2-title": "Indian Cave", "zona-2-desc": "Cave system and underground river. Speleology and analysis of underground fluvial dynamics.",
+            "zona-3-title": "Pine forests and soils", "zona-3-desc": "Ecosystems of Pinus tropicalis. Soil evaluation, vegetation, and sustainable forest management.",
+            "zona-4-title": "Coast and mangroves", "zona-4-desc": "Coastal dynamics, mangroves, and coastal biodiversity. Impact of climate change on the coastline.",
+            "about-title": "About us",
+            "about-text": "We are the <strong>Geography Department of the Middle Education Faculty at the University of Pinar del Río</strong>. Our mission is to promote knowledge and conservation of the natural and cultural heritage of the province, promoting projects like this interactive ecotourism guide.",
+            "contact-us": "Contact us",
+            "testimonios-title": "What our users say", "testimonios-subtitle": "Real testimonials from the academic community",
+            "testimonio-1": "\"Thanks to Discovering Pinar I found places I didn't know existed. The guide is super complete and easy to use. Highly recommended!\"", "testimonio-rol-1": "Frequent traveler",
+            "testimonio-2": "\"The interactive map is the best. I was able to plan my trip to Viñales with all the points of interest marked. An indispensable tool.\"", "testimonio-rol-2": "Adventurer",
+            "testimonio-3": "\"I shared my photos in the gallery and the community gave me incredible feedback. It's a great space for ecotourism lovers.\"", "testimonio-rol-3": "Amateur photographer",
+            "blog-title": "Latest blog posts", "blog-subtitle": "Stories, tips, and travel experiences",
+            "cta-final-text": "Join the community of students, researchers, and nature lovers who are discovering the treasures of Pinar del Río with real scientific data.",
+            "footer-quote": "Every landscape tells a story. Discover yours in Pinar del Río.",
+            "footer-links": "Quick links", "footer-blog": "Blog", "footer-research": "Research", "footer-support": "Support",
+            "footer-social": "Social media", "footer-newsletter": "Newsletter", "footer-send": "Send",
+            "footer-rights": "Defending the Pinar landscape • © 2026", "footer-privacy": "Privacy", "footer-terms": "Terms",
+            "empty-blog-title": "No posts yet",
+            "empty-blog-desc": "Be the first to share your experience in Pinar!"
+          }
+        };
+
+        const langSelect = document.getElementById('languageSelect');
+        function t(key) { return translations[currentLanguage]?.[key] || key; }
+        function changeLanguage(lang) {
+          currentLanguage = lang;
+          localStorage.setItem('preferred-language', lang);
+          document.documentElement.lang = lang;
+          if (langSelect) langSelect.value = lang;
+          document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (translations[lang] && translations[lang][key]) {
+              if (key === 'hero-title' || key === 'about-text') el.innerHTML = translations[lang][key];
+              else el.textContent = translations[lang][key];
+            }
+          });
+          renderBlog();
+        }
+        if (langSelect) {
+          langSelect.value = currentLanguage;
+          langSelect.addEventListener('change', function() { changeLanguage(this.value); });
+        }
+
+        async function obtenerPosts() {
+          const { data, error } = await supabaseClient.from('posts').select('*').eq('status', 'approved').order('created_at', { ascending: false });
+          if (error) { console.error(error); return []; }
+          return data;
+        }
+
+        async function renderBlog() {
+          const container = document.getElementById('blogContainer');
+          if (!container) return;
+          const posts = await obtenerPosts();
+          if (!posts.length) {
+            container.innerHTML = `
+              <div class="empty-state reveal active">
+                <div class="empty-state-icon"><i class="fas fa-newspaper"></i></div>
+                <h3>${t('empty-blog-title')}</h3>
+                <p>${t('empty-blog-desc')}</p>
+                <a href="conociendo-pinar.html#tab-blog" class="btn-secundario" style="display:inline-flex;"><i class="fas fa-plus"></i> Crear publicación</a>
+              </div>`;
+            return;
+          }
+          const ultimos = posts.slice(0, 3);
+          container.innerHTML = ultimos.map(p => {
+            const texto = p.description || '';
+            const corto = texto.length > 80 ? texto.substring(0,80)+'...' : texto;
+            let mediaHTML = '';
+            if (p.media_type === 'youtube') {
+              mediaHTML = `<div class="video-wrapper"><iframe src="https://www.youtube.com/embed/${p.media_url}" frameborder="0" allowfullscreen></iframe></div>`;
+            } else if (p.media_type === 'video') {
+              mediaHTML = `<video controls src="${p.media_url}" style="width:100%; height:200px; object-fit:cover;"></video>`;
+            } else {
+              mediaHTML = `<img src="${p.media_url}" alt="${p.title}" style="width:100%; height:200px; object-fit:cover;" onerror="this.onerror=null; this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400';">`;
+            }
+            const fecha = p.created_at ? new Date(p.created_at).toLocaleDateString() : '';
+            return `<div class="blog-post reveal">
+              ${mediaHTML}
+              <div class="blog-content">
+                <h3>${p.title}</h3>
+                <p>${corto}</p>
+                <div class="blog-meta">
+                  <span>${fecha} · ${p.author_email || 'Anónimo'}</span>
+                  <span><i class="fas fa-heart" style="color:var(--secondary);"></i> ${p.likes || 0}</span>
+                </div>
+              </div>
+            </div>`;
+          }).join('');
+          initScrollReveal();
+        }
+
+        function init() {
+          changeLanguage(currentLanguage);
+          renderBlog();
+          initScrollReveal();
+          initHeaderScroll();
+          if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', asignarEventos);
+          } else {
+            asignarEventos();
+          }
+        }
+        init();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', iniciarApp);
+      } else {
+        iniciarApp();
+      }
+    })();
+  </script>
+</body>
+</html>

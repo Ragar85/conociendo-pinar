@@ -1,0 +1,1356 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#1e4a3b">
+  
+  <title>Mapa Interactivo • Conociendo Pinar | 4 Polígonos de Investigación UPR</title>
+  <meta name="description" content="Mapa interactivo profesional con 40+ puntos de interés científico en 4 polígonos de investigación de Pinar del Río. Datos reales del GIPPC con coordenadas GPS verificadas.">
+  <link rel="canonical" href="https://ragar85.github.io/conociendo-pinar/conociendo-pinar.html">
+  
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Mapa Interactivo • Conociendo Pinar">
+  <meta property="og:description" content="40+ puntos científicos en 4 polígonos de investigación. Coordenadas GPS verificadas del GIPPC.">
+  <meta property="og:image" content="https://ragar85.github.io/conociendo-pinar/img/hero.jpg">
+  
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Map",
+    "name": "Mapa Interactivo Conociendo Pinar",
+    "description": "Mapa de 4 polígonos de investigación científica en Pinar del Río",
+    "provider": {
+      "@type": "EducationalOrganization",
+      "name": "Universidad de Pinar del Río"
+    }
+  }
+  </script>
+
+  <link rel="icon" type="image/png" href="img/favicon.png">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  
+  <style>
+    :root {
+      --primary-dark: #0e2c22; --primary: #1e4a3b; --primary-light: #2d6b54;
+      --secondary: #f4c542; --secondary-light: #f9e2b7;
+      --surface: #ffffff; --surface-alt: #f4f8f0; --surface-alt-2: #eef5e8;
+      --text-primary: #1a3c2b; --text-secondary: #5a7a6a; --text-muted: #8ba89a;
+      --border: #e0e8da;
+      --shadow-sm: 0 2px 8px rgba(30,74,59,0.06); --shadow-md: 0 8px 24px rgba(30,74,59,0.08);
+      --shadow-lg: 0 20px 40px rgba(30,74,59,0.12);
+      --radius-sm: 12px; --radius-md: 20px; --radius-lg: 28px; --radius-xl: 40px;
+      --transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --poly-guanahacabibes: #0891b2;
+      --poly-km9: #d97706;
+      --poly-sanandres: #16a34a;
+      --poly-guasasa: #7c3aed;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Inter', sans-serif; background: var(--surface-alt-2); color: var(--text-primary); line-height: 1.7; }
+
+    .site-header { background: linear-gradient(135deg, var(--primary), var(--primary-dark)); color: white; padding: 1rem 0; position: sticky; top: 0; z-index: 1000; box-shadow: var(--shadow-md); }
+    .header-container { max-width: 1400px; margin: 0 auto; padding: 0 24px; display: flex; justify-content: space-between; align-items: center; gap: 20px; }
+    .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: white; font-weight: 700; font-size: 1.3rem; flex-shrink: 0; }
+    .logo i { color: var(--secondary); font-size: 1.6rem; }
+    .header-right { display: flex; align-items: center; gap: 12px; flex: 1; justify-content: flex-end; }
+    .main-nav { display: flex; align-items: center; gap: 6px; }
+    .nav-link { color: rgba(255,255,255,0.85); text-decoration: none; padding: 8px 16px; border-radius: var(--radius-xl); font-weight: 500; font-size: 0.9rem; transition: var(--transition); white-space: nowrap; }
+    .nav-link:hover { background: rgba(255,255,255,0.12); color: white; }
+    .nav-link.active { background: rgba(244,197,66,0.2); color: var(--secondary); font-weight: 600; }
+    .menu-toggle { display: none; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); color: white; font-size: 1.3rem; padding: 8px 12px; border-radius: var(--radius-sm); cursor: pointer; }
+    .account-btn { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: white; cursor: pointer; transition: var(--transition); font-size: 1rem; }
+    .account-btn:hover { background: rgba(255,255,255,0.25); transform: scale(1.08); }
+
+    .map-hero { position: relative; background: linear-gradient(135deg, #064e3b 0%, #022c22 100%); color: white; padding: 60px 24px 40px; overflow: hidden; }
+    .map-hero::before { content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0; background-image: url('img/hero.jpg'); background-size: cover; background-position: center; opacity: 0.1; }
+    .hero-content { position: relative; z-index: 2; max-width: 1200px; margin: 0 auto; }
+    .breadcrumb { display: inline-flex; align-items: center; gap: 8px; font-size: 0.85rem; opacity: 0.8; margin-bottom: 16px; }
+    .breadcrumb a { color: white; text-decoration: none; }
+    .breadcrumb a:hover { color: var(--secondary); }
+    .hero-grid { display: grid; grid-template-columns: 1fr auto; gap: 40px; align-items: center; }
+    .hero-text h1 { font-size: 2.8rem; font-weight: 800; letter-spacing: -0.03em; margin-bottom: 12px; line-height: 1.1; }
+    .hero-text h1 span { color: var(--secondary); }
+    .hero-subtitle { font-size: 1.2rem; opacity: 0.95; margin-bottom: 20px; font-style: italic; }
+    .hero-description { font-size: 1rem; opacity: 0.9; line-height: 1.7; max-width: 600px; margin-bottom: 24px; }
+    .hero-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 24px; }
+    .hero-stat { background: rgba(255,255,255,0.08); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.15); padding: 16px; border-radius: var(--radius-md); text-align: center; }
+    .hero-stat .value { font-size: 1.8rem; font-weight: 800; color: var(--secondary); line-height: 1; }
+    .hero-stat .label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; opacity: 0.9; margin-top: 4px; }
+    .hero-badges { display: flex; flex-direction: column; gap: 12px; }
+    .hero-badge-item { background: rgba(255,255,255,0.1); backdrop-filter: blur(10px); padding: 12px 20px; border-radius: var(--radius-md); border-left: 4px solid var(--secondary); display: flex; align-items: center; gap: 12px; font-size: 0.9rem; }
+    .hero-badge-item i { color: var(--secondary); font-size: 1.2rem; }
+
+    .tabs-container { max-width: 1400px; margin: -30px auto 0; padding: 0 24px; position: relative; z-index: 10; }
+    .tabs { background: var(--surface); padding: 8px; border-radius: var(--radius-md); box-shadow: var(--shadow-lg); display: flex; gap: 6px; overflow-x: auto; scrollbar-width: none; }
+    .tabs::-webkit-scrollbar { display: none; }
+    .tab-btn { flex: 1; min-width: 140px; padding: 14px 20px; border: none; background: transparent; color: var(--text-secondary); font-weight: 600; font-size: 0.95rem; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; white-space: nowrap; font-family: inherit; }
+    .tab-btn:hover { background: var(--surface-alt); color: var(--primary); }
+    .tab-btn.active { background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: white; box-shadow: 0 4px 12px rgba(30,74,59,0.25); }
+    .tab-btn i { font-size: 1rem; }
+    .tab-badge { background: var(--secondary); color: var(--primary-dark); font-size: 0.7rem; padding: 2px 8px; border-radius: 10px; font-weight: 700; margin-left: 4px; }
+
+    .container { max-width: 1400px; margin: 0 auto; padding: 40px 24px 80px; }
+    .tab-content { display: none; animation: fadeIn 0.4s ease; }
+    .tab-content.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+    .map-layout { display: grid; grid-template-columns: 320px 1fr; gap: 24px; margin-bottom: 40px; }
+    .map-sidebar { background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; max-height: 750px; display: flex; flex-direction: column; }
+    .sidebar-header { padding: 20px; border-bottom: 1px solid var(--border); background: linear-gradient(135deg, var(--surface-alt), var(--surface-alt-2)); }
+    .sidebar-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+    .sidebar-header h3 i { color: var(--primary); }
+    .search-box { position: relative; }
+    .search-box input { width: 100%; padding: 10px 14px 10px 38px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem; transition: var(--transition); }
+    .search-box input:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,74,59,0.1); }
+    .search-box i { position: absolute; left: 14px; top: 50%; transform: translateY(-50%); color: var(--text-muted); font-size: 0.9rem; }
+    .sidebar-content { overflow-y: auto; flex: 1; padding: 12px; }
+    .sidebar-content::-webkit-scrollbar { width: 6px; }
+    .sidebar-content::-webkit-scrollbar-track { background: transparent; }
+    .sidebar-content::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+    .polygon-group { margin-bottom: 16px; }
+    .polygon-group-header { display: flex; align-items: center; gap: 10px; padding: 10px 12px; background: var(--surface-alt); border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); margin-bottom: 8px; }
+    .polygon-group-header:hover { background: var(--surface-alt-2); }
+    .polygon-color { width: 14px; height: 14px; border-radius: 50%; flex-shrink: 0; box-shadow: 0 0 0 3px rgba(255,255,255,0.8); }
+    .polygon-group-title { flex: 1; font-weight: 700; font-size: 0.9rem; color: var(--text-primary); }
+    .polygon-count { font-size: 0.75rem; color: var(--text-muted); background: white; padding: 2px 8px; border-radius: 10px; font-weight: 600; }
+    .polygon-toggle { color: var(--text-muted); transition: transform 0.3s ease; }
+    .polygon-group.collapsed .polygon-toggle { transform: rotate(-90deg); }
+    .polygon-group.collapsed .polygon-items { display: none; }
+    .polygon-items { display: flex; flex-direction: column; gap: 4px; padding-left: 8px; }
+    .marker-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--radius-sm); cursor: pointer; transition: var(--transition); font-size: 0.85rem; color: var(--text-secondary); border-left: 3px solid transparent; }
+    .marker-item:hover { background: var(--surface-alt); color: var(--primary); border-left-color: var(--primary); }
+    .marker-item.active { background: var(--surface-alt-2); color: var(--primary); font-weight: 600; border-left-color: var(--secondary); }
+    .marker-icon { width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 0.75rem; flex-shrink: 0; }
+    .marker-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .map-wrapper { background: var(--surface); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); overflow: hidden; position: relative; }
+    .map-toolbar { display: flex; justify-content: space-between; align-items: center; padding: 12px 16px; background: var(--surface-alt); border-bottom: 1px solid var(--border); flex-wrap: wrap; gap: 10px; }
+    .map-toolbar-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .map-toolbar-right { display: flex; align-items: center; gap: 10px; }
+    .layer-toggle { display: flex; align-items: center; gap: 6px; padding: 6px 12px; background: white; border: 1px solid var(--border); border-radius: var(--radius-xl); cursor: pointer; font-size: 0.8rem; font-weight: 500; color: var(--text-secondary); transition: var(--transition); font-family: inherit; }
+    .layer-toggle:hover { border-color: var(--primary); color: var(--primary); }
+    .layer-toggle.active { background: var(--primary); color: white; border-color: var(--primary); }
+    .layer-toggle .dot { width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .map-action-btn { width: 36px; height: 36px; border-radius: 50%; background: white; border: 1px solid var(--border); color: var(--text-primary); cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; font-size: 0.9rem; }
+    .map-action-btn:hover { background: var(--primary); color: white; border-color: var(--primary); }
+    #map { height: 700px; width: 100%; background: #e8f0e8; }
+
+    .leaflet-popup-content-wrapper { border-radius: var(--radius-md) !important; box-shadow: var(--shadow-lg) !important; padding: 0 !important; }
+    .leaflet-popup-content { margin: 0 !important; width: 340px !important; }
+    .leaflet-popup-tip { box-shadow: var(--shadow-sm) !important; }
+    .custom-popup { padding: 0; }
+    .popup-image { width: 100%; height: 160px; object-fit: cover; background: linear-gradient(135deg, var(--surface-alt), var(--surface-alt-2)); display: block; }
+    .popup-content { padding: 16px; }
+    .popup-badges { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
+    .popup-badge { font-size: 0.7rem; padding: 3px 10px; border-radius: 10px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.03em; color: white; }
+    .popup-badge.polygon { background: var(--primary); }
+    .popup-badge.category { background: var(--secondary); color: var(--primary-dark); }
+    .popup-badge.unesco { background: #dc2626; }
+    .popup-title { font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; line-height: 1.3; }
+    .popup-description { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+    .popup-meta { display: flex; gap: 12px; flex-wrap: wrap; padding: 10px; background: var(--surface-alt); border-radius: var(--radius-sm); margin-bottom: 12px; font-size: 0.75rem; color: var(--text-muted); }
+    .popup-meta-item { display: flex; align-items: center; gap: 4px; }
+    .popup-meta-item i { color: var(--primary); font-size: 0.8rem; }
+    .popup-scientific { font-size: 0.8rem; color: var(--text-secondary); font-style: italic; padding: 8px 10px; background: var(--surface-alt-2); border-radius: var(--radius-sm); border-left: 3px solid var(--secondary); margin-bottom: 12px; }
+    .popup-actions { display: flex; gap: 8px; }
+    .popup-btn { flex: 1; padding: 8px 12px; border: none; border-radius: var(--radius-sm); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 6px; font-family: inherit; }
+    .popup-btn-primary { background: var(--primary); color: white; }
+    .popup-btn-primary:hover { background: var(--primary-light); }
+    .popup-btn-secondary { background: var(--surface-alt); color: var(--primary); }
+    .popup-btn-secondary:hover { background: var(--border); }
+
+    .custom-marker { background: transparent; border: none; }
+    .marker-pin { width: 36px; height: 36px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.3); border: 3px solid white; position: relative; }
+    .marker-pin i { transform: rotate(45deg); color: white; font-size: 0.9rem; }
+    .marker-pin::after { content: ''; position: absolute; width: 8px; height: 8px; border-radius: 50%; background: currentColor; bottom: -12px; left: 50%; transform: translateX(-50%); opacity: 0.3; }
+    .polygon-marker { width: 48px !important; height: 48px !important; }
+    .polygon-marker .marker-pin { width: 48px; height: 48px; }
+    .polygon-marker .marker-pin i { font-size: 1.2rem; }
+
+    .leaflet-control-legend { background: white; padding: 12px 16px; border-radius: var(--radius-sm); box-shadow: var(--shadow-md); font-size: 0.8rem; max-width: 220px; }
+    .legend-title { font-weight: 700; color: var(--text-primary); margin-bottom: 10px; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between; }
+    .legend-item { display: flex; align-items: center; gap: 8px; padding: 3px 0; color: var(--text-secondary); }
+    .legend-icon { width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 0.6rem; flex-shrink: 0; }
+
+    .polygons-section { margin-top: 40px; }
+    .section-title { font-size: 1.8rem; font-weight: 800; color: var(--text-primary); margin-bottom: 8px; display: flex; align-items: center; gap: 12px; }
+    .section-title i { color: var(--primary); }
+    .section-subtitle { color: var(--text-secondary); font-size: 1rem; margin-bottom: 30px; }
+    .polygons-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .polygon-card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); cursor: pointer; border-top: 5px solid var(--primary); }
+    .polygon-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+    .polygon-card.guanahacabibes { border-top-color: var(--poly-guanahacabibes); }
+    .polygon-card.km9 { border-top-color: var(--poly-km9); }
+    .polygon-card.sanandres { border-top-color: var(--poly-sanandres); }
+    .polygon-card.guasasa { border-top-color: var(--poly-guasasa); }
+    .polygon-card-img { height: 180px; background: linear-gradient(135deg, var(--surface-alt), var(--surface-alt-2)); overflow: hidden; position: relative; }
+    .polygon-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+    .polygon-card:hover .polygon-card-img img { transform: scale(1.08); }
+    .polygon-card-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; background: linear-gradient(to top, rgba(0,0,0,0.7), transparent 50%); }
+    .polygon-card-badge { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.95); color: var(--primary-dark); padding: 4px 10px; border-radius: 10px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; }
+    .polygon-card-content { padding: 20px; }
+    .polygon-card-title { font-size: 1.2rem; font-weight: 700; color: var(--text-primary); margin-bottom: 6px; }
+    .polygon-card-location { font-size: 0.85rem; color: var(--text-muted); margin-bottom: 12px; display: flex; align-items: center; gap: 6px; }
+    .polygon-card-description { font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 16px; }
+    .polygon-card-stats { display: flex; gap: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+    .polygon-stat { flex: 1; text-align: center; }
+    .polygon-stat-value { font-size: 1.2rem; font-weight: 800; color: var(--primary); line-height: 1; }
+    .polygon-stat-label { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; margin-top: 2px; }
+
+    .content-section { background: var(--surface); border-radius: var(--radius-md); padding: 32px; box-shadow: var(--shadow-sm); margin-bottom: 24px; }
+    .content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 16px; }
+    .content-header h3 { font-size: 1.4rem; font-weight: 700; display: flex; align-items: center; gap: 10px; }
+    .content-header h3 i { color: var(--primary); }
+    .post-form { background: var(--surface-alt); padding: 24px; border-radius: var(--radius-md); border: 2px dashed var(--border); }
+    .post-form h4 { font-size: 1.1rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; }
+    .form-group { margin-bottom: 16px; }
+    .form-group label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+    .form-group input, .form-group textarea, .form-group select { width: 100%; padding: 10px 14px; border: 2px solid var(--border); border-radius: var(--radius-sm); font-family: inherit; font-size: 0.9rem; transition: var(--transition); }
+    .form-group input:focus, .form-group textarea:focus, .form-group select:focus { outline: none; border-color: var(--primary); box-shadow: 0 0 0 3px rgba(30,74,59,0.1); }
+    .form-group textarea { min-height: 100px; resize: vertical; }
+    .form-actions { display: flex; gap: 10px; }
+    .btn { padding: 10px 20px; border: none; border-radius: var(--radius-sm); font-weight: 600; cursor: pointer; transition: var(--transition); font-family: inherit; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 8px; }
+    .btn-primary { background: var(--primary); color: white; }
+    .btn-primary:hover { background: var(--primary-light); }
+    .btn-secondary { background: var(--surface-alt); color: var(--text-primary); border: 1px solid var(--border); }
+    .btn-secondary:hover { background: var(--border); }
+    .blog-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+    .blog-card { background: var(--surface); border-radius: var(--radius-md); overflow: hidden; box-shadow: var(--shadow-sm); transition: var(--transition); border-left: 4px solid var(--secondary); }
+    .blog-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-md); }
+    .blog-card-img { height: 160px; background: var(--surface-alt); overflow: hidden; }
+    .blog-card-img img, .blog-card-img video { width: 100%; height: 100%; object-fit: cover; }
+    .blog-card-content { padding: 16px; }
+    .blog-card-title { font-size: 1rem; font-weight: 700; margin-bottom: 8px; color: var(--text-primary); }
+    .blog-card-desc { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+    .blog-card-meta { display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted); }
+    .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; }
+    .gallery-item { position: relative; aspect-ratio: 1; border-radius: var(--radius-md); overflow: hidden; cursor: pointer; box-shadow: var(--shadow-sm); transition: var(--transition); }
+    .gallery-item:hover { transform: scale(1.03); box-shadow: var(--shadow-md); }
+    .gallery-item img { width: 100%; height: 100%; object-fit: cover; }
+    .gallery-overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); color: white; font-size: 0.8rem; }
+    .empty-state { text-align: center; padding: 60px 24px; color: var(--text-muted); }
+    .empty-state i { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
+    .empty-state h3 { font-size: 1.2rem; color: var(--text-primary); margin-bottom: 8px; }
+
+    .site-footer { background: var(--primary-dark); color: rgba(207,230,219,0.9); padding: 60px 24px 30px; font-size: 0.9rem; text-align: center; }
+    .footer-quote { max-width: 700px; margin: 0 auto 40px; padding: 0 24px; }
+    .footer-quote p { font-size: 1.3rem; font-style: italic; color: rgba(255,255,255,0.7); line-height: 1.6; }
+    .footer-quote p::before, .footer-quote p::after { content: '"'; color: var(--secondary); font-size: 1.6rem; font-weight: 700; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 24px; font-size: 0.85rem; color: var(--text-muted); }
+    .footer-bottom a { color: var(--secondary); text-decoration: none; }
+
+    @media (max-width: 968px) {
+      .menu-toggle { display: block; }
+      .main-nav { display: none; position: absolute; top: 100%; right: 0; background: linear-gradient(135deg, var(--primary), var(--primary-dark)); flex-direction: column; padding: 20px; gap: 8px; box-shadow: var(--shadow-lg); min-width: 220px; border-radius: 0 0 var(--radius-md) var(--radius-md); }
+      .main-nav.show { display: flex; }
+      .nav-link { width: 100%; text-align: left; padding: 12px 20px; }
+      .hero-grid { grid-template-columns: 1fr; }
+      .hero-stats { grid-template-columns: repeat(2, 1fr); }
+      .hero-badges { flex-direction: row; flex-wrap: wrap; }
+      .map-layout { grid-template-columns: 1fr; }
+      .map-sidebar { max-height: 400px; }
+      #map { height: 500px; }
+    }
+    @media (max-width: 600px) {
+      .hero-text h1 { font-size: 2rem; }
+      .hero-stats { grid-template-columns: 1fr 1fr; }
+      .hero-stat .value { font-size: 1.4rem; }
+      .tabs { padding: 6px; }
+      .tab-btn { padding: 10px 14px; font-size: 0.85rem; }
+      #map { height: 400px; }
+      .leaflet-popup-content { width: 260px !important; }
+      .popup-image { height: 120px; }
+      .polygons-grid { grid-template-columns: 1fr; }
+      .gallery-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <div class="header-container">
+      <a href="index.html" class="logo"><i class="fas fa-leaf"></i><span>Conociendo Pinar</span></a>
+      <button class="menu-toggle" id="menuToggle"><i class="fas fa-bars"></i></button>
+      <div class="header-right">
+        <nav class="main-nav" id="mainNav">
+          <a href="index.html" class="nav-link">Inicio</a>
+          <a href="investigacion/index.html" class="nav-link">Investigación</a>
+          <a href="conociendo-pinar.html" class="nav-link active">Mapa</a>
+          <a href="soporte.html" class="nav-link">Soporte</a>
+        </nav>
+        <div id="authContainer">
+          <button id="loginBtn" class="account-btn"><i class="fas fa-user"></i></button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <section class="map-hero">
+    <div class="hero-content">
+      <div class="breadcrumb">
+        <a href="index.html">Inicio</a>
+        <span>/</span>
+        <span style="color: var(--secondary);">Mapa Interactivo</span>
+      </div>
+      <div class="hero-grid">
+        <div class="hero-text">
+          <h1>Mapa <span>Interactivo</span> Científico</h1>
+          <p class="hero-subtitle">Explora 4 polígonos de investigación con datos reales del GIPPC</p>
+          <p class="hero-description">
+            Navega por más de 40 puntos de interés científico en Pinar del Río. Cada marcador incluye 
+            coordenadas GPS verificadas, especies emblemáticas documentadas y datos recolectados durante 
+            décadas de prácticas de campo por el Departamento de Geografía de la UPR.
+          </p>
+          <div class="hero-stats">
+            <div class="hero-stat">
+              <div class="value">4</div>
+              <div class="label">Polígonos</div>
+            </div>
+            <div class="hero-stat">
+              <div class="value">40+</div>
+              <div class="label">Puntos Científicos</div>
+            </div>
+            <div class="hero-stat">
+              <div class="value">2</div>
+              <div class="label">Sitios UNESCO</div>
+            </div>
+            <div class="hero-stat">
+              <div class="value">35</div>
+              <div class="label">Cuevas Mapeadas</div>
+            </div>
+          </div>
+        </div>
+        <div class="hero-badges">
+          <div class="hero-badge-item">
+            <i class="fas fa-satellite-dish"></i>
+            <span>Coordenadas GPS verificadas</span>
+          </div>
+          <div class="hero-badge-item">
+            <i class="fas fa-microscope"></i>
+            <span>Datos del GIPPC (2016-2019)</span>
+          </div>
+          <div class="hero-badge-item">
+            <i class="fas fa-university"></i>
+            <span>Universidad de Pinar del Río</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="tabs-container">
+    <div class="tabs">
+      <button class="tab-btn active" data-tab="mapa">
+        <i class="fas fa-map-marked-alt"></i>
+        <span>Mapa Interactivo</span>
+      </button>
+      <button class="tab-btn" data-tab="poligonos">
+        <i class="fas fa-shapes"></i>
+        <span>Polígonos</span>
+      </button>
+      <button class="tab-btn" data-tab="galeria">
+        <i class="fas fa-images"></i>
+        <span>Galería</span>
+        <span class="tab-badge" id="galleryCount">0</span>
+      </button>
+      <button class="tab-btn" data-tab="blog">
+        <i class="fas fa-newspaper"></i>
+        <span>Blog</span>
+        <span class="tab-badge" id="blogCount">0</span>
+      </button>
+    </div>
+  </div>
+
+  <main class="container">
+    
+    <div class="tab-content active" id="tab-mapa">
+      <div class="map-layout">
+        <aside class="map-sidebar">
+          <div class="sidebar-header">
+            <h3><i class="fas fa-list-ul"></i> Puntos de Interés</h3>
+            <div class="search-box">
+              <i class="fas fa-search"></i>
+              <input type="text" id="searchMarkers" placeholder="Buscar lugar, especie, cueva...">
+            </div>
+          </div>
+          <div class="sidebar-content" id="markersList"></div>
+        </aside>
+
+        <div class="map-wrapper">
+          <div class="map-toolbar">
+            <div class="map-toolbar-left">
+              <button class="layer-toggle active" data-layer="poligonos">
+                <span class="dot"></span> Polígonos
+              </button>
+              <button class="layer-toggle active" data-layer="cientificos">
+                <span class="dot"></span> Puntos Científicos
+              </button>
+              <button class="layer-toggle" data-layer="especies">
+                <span class="dot"></span> Especies
+              </button>
+              <button class="layer-toggle" data-layer="turismo">
+                <span class="dot"></span> Turismo
+              </button>
+            </div>
+            <div class="map-toolbar-right">
+              <button class="map-action-btn" id="btnLocate" title="Mi ubicación">
+                <i class="fas fa-location-crosshairs"></i>
+              </button>
+              <button class="map-action-btn" id="btnFullscreen" title="Pantalla completa">
+                <i class="fas fa-expand"></i>
+              </button>
+              <button class="map-action-btn" id="btnReset" title="Vista inicial">
+                <i class="fas fa-home"></i>
+              </button>
+            </div>
+          </div>
+          <div id="map"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-poligonos">
+      <div class="polygons-section">
+        <h2 class="section-title"><i class="fas fa-shapes"></i> Los 4 Polígonos de Investigación</h2>
+        <p class="section-subtitle">Cada polígono representa un laboratorio natural único estudiado por el GIPPC durante décadas</p>
+        <div class="polygons-grid" id="polygonsGrid"></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-galeria">
+      <div class="content-section">
+        <div class="content-header">
+          <h3><i class="fas fa-images"></i> Galería de la Comunidad</h3>
+          <button class="btn btn-primary" id="btnUploadPhoto">
+            <i class="fas fa-cloud-upload-alt"></i> Subir Foto
+          </button>
+        </div>
+        <div class="gallery-grid" id="galleryGrid">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <i class="fas fa-image"></i>
+            <h3>Sé el primero en compartir</h3>
+            <p>Sube tus fotos de los polígonos y contribuye a la comunidad</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="tab-blog">
+      <div class="content-section">
+        <div class="content-header">
+          <h3><i class="fas fa-newspaper"></i> Blog de la Comunidad</h3>
+        </div>
+        <div class="post-form" id="postForm">
+          <h4><i class="fas fa-pen"></i> Compartir una experiencia</h4>
+          <div class="form-group">
+            <label>Título *</label>
+            <input type="text" id="postTitle" placeholder="Ej: Avistamiento de zunzuncito en Guanahacabibes">
+          </div>
+          <div class="form-group">
+            <label>Polígono</label>
+            <select id="postPolygon">
+              <option value="guanahacabibes">Guanahacabibes</option>
+              <option value="km9">Km 9 Mantua</option>
+              <option value="sanandres">San Andrés</option>
+              <option value="guasasa">Sierra Guasasa</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Descripción</label>
+            <textarea id="postDescription" placeholder="Cuenta tu experiencia, hallazgos, observaciones..."></textarea>
+          </div>
+          <div class="form-group">
+            <label>URL de imagen o video (opcional)</label>
+            <input type="text" id="postMedia" placeholder="https://...">
+          </div>
+          <div class="form-actions">
+            <button class="btn btn-primary" id="btnPublishPost">
+              <i class="fas fa-paper-plane"></i> Publicar
+            </button>
+            <button class="btn btn-secondary" id="btnCancelPost">
+              <i class="fas fa-times"></i> Cancelar
+            </button>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 12px;">
+            <i class="fas fa-info-circle"></i> Tu publicación será revisada por un moderador antes de aparecer públicamente.
+          </p>
+        </div>
+        <div class="blog-grid" id="blogGrid" style="margin-top: 32px;">
+          <div class="empty-state" style="grid-column: 1 / -1;">
+            <i class="fas fa-newspaper"></i>
+            <h3>Aún no hay publicaciones</h3>
+            <p>¡Sé el primero en compartir tu experiencia!</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="footer-quote">
+      <p>Cada paisaje cuenta una historia. Descubre la tuya en Pinar del Río.</p>
+    </div>
+    <div class="footer-bottom">
+      <p>🌴 Defendamos el paisaje pinareño • © 2026 <a href="index.html">Conociendo Pinar</a> | <a href="privacidad.html">Privacidad</a> | <a href="terminos.html">Términos</a> | <a href="admin/index.html" style="opacity:0.4;font-size:0.75rem;">Admin</a></p>
+    </div>
+  </footer>
+
+  <script>
+    // ===========================
+    // DATOS REALES DEL GIPPC + COORDENADAS VERIFICADAS
+    // ===========================
+    const POLYGONS_DATA = {
+      guanahacabibes: {
+        name: 'Guanahacabibes',
+        fullName: 'Península de Guanahacabibes',
+        color: '#0891b2',
+        municipality: 'Sandino',
+        unesco: true,
+        description: 'Reserva de la Biosfera UNESCO (1987). Uno de los últimos refugios de vida silvestre en Cuba con 1,060 km² de ecosistemas costeros, kársticos y marinos prístinos.',
+        center: [21.84, -84.79],
+        bounds: [[21.60, -85.05], [22.00, -84.35]],
+        stats: { species: 262, aves: 193, reptiles: 35, anfibios: 16 },
+        markers: [
+          {
+            id: 'gb-1', name: 'Pozo Azul', category: 'hidrologia',
+            coords: [21.93, -84.48],
+            icon: 'water', color: '#0891b2',
+            description: 'Ojo de agua cristalina a 3 km de Manuel Lazo. Afloramiento del manto acuífero kárstico en dolina costera.',
+            scientific: 'Suelos ferralíticos rojos típicos lixiviados (Hue 2.5YR)',
+            image: 'img/expediciones/guanahacabibes-pozo-azul.webp'
+          },
+          {
+            id: 'gb-2', name: 'Encinar de Cayuco', category: 'ecologia',
+            coords: [21.95, -84.45],
+            icon: 'tree', color: '#16a34a',
+            description: 'Bosque semidesiduo adaptado a suelos ácidos. Vegetación única sobre suelos ferralíticos pobres en nutrientes.',
+            scientific: 'Encinar sobre suelos con pH ácido',
+            image: 'img/expediciones/guanahacabibes-encinar-cayuco.webp'
+          },
+          {
+            id: 'gb-3', name: 'Casimba Costera', category: 'geologia',
+            coords: [21.82, -84.70],
+            icon: 'mountain', color: '#7c3aed',
+            description: 'Dolina costera inundada de agua dulce. Desplome de caverna subterránea con circulación activa.',
+            scientific: 'Origen kárstico por desplome de cavernas',
+            image: 'img/expediciones/guanahacabibes-dolina-casimba.webp'
+          },
+          {
+            id: 'gb-4', name: 'Farallón Costero', category: 'geologia',
+            coords: [21.78, -84.85],
+            icon: 'mountain', color: '#7c3aed',
+            description: 'Bloque tectónico elevado hasta 20 msnm. Terrazas marinas emergidas y arrecifes de coral fósiles.',
+            scientific: 'Tectónica de bloques + elevación eustática',
+            image: 'img/expediciones/guanahacabibes-farallon-costero.webp'
+          },
+          {
+            id: 'gb-5', name: 'Cabo San Antonio', category: 'patrimonio',
+            coords: [21.87, -84.95],
+            icon: 'landmark', color: '#dc2626',
+            description: 'Extremo occidental de Cuba. Faro Roncali (1850). Testigo de piratas, corsarios y la trata de esclavos.',
+            scientific: 'Punto más occidental del archipiélago cubano',
+            image: null
+          },
+          {
+            id: 'gb-6', name: 'Zunzuncito (hábitat)', category: 'especies',
+            coords: [21.92, -84.50],
+            icon: 'feather', color: '#ec4899',
+            description: 'Hábitat del ave más pequeña del mundo (Mellisuga helenae). Mide 5-6 cm y pesa 1.6-2 gramos.',
+            scientific: 'Mellisuga helenae - Endémica de Cuba',
+            image: 'img/expediciones/zunzuncito.webp'
+          },
+          {
+            id: 'gb-7', name: 'Iguana Gigante', category: 'especies',
+            coords: [21.88, -84.65],
+            icon: 'dragon', color: '#ec4899',
+            description: 'Mayor lagarto del género Cyclura en el mundo. Alcanza 1.5m de longitud. Parte de las leyendas de la península.',
+            scientific: 'Cyclura carinata - Endémica',
+            image: 'img/expediciones/iguana-gigante.webp'
+          },
+          {
+            id: 'gb-8', name: 'María la Gorda', category: 'turismo',
+            coords: [21.8197, -84.4940],
+            icon: 'swimmer', color: '#06b6d4',
+            description: 'Centro internacional de buceo con más de 50 puntos de inmersión. Arrecifes coralinos prístinos y 576 especies de moluscos marinos documentados.',
+            scientific: '4 de las 7 especies de tortugas marinas del planeta anidan aquí',
+            image: null
+          },
+          {
+            id: 'gb-9', name: 'Uvero Quemado', category: 'ecologia',
+            coords: [21.8584, -84.4385],
+            icon: 'wind', color: '#16a34a',
+            description: 'Zona costera donde se observa el "Efecto Bandera" en la vegetación por los vientos alisios del noreste. Adaptaciones xeromorfas costeras.',
+            scientific: 'Vegetación deformada por viento salino constante',
+            image: null
+          },
+          {
+            id: 'gb-10', name: 'La Bajada', category: 'patrimonio',
+            coords: [21.92166, -84.48432],
+            icon: 'home', color: '#dc2626',
+            description: 'Comunidad costera sobre dunas, entrada al Parque Nacional Guanahacabibes. Asentamiento humano tradicional con fuerte relación con el mar.',
+            scientific: 'Asentamiento sobre dunas costeras - Checkpoint militar',
+            image: null
+          },
+          {
+            id: 'gb-11', name: 'Caleta de los Piojos', category: 'especies',
+            coords: [21.8225, -84.88694],
+            icon: 'turtle', color: '#ec4899',
+            description: 'Playa de anidación de tortugas marinas en la costa sur de la península. Sitio de investigación científica del GIPPC.',
+            scientific: 'Playa de anidación - Investigación de tortugas marinas',
+            image: null
+          },
+          {
+            id: 'gb-12', name: 'Manuel Lazo', category: 'patrimonio',
+            coords: [21.96, -84.44],
+            icon: 'home', color: '#dc2626',
+            description: 'Base del Parque Nacional Guanahacabibes. Punto de partida de los itinerarios de campo del GIPPC y centro de investigación.',
+            scientific: 'Estación biológica y centro de visitantes',
+            image: null
+          }
+        ]
+      },
+      km9: {
+        name: 'Km 9 Mantua',
+        fullName: 'Km 9 Carretera a Mantua',
+        color: '#d97706',
+        municipality: 'Guane',
+        description: 'Alturas de Pizarras del Norte con arenas cuarcíferas blancas únicas del Terciario y 17 especies amenazadas documentadas. Población de 36,011 habitantes.',
+        center: [22.19, -84.08],
+        bounds: [[22.10, -84.35], [22.35, -83.90]],
+        stats: { species: 42, endemic: 17, habitantes: '36,011', area: '15 km²' },
+        markers: [
+          {
+            id: 'km-1', name: 'Arenas Cuarcíferas Blancas', category: 'geologia',
+            coords: [22.19, -84.08],
+            icon: 'gem', color: '#d97706',
+            description: 'Depósitos paleohidrográficos de SiO2 del Terciario. Cristales de cuarzo amorfo e hidrotermal.',
+            scientific: 'Areniscas cuarcíferas metamórficas (no reaccionan con HCl)',
+            image: 'img/expediciones/km9-suelo-arenoso-blanco.webp'
+          },
+          {
+            id: 'km-2', name: 'Conglomerados Cuarcíferos', category: 'geologia',
+            coords: [22.20, -84.09],
+            icon: 'gem', color: '#d97706',
+            description: 'Evidencia de origen sedimentario previo al metamorfismo. Cantos rodados en matriz cuarcífera.',
+            scientific: 'Origen sedimentario pre-metamórfico',
+            image: 'img/expediciones/km9-conglomerado-cuarcifero.webp'
+          },
+          {
+            id: 'km-3', name: 'Arroyo San Francisco', category: 'hidrologia',
+            coords: [22.18, -84.07],
+            icon: 'water', color: '#0891b2',
+            description: 'Arroyo de aguas prístinas con cascadas de 2-4m de desnivel. Bioindicadores presentes.',
+            scientific: 'Caudal: 0.81 m³/s • pH: 7.2 • O₂: 8.1 mg/L',
+            image: 'img/expediciones/km9-molusco-arroyo.webp'
+          },
+          {
+            id: 'km-4', name: 'Camaroncito Reculón', category: 'especies',
+            coords: [22.18, -84.07],
+            icon: 'shrimp', color: '#ec4899',
+            description: 'Bioindicador por excelencia de pureza del agua. Su presencia garantiza calidad hidrológica prístina.',
+            scientific: 'Procambarus cubensis',
+            image: 'img/expediciones/camaroncito-reculon.webp'
+          },
+          {
+            id: 'km-5', name: 'Palma Barrigona (hábitat)', category: 'especies',
+            coords: [22.21, -84.10],
+            icon: 'tree', color: '#ec4899',
+            description: 'Palma corpulenta de 8-15m en peligro (EN). Endémica de Cuba occidental sobre suelos arenoso-cuarcíticos.',
+            scientific: 'Colpothrinax wrightii - En Peligro (EN)',
+            image: 'img/expediciones/palma-barrigona.webp'
+          },
+          {
+            id: 'km-6', name: 'Estación Meteorológica Macurije', category: 'clima',
+            coords: [22.17, -84.06],
+            icon: 'temperature-high', color: '#f59e0b',
+            description: 'Estación meteorológica con datos históricos. Temperatura media: 24°C • Precipitación: 1333.7 mm/año.',
+            scientific: 'Variables: T, P, HR, viento, precipitación',
+            image: null
+          },
+          {
+            id: 'km-7', name: 'Flor de San Pedro', category: 'especies',
+            coords: [22.19, -84.11],
+            icon: 'seedling', color: '#ec4899',
+            description: 'Orquídea epífita en peligro crítico (CR). Habita sobre palma Copernicia glabrescens.',
+            scientific: 'Encyclia grisebachiana - Peligro Crítico (CR)',
+            image: 'img/expediciones/flor-san-pedro.webp'
+          },
+          {
+            id: 'km-8', name: 'Miraguano', category: 'especies',
+            coords: [22.22, -84.07],
+            icon: 'tree', color: '#ec4899',
+            description: 'Palma de hasta 8m en peligro crítico (CR). Endémica sobre serpentina y matorrales xeromorfos espinosos.',
+            scientific: 'Coccothrinax yuraguana - Peligro Crítico (CR)',
+            image: 'img/expediciones/miraguano.webp'
+          },
+          {
+            id: 'km-9', name: 'Guane (cabecera)', category: 'patrimonio',
+            coords: [22.2006, -84.0839],
+            icon: 'city', color: '#dc2626',
+            description: 'Cabecera municipal con 35,990 habitantes. Centro histórico con tradición tabacalera y ganadera. Base de las prácticas de campo.',
+            scientific: 'Municipio • Altitud: 25 msnm • Área: 717 km²',
+            image: null
+          },
+          {
+            id: 'km-10', name: 'Mantua', category: 'patrimonio',
+            coords: [22.2908, -84.2875],
+            icon: 'city', color: '#dc2626',
+            description: 'Pueblo de inmigrantes italianos en el extremo más occidental de Cuba. Monumento Nacional con rica herencia cultural.',
+            scientific: 'Municipio • 23,974 hab • Fundado por italianos',
+            image: null
+          }
+        ]
+      },
+      sanandres: {
+        name: 'San Andrés',
+        fullName: 'San Andrés y Caiguanabo',
+        color: '#16a34a',
+        municipality: 'La Palma / Los Palacios',
+        description: 'Valle intramontano con historia del Che Guevara, aguas mineromedicinales y cuevas arqueológicas aborígenes. 9,104 habitantes en 7 circunscripciones.',
+        center: [22.65, -83.70],
+        bounds: [[22.55, -83.85], [22.75, -83.55]],
+        stats: { species: 28, caves: 7, habitantes: '9,104', thermal: 'Sí' },
+        markers: [
+          {
+            id: 'sa-1', name: 'Cueva de los Portales', category: 'patrimonio',
+            coords: [22.68, -83.68],
+            icon: 'landmark', color: '#dc2626',
+            description: 'Comandancia del Che Guevara durante la Crisis de Octubre (1962). Cueva de origen fluvial con río subterráneo.',
+            scientific: 'Río Caiguanabo atraviesa la cueva',
+            image: 'img/expediciones/sanandres-rio-caiguanabo.webp'
+          },
+          {
+            id: 'sa-2', name: 'Baños de Bermejales', category: 'hidrologia',
+            coords: [22.67, -83.71],
+            icon: 'hot-tub', color: '#0891b2',
+            description: 'Aguas mineromedicinales cálcicas, sulfatadas, fluoradas y sulfuradas. Fangos terapéuticos del río Caiguanabo.',
+            scientific: 'Mineralización: 2 g/L • Reacción hipotermal',
+            image: null
+          },
+          {
+            id: 'sa-3', name: 'Mogote Pico Grande', category: 'geologia',
+            coords: [22.63, -83.72],
+            icon: 'mountain', color: '#7c3aed',
+            description: 'Altura máxima de Sierra Guacamaya con 523m. Laderas verticales de caliza jurásica.',
+            scientific: 'Calizas del Jurásico - 523 msnm',
+            image: 'img/expediciones/sanandres-mogote-pico-grande.webp'
+          },
+          {
+            id: 'sa-4', name: 'Sistema Ojo de Agua', category: 'hidrologia',
+            coords: [22.66, -83.69],
+            icon: 'water', color: '#0891b2',
+            description: 'Red kárstica con resolladeros y sumideros que alimentan el río Jagua.',
+            scientific: 'Hidrología kárstica activa',
+            image: 'img/expediciones/sanandres-ojo-agua-resolladero.webp'
+          },
+          {
+            id: 'sa-5', name: 'Cueva del Cojo', category: 'arqueologia',
+            coords: [22.64, -83.67],
+            icon: 'bone', color: '#7c2d12',
+            description: 'Cueva funeraria aborigen en Mogote Las Cruces con estratos cenizosos, majadores de roca cuarcífera y fragmentos de sílex.',
+            scientific: 'Sitio precolombino - Majadores y núcleos de sílex',
+            image: null
+          },
+          {
+            id: 'sa-6', name: 'Concreciones de Hierro', category: 'edafologia',
+            coords: [22.65, -83.70],
+            icon: 'circle', color: '#d97706',
+            description: 'Perdigones de hierro en suelos ferralíticos con Fe libre superior al 60%.',
+            scientific: 'Suelos ferralíticos • Fe libre >60%',
+            image: 'img/expediciones/sanandres-concreciones-hierro.webp'
+          },
+          {
+            id: 'sa-7', name: 'Hacienda Cortina', category: 'patrimonio',
+            coords: [22.62, -83.65],
+            icon: 'landmark', color: '#dc2626',
+            description: 'Antigua hacienda de José Manuel Cortinas, hoy Parque Nacional La Güira. Incluye territorios de Sierra del Rosario y Los Órganos.',
+            scientific: 'A ambas márgenes del Río San Diego',
+            image: null
+          },
+          {
+            id: 'sa-8', name: 'Cueva del Malangal', category: 'arqueologia',
+            coords: [22.69, -83.73],
+            icon: 'bone', color: '#7c2d12',
+            description: 'Cuevas funerarias I y II en Galalón con piezas dentales humanas. Paradero de abrigo rocoso con majadores.',
+            scientific: 'Sitio arqueológico aborigen - Galalón',
+            image: null
+          },
+          {
+            id: 'sa-9', name: 'Cueva Las Coloradas', category: 'arqueologia',
+            coords: [22.66, -83.66],
+            icon: 'bone', color: '#7c2d12',
+            description: 'Cueva con estratos cenizosos de 30cm de espesor. Restos humanos y majadores partidos.',
+            scientific: 'Sitio funerario aborigen',
+            image: null
+          },
+          {
+            id: 'sa-10', name: 'Río Caiguanabo', category: 'hidrologia',
+            coords: [22.67, -83.70],
+            icon: 'water', color: '#0891b2',
+            description: 'Río mineromedicinal que atraviesa la Cueva de los Portales. Fangos terapéuticos en sus orillas.',
+            scientific: 'Aguas cálcicas, sulfatadas, fluoradas y sulfuradas',
+            image: 'img/expediciones/sanandres-rio-caiguanabo.webp'
+          }
+        ]
+      },
+      guasasa: {
+        name: 'Sierra Guasasa',
+        fullName: 'Sierra de Guasasa (Viñales)',
+        color: '#7c3aed',
+        municipality: 'Viñales',
+        unesco: true,
+        description: 'Sistema kárstico con 35 cuevas en 12 niveles evolutivos (Oligoceno-Holoceno). Yacimiento paleontológico de megafauna extinta. Patrimonio Cultural UNESCO.',
+        center: [22.65, -83.71],
+        bounds: [[22.55, -83.80], [22.75, -83.55]],
+        stats: { species: 81, caves: 35, fossils: 'Megafauna', unesco: 1999 },
+        markers: [
+          {
+            id: 'gu-1', name: 'Cueva del Indio', category: 'espeleologia',
+            coords: [22.67, -83.71],
+            icon: 'dungeon', color: '#7c3aed',
+            description: 'Río subterráneo navegable de 977m. Sistema kárstico activo con el Arroyo Zacarías.',
+            scientific: 'Nivel de base - Holoceno (90-109 msnm)',
+            image: 'img/expediciones/guasasa-cueva-geda.webp'
+          },
+          {
+            id: 'gu-2', name: 'Cueva Los Fósiles', category: 'paleontologia',
+            coords: [22.66, -83.72],
+            icon: 'bone', color: '#7c2d12',
+            description: 'Yacimiento de megafauna extinta: perezosos gigantes (Megalocnus rodens) y roedores del Pleistoceno-Holoceno.',
+            scientific: 'Megalocnus rodens - 90-270 kg • Extinto hace ~4,700 años',
+            image: 'img/expediciones/guasasa-fosiles-desdentados.webp'
+          },
+          {
+            id: 'gu-3', name: 'Trilogía de Mogotes', category: 'botanica',
+            coords: [22.68, -83.70],
+            icon: 'leaf', color: '#16a34a',
+            description: 'Tres especies endémicas adaptadas a la sequedad extrema en paredones verticales.',
+            scientific: 'Spathelia brittonii, Gaussia princeps, Bombacopsis cubensis',
+            image: 'img/expediciones/guasasa-trilogia-mogotes.webp'
+          },
+          {
+            id: 'gu-4', name: 'Cueva Geda I y II', category: 'espeleologia',
+            coords: [22.66, -83.73],
+            icon: 'dungeon', color: '#7c3aed',
+            description: 'Nivel 8 de cavernamiento. Importante yacimiento paleontológico con restos de megafauna.',
+            scientific: 'Pleistoceno Superior (190-209 msnm)',
+            image: 'img/expediciones/guasasa-cueva-geda.webp'
+          },
+          {
+            id: 'gu-5', name: 'Abras Cársicas', category: 'geologia',
+            coords: [22.64, -83.71],
+            icon: 'mountain', color: '#7c3aed',
+            description: 'Valles kársticos que siguen líneas de fractura con dirección NNO-SSE.',
+            scientific: 'Fracturas NNO-SSE • 15.3 km de galerías totales',
+            image: 'img/expediciones/guasasa-abras-carsicas.webp'
+          },
+          {
+            id: 'gu-6', name: 'Espeleotemas', category: 'espeleologia',
+            coords: [22.67, -83.72],
+            icon: 'icicles', color: '#7c3aed',
+            description: 'Estalactitas, estalagmitas y columnas en cavernas. Condiciones constantes: 22.3°C y 99.7% HR.',
+            scientific: 'Precipitación química de CaCO₃',
+            image: 'img/expediciones/guasasa-espeleotemas.webp'
+          },
+          {
+            id: 'gu-7', name: 'Valle de Viñales', category: 'patrimonio',
+            coords: [22.6167, -83.7167],
+            icon: 'mountain', color: '#dc2626',
+            description: 'Patrimonio Cultural de la Humanidad UNESCO (1999). Paisaje kárstico excepcional con mogotes y plantaciones de tabaco.',
+            scientific: 'UNESCO 1999 • Sierra de los Órganos',
+            image: null
+          },
+          {
+            id: 'gu-8', name: 'Mural de la Prehistoria', category: 'turismo',
+            coords: [22.62, -83.74],
+            icon: 'palette', color: '#06b6d4',
+            description: 'Pintura mural al aire libre de 180m sobre el mogote Pita en el Valle de Dos Hermanas. Obra de Leovigildo González (1961).',
+            scientific: '4 km al oeste de Viñales • Mogote Pita',
+            image: null
+          },
+          {
+            id: 'gu-9', name: 'Mirador Los Jazmines', category: 'turismo',
+            coords: [22.625, -83.72],
+            icon: 'binoculars', color: '#06b6d4',
+            description: 'Mirador a 200 msnm con vista panorámica del Valle de Viñales. Hotel Horizontes Los Jazmines.',
+            scientific: '3-5 km del centro de Viñales • 200 msnm',
+            image: null
+          },
+          {
+            id: 'gu-10', name: 'Hoyo de Jaruco', category: 'espeleologia',
+            coords: [22.6736, -83.525],
+            icon: 'dungeon', color: '#7c3aed',
+            description: 'Formación kárstica con la Cueva del Cura. Sistema geológico complejo en la Sierra de los Órganos.',
+            scientific: '22°40\'27"N, 83°01\'30"O • Georuta Mogote Zacarías',
+            image: null
+          },
+          {
+            id: 'gu-11', name: 'San Vicente', category: 'espeleologia',
+            coords: [22.68, -83.73],
+            icon: 'water', color: '#0891b2',
+            description: 'Cueva de 4 km de longitud surcada por el río San Vicente. 700m iluminados + 225m en bote a motor.',
+            scientific: 'Río subterráneo navegable',
+            image: null
+          },
+          {
+            id: 'gu-12', name: 'La Chorrera', category: 'patrimonio',
+            coords: [22.65, -83.70],
+            icon: 'home', color: '#dc2626',
+            description: 'Asentamiento con la historia más antigua de los poblados del municipio Viñales. Documentos coloniales referidos a La Chorrera.',
+            scientific: 'Historia colonial • Origen del poblamiento de Viñales',
+            image: null
+          },
+          {
+            id: 'gu-13', name: 'Cueva El Cable', category: 'espeleologia',
+            coords: [22.65, -83.72],
+            icon: 'dungeon', color: '#7c3aed',
+            description: 'Sistema de 3 cuevas (I, II, III) con escrituras de los años 60 y contaminación por motores diesel.',
+            scientific: 'Niveles 10, 11, 12 - Amenaza ambiental',
+            image: null
+          },
+          {
+            id: 'gu-14', name: 'Cueva del Cura', category: 'espeleologia',
+            coords: [22.6736, -83.525],
+            icon: 'dungeon', color: '#7c3aed',
+            description: 'Cueva en Hoyo Jaruco, parte del sistema kárstico de la Sierra de los Órganos.',
+            scientific: '22°40\'27"N, 83°01\'30"O',
+            image: null
+          }
+        ]
+      }
+    };
+
+    let map, markersLayer, polygonLayers = {}, currentPopup = null;
+    let allMarkers = [];
+    const INITIAL_CENTER = [22.30, -84.20];
+    const INITIAL_ZOOM = 9;
+
+    function initMap() {
+      map = L.map('map', {
+        center: INITIAL_CENTER,
+        zoom: INITIAL_ZOOM,
+        zoomControl: true,
+        scrollWheelZoom: true
+      });
+
+      const osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenStreetMap',
+        maxZoom: 18
+      });
+      const topoLayer = L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+        attribution: '© OpenTopoMap',
+        maxZoom: 17
+      });
+      const satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+        attribution: '© Esri',
+        maxZoom: 18
+      });
+      osmLayer.addTo(map);
+
+      const baseMaps = { "🗺️ Mapa": osmLayer, "🏔️ Topográfico": topoLayer, "🛰️ Satélite": satelliteLayer };
+      L.control.layers(baseMaps, null, { position: 'topright' }).addTo(map);
+      L.control.scale({ imperial: false, position: 'bottomleft' }).addTo(map);
+
+      markersLayer = L.layerGroup().addTo(map);
+      addPolygons();
+      addMarkers();
+      addLegend();
+    }
+
+    function addPolygons() {
+      Object.entries(POLYGONS_DATA).forEach(([key, poly]) => {
+        const rectangle = L.rectangle(poly.bounds, {
+          color: poly.color,
+          weight: 3,
+          opacity: 0.7,
+          fillColor: poly.color,
+          fillOpacity: 0.15,
+          dashArray: '10, 5'
+        });
+        rectangle.bindTooltip(`
+          <div style="padding: 8px;">
+            <strong style="color: ${poly.color};">${poly.name}</strong>
+            ${poly.unesco ? '<br><span style="font-size: 0.8em; color: #dc2626;">🏆 UNESCO</span>' : ''}
+            <br><span style="font-size: 0.85em;">${poly.municipality}</span>
+          </div>
+        `, { permanent: false, direction: 'top' });
+        polygonLayers[key] = rectangle;
+        rectangle.addTo(map);
+      });
+    }
+
+    function createCustomIcon(iconName, color, isPolygon = false) {
+      const size = isPolygon ? 'polygon-marker' : '';
+      return L.divIcon({
+        className: `custom-marker ${size}`,
+        html: `<div class="marker-pin" style="background: ${color}; color: ${color};"><i class="fas fa-${iconName}"></i></div>`,
+        iconSize: isPolygon ? [48, 48] : [36, 36],
+        iconAnchor: isPolygon ? [24, 48] : [18, 36],
+        popupAnchor: [0, -36]
+      });
+    }
+
+    function addMarkers() {
+      allMarkers = [];
+      Object.entries(POLYGONS_DATA).forEach(([polyKey, poly]) => {
+        poly.markers.forEach(marker => {
+          const customIcon = createCustomIcon(marker.icon, marker.color);
+          const leafletMarker = L.marker(marker.coords, { icon: customIcon });
+          
+          const popupContent = `
+            <div class="custom-popup">
+              ${marker.image ? `<img src="${marker.image}" class="popup-image" onerror="this.style.display='none';">` : ''}
+              <div class="popup-content">
+                <div class="popup-badges">
+                  <span class="popup-badge polygon" style="background: ${poly.color};">${poly.name}</span>
+                  <span class="popup-badge category">${getCategoryName(marker.category)}</span>
+                  ${poly.unesco ? '<span class="popup-badge unesco">UNESCO</span>' : ''}
+                </div>
+                <h3 class="popup-title">${marker.name}</h3>
+                <p class="popup-description">${marker.description}</p>
+                <div class="popup-scientific">
+                  <i class="fas fa-microscope"></i> ${marker.scientific}
+                </div>
+                <div class="popup-meta">
+                  <div class="popup-meta-item">
+                    <i class="fas fa-map-pin"></i>
+                    <span>${marker.coords[0].toFixed(4)}°N, ${Math.abs(marker.coords[1]).toFixed(4)}°O</span>
+                  </div>
+                </div>
+                <div class="popup-actions">
+                  <button class="popup-btn popup-btn-primary" onclick="focusPolygon('${polyKey}')">
+                    <i class="fas fa-expand"></i> Ver polígono
+                  </button>
+                  <button class="popup-btn popup-btn-secondary" onclick="openNavigation(${marker.coords[0]}, ${marker.coords[1]})">
+                    <i class="fas fa-directions"></i> Navegar
+                  </button>
+                </div>
+              </div>
+            </div>
+          `;
+          leafletMarker.bindPopup(popupContent, { maxWidth: 340, className: 'custom-popup-wrapper' });
+          leafletMarker.polygonKey = polyKey;
+          leafletMarker.markerData = marker;
+          leafletMarker.addTo(markersLayer);
+          allMarkers.push({ ...marker, polygonKey: polyKey, polygonName: poly.name, polygonColor: poly.color, leafletMarker });
+        });
+      });
+    }
+
+    function getCategoryName(cat) {
+      const cats = {
+        geologia: '🏔️ Geología', hidrologia: '💧 Hidrología', ecologia: '🌿 Ecología',
+        especies: '🦜 Especies', patrimonio: '🏛️ Patrimonio', espeleologia: '🕳️ Espeleología',
+        paleontologia: '🦴 Paleontología', botanica: '🌺 Botánica', arqueologia: '⚱️ Arqueología',
+        clima: '🌡️ Clima', edafologia: '🟫 Suelos', turismo: '🎯 Turismo'
+      };
+      return cats[cat] || cat;
+    }
+
+    function addLegend() {
+      const legend = L.control({ position: 'bottomright' });
+      legend.onAdd = function() {
+        const div = L.DomUtil.create('div', 'leaflet-control-legend');
+        div.innerHTML = `
+          <div class="legend-title"><span><i class="fas fa-info-circle"></i> Leyenda</span></div>
+          <div class="legend-item"><div class="legend-icon" style="background:#0891b2;"><i class="fas fa-water"></i></div>Guanahacabibes</div>
+          <div class="legend-item"><div class="legend-icon" style="background:#d97706;"><i class="fas fa-gem"></i></div>Km 9 Mantua</div>
+          <div class="legend-item"><div class="legend-icon" style="background:#16a34a;"><i class="fas fa-tree"></i></div>San Andrés</div>
+          <div class="legend-item"><div class="legend-icon" style="background:#7c3aed;"><i class="fas fa-mountain"></i></div>Sierra Guasasa</div>
+          <hr style="margin: 8px 0; border: none; border-top: 1px solid #e0e8da;">
+          <div class="legend-item"><div class="legend-icon" style="background:#ec4899;"><i class="fas fa-feather"></i></div>Especies</div>
+          <div class="legend-item"><div class="legend-icon" style="background:#dc2626;"><i class="fas fa-landmark"></i></div>Patrimonio</div>
+          <div class="legend-item"><div class="legend-icon" style="background:#7c2d12;"><i class="fas fa-bone"></i></div>Paleontología</div>
+          <div class="legend-item"><div class="legend-icon" style="background:#06b6d4;"><i class="fas fa-swimmer"></i></div>Turismo</div>
+        `;
+        return div;
+      };
+      legend.addTo(map);
+    }
+
+    function renderMarkersList() {
+      const container = document.getElementById('markersList');
+      let html = '';
+      Object.entries(POLYGONS_DATA).forEach(([key, poly]) => {
+        html += `
+          <div class="polygon-group" data-polygon="${key}">
+            <div class="polygon-group-header" onclick="togglePolygonGroup('${key}')">
+              <div class="polygon-color" style="background: ${poly.color};"></div>
+              <span class="polygon-group-title">${poly.name}</span>
+              <span class="polygon-count">${poly.markers.length}</span>
+              <i class="fas fa-chevron-down polygon-toggle"></i>
+            </div>
+            <div class="polygon-items">
+              ${poly.markers.map(m => `
+                <div class="marker-item" data-marker-id="${m.id}" onclick="focusMarker('${m.id}')">
+                  <div class="marker-icon" style="background: ${m.color};">
+                    <i class="fas fa-${m.icon}" style="color: white;"></i>
+                  </div>
+                  <span class="marker-name">${m.name}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function togglePolygonGroup(polyKey) {
+      document.querySelector(`.polygon-group[data-polygon="${polyKey}"]`)?.classList.toggle('collapsed');
+    }
+
+    function focusMarker(markerId) {
+      const marker = allMarkers.find(m => m.id === markerId);
+      if (!marker) return;
+      map.flyTo(marker.coords, 14, { duration: 1.2 });
+      setTimeout(() => marker.leafletMarker.openPopup(), 1300);
+      document.querySelectorAll('.marker-item').forEach(el => el.classList.remove('active'));
+      document.querySelector(`.marker-item[data-marker-id="${markerId}"]`)?.classList.add('active');
+    }
+
+    function focusPolygon(polyKey) {
+      const poly = POLYGONS_DATA[polyKey];
+      if (!poly) return;
+      map.flyToBounds(poly.bounds, { padding: [50, 50], duration: 1.2 });
+    }
+
+    function openNavigation(lat, lng) {
+      window.open(`https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`, '_blank');
+    }
+
+    function setupSearch() {
+      const searchInput = document.getElementById('searchMarkers');
+      searchInput.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase().trim();
+        const items = document.querySelectorAll('.marker-item');
+        const groups = document.querySelectorAll('.polygon-group');
+        if (!query) {
+          items.forEach(el => el.style.display = 'flex');
+          groups.forEach(el => el.style.display = 'block');
+          return;
+        }
+        groups.forEach(group => {
+          const groupItems = group.querySelectorAll('.marker-item');
+          let visibleInGroup = 0;
+          groupItems.forEach(item => {
+            const text = item.querySelector('.marker-name').textContent.toLowerCase();
+            if (text.includes(query)) { item.style.display = 'flex'; visibleInGroup++; }
+            else item.style.display = 'none';
+          });
+          group.style.display = visibleInGroup > 0 ? 'block' : 'none';
+        });
+      });
+    }
+
+    function setupMapControls() {
+      document.getElementById('btnLocate').addEventListener('click', () => {
+        if (!navigator.geolocation) { alert('Geolocalización no soportada'); return; }
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            map.flyTo([latitude, longitude], 13);
+            L.marker([latitude, longitude]).addTo(map).bindPopup('📍 Tu ubicación').openPopup();
+          },
+          () => alert('No se pudo obtener tu ubicación')
+        );
+      });
+      document.getElementById('btnFullscreen').addEventListener('click', () => {
+        const mapEl = document.getElementById('map');
+        if (!document.fullscreenElement) mapEl.requestFullscreen?.();
+        else document.exitFullscreen?.();
+      });
+      document.getElementById('btnReset').addEventListener('click', () => {
+        map.flyTo(INITIAL_CENTER, INITIAL_ZOOM, { duration: 1 });
+      });
+      document.querySelectorAll('.layer-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+          btn.classList.toggle('active');
+          const layer = btn.dataset.layer;
+          if (layer === 'poligonos') {
+            Object.values(polygonLayers).forEach(p => {
+              if (btn.classList.contains('active')) p.addTo(map);
+              else map.removeLayer(p);
+            });
+          } else if (layer === 'cientificos') {
+            if (btn.classList.contains('active')) markersLayer.addTo(map);
+            else map.removeLayer(markersLayer);
+          } else if (layer === 'especies') {
+            markersLayer.clearLayers();
+            const filter = btn.classList.contains('active') ? (m => m.category === 'especies') : () => true;
+            allMarkers.filter(filter).forEach(m => m.leafletMarker.addTo(markersLayer));
+            markersLayer.addTo(map);
+          } else if (layer === 'turismo') {
+            markersLayer.clearLayers();
+            const filter = btn.classList.contains('active') ? (m => m.category === 'turismo' || m.category === 'patrimonio') : () => true;
+            allMarkers.filter(filter).forEach(m => m.leafletMarker.addTo(markersLayer));
+            markersLayer.addTo(map);
+          }
+        });
+      });
+    }
+
+    function renderPolygonsCards() {
+      const container = document.getElementById('polygonsGrid');
+      container.innerHTML = Object.entries(POLYGONS_DATA).map(([key, poly]) => {
+        const statsArray = Object.entries(poly.stats);
+        const firstImage = poly.markers.find(m => m.image)?.image;
+        return `
+          <div class="polygon-card ${key}" onclick="focusPolygon('${key}'); switchTab('mapa');">
+            <div class="polygon-card-img">
+              ${firstImage ? `<img src="${firstImage}" alt="${poly.name}" onerror="this.style.display='none';">` : ''}
+              <div class="polygon-card-overlay"></div>
+              ${poly.unesco ? '<span class="polygon-card-badge">🏆 UNESCO</span>' : ''}
+            </div>
+            <div class="polygon-card-content">
+              <h3 class="polygon-card-title">${poly.fullName}</h3>
+              <div class="polygon-card-location"><i class="fas fa-map-marker-alt"></i>${poly.municipality}, Pinar del Río</div>
+              <p class="polygon-card-description">${poly.description}</p>
+              <div class="polygon-card-stats">
+                ${statsArray.slice(0, 3).map(([label, value]) => `
+                  <div class="polygon-stat">
+                    <div class="polygon-stat-value">${value}</div>
+                    <div class="polygon-stat-label">${label}</div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function setupTabs() {
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+      });
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelector(`[data-tab="${tabName}"]`)?.classList.add('active');
+      document.getElementById(`tab-${tabName}`)?.classList.add('active');
+      if (tabName === 'mapa') setTimeout(() => map.invalidateSize(), 100);
+      history.replaceState(null, '', `#${tabName}`);
+    }
+
+    const SUPABASE_URL = 'https://mixfzeuzhooujqzaexpp.supabase.co';
+    const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im1peGZ6ZXV6aG9vdWpxemFleHBwIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODE3ODk2NjYsImV4cCI6MjA5NzM2NTY2Nn0.re-BvpmaB3vMXIBwbOY_88PE0q9Hw1L9xsyL6JurvaI';
+    let supabaseClient = null;
+
+    async function initSupabase() {
+      if (typeof window.supabase === 'undefined') return;
+      supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+      await loadBlog();
+      await loadGallery();
+    }
+
+    async function loadBlog() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('posts').select('*').eq('status', 'approved').order('created_at', { ascending: false }).limit(9);
+        if (error) throw error;
+        document.getElementById('blogCount').textContent = data?.length || 0;
+        renderBlog(data || []);
+      } catch (err) { console.error('Error loading blog:', err); }
+    }
+
+    function renderBlog(posts) {
+      const container = document.getElementById('blogGrid');
+      if (!posts.length) {
+        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><i class="fas fa-newspaper"></i><h3>Aún no hay publicaciones</h3><p>¡Sé el primero en compartir tu experiencia!</p></div>`;
+        return;
+      }
+      container.innerHTML = posts.map(p => {
+        let media = '';
+        if (p.media_type === 'youtube') media = `<div style="position:relative;padding-bottom:56.25%;height:0;"><iframe src="https://www.youtube.com/embed/${p.media_url}" style="position:absolute;top:0;left:0;width:100%;height:100%;" frameborder="0" allowfullscreen></iframe></div>`;
+        else if (p.media_type === 'video') media = `<video controls src="${p.media_url}" style="width:100%;height:100%;object-fit:cover;"></video>`;
+        else media = `<img src="${p.media_url || 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400'}" alt="${p.title}" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400';">`;
+        const fecha = p.created_at ? new Date(p.created_at).toLocaleDateString('es-ES') : '';
+        const desc = (p.description || '').substring(0, 100) + ((p.description || '').length > 100 ? '...' : '');
+        return `<div class="blog-card"><div class="blog-card-img">${media}</div><div class="blog-card-content"><h4 class="blog-card-title">${p.title}</h4><p class="blog-card-desc">${desc}</p><div class="blog-card-meta"><span>${fecha}</span><span><i class="fas fa-heart" style="color:var(--secondary);"></i> ${p.likes || 0}</span></div></div></div>`;
+      }).join('');
+    }
+
+    async function loadGallery() {
+      if (!supabaseClient) return;
+      try {
+        const { data, error } = await supabaseClient.from('gallery').select('*').eq('status', 'approved').order('created_at', { ascending: false }).limit(12);
+        if (error) throw error;
+        document.getElementById('galleryCount').textContent = data?.length || 0;
+        renderGallery(data || []);
+      } catch (err) { console.error('Error loading gallery:', err); }
+    }
+
+    function renderGallery(photos) {
+      const container = document.getElementById('galleryGrid');
+      if (!photos.length) {
+        container.innerHTML = `<div class="empty-state" style="grid-column: 1 / -1;"><i class="fas fa-image"></i><h3>Sé el primero en compartir</h3><p>Sube tus fotos de los polígonos</p></div>`;
+        return;
+      }
+      container.innerHTML = photos.map(p => `<div class="gallery-item" onclick="window.open('${p.image_url}', '_blank')"><img src="${p.image_url}" alt="${p.caption || 'Foto'}" onerror="this.src='https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400';"><div class="gallery-overlay">${p.caption || 'Sin descripción'}</div></div>`).join('');
+    }
+
+    function setupPostForm() {
+      document.getElementById('btnPublishPost').addEventListener('click', async () => {
+        if (!supabaseClient) { alert('Conexión no disponible'); return; }
+        const title = document.getElementById('postTitle').value.trim();
+        const description = document.getElementById('postDescription').value.trim();
+        const media = document.getElementById('postMedia').value.trim();
+        if (!title) { alert('El título es obligatorio'); return; }
+        try {
+          const { error } = await supabaseClient.from('posts').insert([{
+            title, description,
+            media_url: media || null,
+            media_type: media.includes('youtube') ? 'youtube' : (media.match(/\.(mp4|webm|mov)$/i) ? 'video' : 'img'),
+            author_email: 'usuario_anonimo',
+            status: 'pending'
+          }]);
+          if (error) throw error;
+          alert('✅ ¡Publicación enviada! Será revisada por un moderador.');
+          document.getElementById('postTitle').value = '';
+          document.getElementById('postDescription').value = '';
+          document.getElementById('postMedia').value = '';
+        } catch (err) { alert('❌ Error: ' + err.message); }
+      });
+    }
+
+    function setupMobileMenu() {
+      const toggle = document.getElementById('menuToggle');
+      const nav = document.getElementById('mainNav');
+      toggle.addEventListener('click', (e) => { e.stopPropagation(); nav.classList.toggle('show'); });
+      document.addEventListener('click', (e) => { if (!nav.contains(e.target) && !toggle.contains(e.target)) nav.classList.remove('show'); });
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      initMap();
+      renderMarkersList();
+      setupSearch();
+      setupMapControls();
+      renderPolygonsCards();
+      setupTabs();
+      setupMobileMenu();
+      setupPostForm();
+      const hash = window.location.hash.replace('#', '');
+      if (['mapa', 'poligonos', 'galeria', 'blog'].includes(hash)) switchTab(hash);
+      const checkSupabase = setInterval(() => {
+        if (typeof window.supabase !== 'undefined') { clearInterval(checkSupabase); initSupabase(); }
+      }, 200);
+      setTimeout(() => clearInterval(checkSupabase), 10000);
+    });
+
+    window.focusPolygon = focusPolygon;
+    window.focusMarker = focusMarker;
+    window.togglePolygonGroup = togglePolygonGroup;
+    window.openNavigation = openNavigation;
+    window.switchTab = switchTab;
+  </script>
+</body>
+</html>
